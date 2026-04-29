@@ -92,7 +92,8 @@
       font-weight: 600;
     }
 
-    .qty-row input {
+    .qty-row input,
+    .modal-box input {
       width: 100%;
       padding: 12px;
       border: 1px solid #ccc;
@@ -164,12 +165,7 @@
       margin-bottom: 12px;
     }
 
-    .modal-box input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 16px;
+    #balanceAmount {
       margin-bottom: 8px;
     }
 
@@ -234,11 +230,33 @@
     </div>
   </div>
 
+  <div id="confirmPurchaseModal" class="modal hidden">
+    <div class="modal-box">
+      <h3>Confirmar compra</h3>
+      <p>Revisa los datos antes de completar la compra.</p>
+      <div class="summary">
+        <div class="summary-small" id="confirmProduct">Producto: -</div>
+        <div class="summary-small" id="confirmQuantity">Cantidad: -</div>
+        <div class="summary-small" id="confirmUnitPrice">Precio unitario: -</div>
+        <div class="summary-small" id="confirmOriginalTotal">Total sin descuento: -</div>
+        <div class="summary-small" id="confirmDiscount">Descuento aplicado: -</div>
+        <div class="summary-small" id="confirmBalanceBefore">Saldo actual: -</div>
+        <div class="summary-total" id="confirmTotal">Total: -</div>
+        <div class="summary-small" id="confirmBalanceAfter">Saldo después: -</div>
+      </div>
+      <div class="modal-actions">
+        <button class="cancel-btn" onclick="closeConfirmPurchaseModal()">Cancelar</button>
+        <button class="confirm-btn" onclick="confirmPurchase()">Confirmar compra</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
     let userBalance = 0;
+    let pendingPurchase = null;
 
     const products = [
       {
@@ -324,9 +342,6 @@
             </div>
 
             <div class="summary">
-              <div class="summary-small" id="unit-${product.id}">
-                Precio por unidad: ${formatPrice(product.basePrice)}
-              </div>
               <div class="summary-total" id="total-${product.id}">
                 Total: ${formatPrice(product.basePrice)}
               </div>
@@ -351,11 +366,7 @@
         input.value = 1;
       }
 
-      const unitPrice = getUnitPrice(product, quantity);
       const totalPrice = getTotalPrice(product, quantity);
-
-      document.getElementById(`unit-${productId}`).textContent =
-        `Precio por unidad: ${formatPrice(unitPrice)}`;
 
       document.getElementById(`total-${productId}`).textContent =
         `Total: ${formatPrice(totalPrice)}`;
@@ -385,9 +396,66 @@
         return;
       }
 
-      userBalance -= totalPrice;
+      const unitPrice = getUnitPrice(product, quantity);
+      const originalTotal = product.basePrice * quantity;
+      const discountAmount = originalTotal - totalPrice;
+
+      pendingPurchase = {
+        productId: product.id,
+        productName: product.name,
+        quantity,
+        unitPrice,
+        originalTotal,
+        discountAmount,
+        totalPrice
+      };
+
+      openConfirmPurchaseModal();
+    }
+
+    function openConfirmPurchaseModal() {
+      if (!pendingPurchase) return;
+
+      const balanceAfter = userBalance - pendingPurchase.totalPrice;
+
+      document.getElementById("confirmProduct").textContent =
+        `Producto: ${pendingPurchase.productName}`;
+      document.getElementById("confirmQuantity").textContent =
+        `Cantidad: ${pendingPurchase.quantity}`;
+      document.getElementById("confirmUnitPrice").textContent =
+        `Precio unitario: ${formatPrice(pendingPurchase.unitPrice)}`;
+      document.getElementById("confirmOriginalTotal").textContent =
+        `Total sin descuento: ${formatPrice(pendingPurchase.originalTotal)}`;
+      document.getElementById("confirmDiscount").textContent =
+        `Descuento aplicado: ${formatPrice(pendingPurchase.discountAmount)}`;
+      document.getElementById("confirmBalanceBefore").textContent =
+        `Saldo actual: ${formatPrice(userBalance)}`;
+      document.getElementById("confirmTotal").textContent =
+        `Total: ${formatPrice(pendingPurchase.totalPrice)}`;
+      document.getElementById("confirmBalanceAfter").textContent =
+        `Saldo después: ${formatPrice(balanceAfter)}`;
+
+      document.getElementById("confirmPurchaseModal").classList.remove("hidden");
+    }
+
+    function closeConfirmPurchaseModal() {
+      document.getElementById("confirmPurchaseModal").classList.add("hidden");
+    }
+
+    function confirmPurchase() {
+      if (!pendingPurchase) return;
+
+      userBalance -= pendingPurchase.totalPrice;
       updateBalanceUI();
-      tg.showAlert(`Has comprado ${quantity} eSIM(s) de ${product.name} por ${formatPrice(totalPrice)}.`);
+
+      const boughtName = pendingPurchase.productName;
+      const boughtQty = pendingPurchase.quantity;
+      const boughtTotal = pendingPurchase.totalPrice;
+
+      pendingPurchase = null;
+      closeConfirmPurchaseModal();
+
+      tg.showAlert(`Has comprado ${boughtQty} eSIM(s) de ${boughtName} por ${formatPrice(boughtTotal)}.`);
     }
 
     function openAddBalanceModal(suggestedAmount = "") {
