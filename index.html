@@ -126,17 +126,29 @@
     </div>
   </div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
 
-    function selectPlan(plan) {
-      tg.MainButton.setText("Comprar " + plan);
-      tg.MainButton.show();
-      tg.MainButton.onClick(function () {
-        tg.showAlert("Has seleccionado: " + plan);
-      });
+  let selectedPlan = "";
+
+  tg.MainButton.hide();
+
+  function selectPlan(plan) {
+    selectedPlan = plan;
+
+    tg.MainButton.setText("Comprar " + plan);
+    tg.MainButton.show();
+    tg.MainButton.enable();
+  }
+
+  tg.onEvent("mainButtonClicked", function () {
+    if (selectedPlan) {
+      tg.showAlert("Has seleccionado: " + selectedPlan);
+    } else {
+      tg.showAlert("Primero selecciona una eSIM.");
     }
-  </script>
+  });
+</script>
 </body>
 </html>
