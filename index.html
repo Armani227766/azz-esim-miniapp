@@ -92,39 +92,28 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>🛍 eSim's Bot</h1>
-      <p>Compra tu eSIM de forma rápida desde Telegram.</p>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <h2>Vodafone</h2>
-        <div class="meta">90GB · Llamadas ilimitadas</div>
-        <div class="price">12,99 €</div>
-        <button class="btn" onclick="selectPlan('Vodafone')">Seleccionar</button>
-      </div>
-
-      <div class="card">
-        <h2>Lebara</h2>
-        <div class="meta">90GB · Llamadas ilimitadas · QR 1 SOLO USO!!</div>
-        <div class="price">12,99 €</div>
-        <button class="btn" onclick="selectPlan('Lebara')">Seleccionar</button>
-      </div>
-
-      <div class="card">
-        <h2>Vodafone+</h2>
-        <div class="meta">270GB · 1000 min internacionales</div>
-        <div class="price">16.99 €</div>
-        <button class="btn" onclick="selectPlan('Vodafone+')">Comprar</button>
-      </div>
-    </div>
-
-    <div class="note">
-      Versión demo de la tienda. El pago real llegará después.
-    </div>
+  <div class="grid">
+  <div class="card">
+    <h2>Vodafone</h2>
+    <div class="meta">90GB · Llamadas ilimitadas</div>
+    <div class="price">12,99 €</div>
+    <button class="btn" onclick="selectPlan('Vodafone', '90GB · Llamadas ilimitadas', '12,99 €')">Seleccionar</button>
   </div>
+
+  <div class="card">
+    <h2>Lebara</h2>
+    <div class="meta">90GB · Llamadas ilimitadas · QR 1 SOLO USO!!</div>
+    <div class="price">12,99 €</div>
+    <button class="btn" onclick="selectPlan('Lebara', '90GB · Llamadas ilimitadas · QR 1 SOLO USO!!', '12,99 €')">Seleccionar</button>
+  </div>
+
+  <div class="card">
+    <h2>Vodafone+</h2>
+    <div class="meta">270GB · 1000 min internacionales</div>
+    <div class="price">16.99 €</div>
+    <button class="btn" onclick="selectPlan('Vodafone+', '270GB · 1000 min internacionales', '16.99 €')">Comprar</button>
+  </div>
+</div>
 
 <script>
   const tg = window.Telegram.WebApp;
