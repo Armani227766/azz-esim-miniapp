@@ -1,41 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>eSim's Bot</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #0f172a;
       color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      text-align: center;
+      padding: 20px;
     }
-    .box {
-      max-width: 420px;
-      padding: 24px;
-      border-radius: 16px;
-      background: #1e293b;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
     }
-    h1 {
-      margin-bottom: 12px;
+
+    .header {
+      margin-bottom: 24px;
     }
-    p {
+
+    .header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 0;
       color: #cbd5e1;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .meta {
+      color: #94a3b8;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    .price {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      background: #22c55e;
+      color: white;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #16a34a;
+    }
+
+    .note {
+      margin-top: 24px;
+      color: #94a3b8;
+      font-size: 14px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>eSim's Bot</h1>
-    <p>Mini App en construcción.</p>
-    <p>Pronto podrás comprar eSIMs desde aquí.</p>
+  <div class="container">
+    <div class="header">
+      <h1>🛍 eSim's Bot</h1>
+      <p>Compra tu eSIM de forma rápida desde Telegram.</p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>España 5GB</h2>
+        <div class="meta">7 días · Activación rápida</div>
+        <div class="price">9,99 €</div>
+        <button class="btn" onclick="selectPlan('España 5GB')">Seleccionar</button>
+      </div>
+
+      <div class="card">
+        <h2>Europa 10GB</h2>
+        <div class="meta">15 días · Multipaís</div>
+        <div class="price">19,99 €</div>
+        <button class="btn" onclick="selectPlan('Europa 10GB')">Seleccionar</button>
+      </div>
+
+      <div class="card">
+        <h2>USA 20GB</h2>
+        <div class="meta">30 días · Datos estables</div>
+        <div class="price">29,99 €</div>
+        <button class="btn" onclick="selectPlan('USA 20GB')">Seleccionar</button>
+      </div>
+    </div>
+
+    <div class="note">
+      Versión demo de la tienda. El pago real llegará después.
+    </div>
   </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    function selectPlan(plan) {
+      tg.MainButton.setText("Comprar " + plan);
+      tg.MainButton.show();
+      tg.MainButton.onClick(function () {
+        tg.showAlert("Has seleccionado: " + plan);
+      });
+    }
+  </script>
 </body>
 </html>
