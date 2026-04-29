@@ -3,211 +3,452 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>eSim's Bot</title>
+  <title>eSIM Wallet</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    .topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.balance-box {
-  display: flex;
-  flex-direction: column;
-  background: #1e293b;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-}
-
-.balance-label {
-  font-size: 12px;
-  color: #94a3b8;
-  margin-bottom: 4px;
-}
-
-.balance-value {
-  font-size: 18px;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-.add-balance-btn {
-  border: none;
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-size: 14px;
-  font-weight: bold;
-  background: #3b82f6;
-  color: white;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.add-balance-btn:hover {
-  background: #2563eb;
-}
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
+      background: #f5f5f5;
+      color: #111;
+      padding: 16px;
+    }
+
+    .wallet {
+      background: #111;
       color: white;
+      border-radius: 18px;
       padding: 20px;
+      margin-bottom: 18px;
     }
 
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
+    .wallet h2 {
+      font-size: 15px;
+      opacity: 0.85;
+      margin-bottom: 6px;
     }
 
-    .header {
-      margin-bottom: 24px;
+    .balance {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 14px;
     }
 
-    .header h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
+    .add-balance-btn {
+      background: #2ecc71;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
     }
 
-    .header p {
-      margin: 0;
-      color: #cbd5e1;
-    }
-
-    .grid {
-      display: grid;
-      gap: 16px;
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
     .card {
-      background: #1e293b;
+      background: white;
       border-radius: 16px;
-      padding: 18px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
     }
 
-    .card h2 {
-      margin: 0 0 8px;
+    .card h3 {
+      margin-bottom: 6px;
       font-size: 20px;
     }
 
-    .meta {
-      color: #94a3b8;
-      margin-bottom: 12px;
+    .card p {
+      color: #555;
+      margin-bottom: 8px;
       font-size: 14px;
     }
 
     .price {
       font-size: 22px;
       font-weight: bold;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    .btn {
+    .bulk-box {
+      background: #f8f8f8;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid #e5e5e5;
+    }
+
+    .bulk-box h4 {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .bulk-box ul {
+      padding-left: 18px;
+      color: #444;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .qty-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .qty-row label {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .qty-row input {
       width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    .summary {
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .summary div {
+      margin-bottom: 6px;
+    }
+
+    .summary div:last-child {
+      margin-bottom: 0;
+    }
+
+    .buy-btn {
+      width: 100%;
+      background: #007aff;
+      color: white;
       border: none;
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 12px;
       font-size: 15px;
-      font-weight: bold;
-      background: #22c55e;
-      color: white;
       cursor: pointer;
     }
 
-    .btn:hover {
-      background: #16a34a;
+    .modal.hidden {
+      display: none;
     }
 
-    .note {
-      margin-top: 24px;
-      color: #94a3b8;
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-box {
+      background: white;
+      width: 100%;
+      max-width: 360px;
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .modal-box h3 {
+      margin-bottom: 8px;
+    }
+
+    .modal-box p {
       font-size: 14px;
-      text-align: center;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    .modal-box input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .error {
+      color: #d60000;
+      font-size: 14px;
+      min-height: 18px;
+      margin-bottom: 10px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .cancel-btn {
+      background: #eaeaea;
+      color: #111;
+    }
+
+    .confirm-btn {
+      background: #2ecc71;
+      color: white;
     }
   </style>
 </head>
 <body>
-  <div class="topbar">
-  <div class="balance-box">
-    <span class="balance-label">Saldo</span>
-    <span class="balance-value" id="balanceValue">0,00 €</span>
+  <div class="wallet">
+    <h2>Saldo</h2>
+    <div class="balance" id="balance">0,00 €</div>
+    <button class="add-balance-btn" onclick="openAddBalanceModal()">+ Añadir saldo</button>
   </div>
 
-  <button class="add-balance-btn" onclick="openAddBalance()">
-    + Añadir saldo
-  </button>
-</div>
-  <div class="grid">
-  <div class="card">
-    <h2>Vodafone</h2>
-    <div class="meta">90GB · Llamadas ilimitadas</div>
-    <div class="price">12,99 €</div>
-    <button class="btn" onclick="selectPlan('Vodafone', '90GB · Llamadas ilimitadas', '12,99 €')">Seleccionar</button>
+  <div class="cards" id="cards"></div>
+
+  <div id="addBalanceModal" class="modal hidden">
+    <div class="modal-box">
+      <h3>Añadir saldo</h3>
+      <p>Introduce un importe entre 10 € y 200 €.</p>
+      <input
+        id="balanceAmount"
+        type="number"
+        min="10"
+        max="200"
+        step="1"
+        placeholder="Ej: 25"
+      />
+      <div id="balanceError" class="error"></div>
+      <div class="modal-actions">
+        <button class="cancel-btn" onclick="closeAddBalanceModal()">Cancelar</button>
+        <button class="confirm-btn" onclick="confirmAddBalance()">Confirmar</button>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
-    <h2>Lebara</h2>
-    <div class="meta">90GB · Llamadas ilimitadas · QR 1 SOLO USO!!</div>
-    <div class="price">12,99 €</div>
-    <button class="btn" onclick="selectPlan('Lebara', '90GB · Llamadas ilimitadas · QR 1 SOLO USO!!', '12,99 €')">Seleccionar</button>
-  </div>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-  <div class="card">
-    <h2>Vodafone+</h2>
-    <div class="meta">270GB · 1000 min internacionales</div>
-    <div class="price">16.99 €</div>
-    <button class="btn" onclick="selectPlan('Vodafone+', '270GB · 1000 min internacionales', '16.99 €')">Comprar</button>
-  </div>
-</div>
+    let userBalance = 0;
 
-<script>
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
+    const products = [
+      {
+        id: "vodafone",
+        name: "Vodafone",
+        description: "90GB · Llamadas ilimitadas",
+        basePrice: 12.99,
+        hasBulkDiscount: true,
+        tiers: [
+          { min: 20, unitPrice: 10 },
+          { min: 10, unitPrice: 11 },
+          { min: 5, unitPrice: 12 },
+          { min: 2, unitPrice: 12.5 }
+        ]
+      },
+      {
+        id: "lebara",
+        name: "Lebara",
+        description: "90GB · Llamadas ilimitadas · QR 1 SOLO USO!!",
+        basePrice: 12.99,
+        hasBulkDiscount: true,
+        tiers: [
+          { min: 20, unitPrice: 10 },
+          { min: 10, unitPrice: 11 },
+          { min: 5, unitPrice: 12 },
+          { min: 2, unitPrice: 12.5 }
+        ]
+      },
+      {
+        id: "vodafoneplus",
+        name: "Vodafone+",
+        description: "270GB · 1000 min internacionales",
+        basePrice: 16.99,
+        hasBulkDiscount: false,
+        tiers: []
+      }
+    ];
 
-  let selectedPlan = null;
-  let currentBalance = "0,00 €";
-
-  const balanceElement = document.getElementById("balanceValue");
-  balanceElement.textContent = currentBalance;
-
-  tg.MainButton.hide();
-
-  function openAddBalance() {
-    tg.showAlert("Aquí abriremos la pantalla de añadir saldo en el siguiente paso.");
-  }
-
-  function selectPlan(name, details, price) {
-    selectedPlan = {
-      name: name,
-      details: details,
-      price: price
-    };
-
-    tg.MainButton.setText("Comprar " + name);
-    tg.MainButton.show();
-    tg.MainButton.enable();
-  }
-
-  tg.onEvent("mainButtonClicked", function () {
-    if (!selectedPlan) {
-      tg.showAlert("Primero selecciona una eSIM.");
-      return;
+    function formatPrice(value) {
+      return value.toFixed(2).replace(".", ",") + " €";
     }
 
-    tg.sendData(JSON.stringify(selectedPlan));
-    tg.close();
-  });
-</script>
+    function updateBalanceUI() {
+      document.getElementById("balance").textContent = formatPrice(userBalance);
+    }
+
+    function getUnitPrice(product, quantity) {
+      if (!product.hasBulkDiscount) return product.basePrice;
+
+      for (const tier of product.tiers) {
+        if (quantity >= tier.min) {
+          return tier.unitPrice;
+        }
+      }
+
+      return product.basePrice;
+    }
+
+    function getTotalPrice(product, quantity) {
+      return getUnitPrice(product, quantity) * quantity;
+    }
+
+    function renderProducts() {
+      const container = document.getElementById("cards");
+
+      container.innerHTML = products.map(product => {
+        const bulkHtml = product.hasBulkDiscount
+          ? `
+            <div class="bulk-box">
+              <h4>Descuento por cantidad</h4>
+              <ul>
+                <li>2 a 4 eSIMs → 12,50 € / unidad</li>
+                <li>5 a 9 eSIMs → 12,00 € / unidad</li>
+                <li>10 a 19 eSIMs → 11,00 € / unidad</li>
+                <li>20 o más → 10,00 € / unidad</li>
+              </ul>
+            </div>
+          `
+          : "";
+
+        return `
+          <div class="card">
+            <h3>${product.name}</h3>
+            <p>${product.description}</p>
+            <div class="price">Desde ${formatPrice(product.basePrice)}</div>
+            ${bulkHtml}
+
+            <div class="qty-row">
+              <label for="qty-${product.id}">Cantidad</label>
+              <input
+                id="qty-${product.id}"
+                type="number"
+                min="1"
+                step="1"
+                value="1"
+                oninput="updateProductSummary('${product.id}')"
+              />
+            </div>
+
+            <div class="summary">
+              <div>Precio unitario: <strong id="unit-${product.id}">${formatPrice(product.basePrice)}</strong></div>
+              <div>Total: <strong id="total-${product.id}">${formatPrice(product.basePrice)}</strong></div>
+            </div>
+
+            <button class="buy-btn" onclick="buyProduct('${product.id}')">Comprar</button>
+          </div>
+        `;
+      }).join("");
+
+      products.forEach(product => updateProductSummary(product.id));
+    }
+
+    function updateProductSummary(productId) {
+      const product = products.find(p => p.id === productId);
+      const input = document.getElementById(`qty-${productId}`);
+
+      let quantity = parseInt(input.value, 10);
+
+      if (isNaN(quantity) || quantity < 1) {
+        quantity = 1;
+        input.value = 1;
+      }
+
+      const unitPrice = getUnitPrice(product, quantity);
+      const totalPrice = getTotalPrice(product, quantity);
+
+      document.getElementById(`unit-${productId}`).textContent = formatPrice(unitPrice);
+      document.getElementById(`total-${productId}`).textContent = formatPrice(totalPrice);
+    }
+
+    function buyProduct(productId) {
+      const product = products.find(p => p.id === productId);
+      const input = document.getElementById(`qty-${productId}`);
+      let quantity = parseInt(input.value, 10);
+
+      if (isNaN(quantity) || quantity < 1) {
+        quantity = 1;
+        input.value = 1;
+      }
+
+      const totalPrice = getTotalPrice(product, quantity);
+
+      if (userBalance < totalPrice) {
+        tg.showAlert(`No tienes saldo suficiente. Total: ${formatPrice(totalPrice)}.`);
+        return;
+      }
+
+      userBalance -= totalPrice;
+      updateBalanceUI();
+      tg.showAlert(`Has comprado ${quantity} eSIM(s) de ${product.name} por ${formatPrice(totalPrice)}.`);
+    }
+
+    function openAddBalanceModal() {
+      document.getElementById("addBalanceModal").classList.remove("hidden");
+      document.getElementById("balanceError").textContent = "";
+      document.getElementById("balanceAmount").value = "";
+    }
+
+    function closeAddBalanceModal() {
+      document.getElementById("addBalanceModal").classList.add("hidden");
+    }
+
+    function confirmAddBalance() {
+      const input = document.getElementById("balanceAmount");
+      const error = document.getElementById("balanceError");
+      const amount = Number(input.value);
+
+      error.textContent = "";
+
+      if (!input.value) {
+        error.textContent = "Introduce una cantidad.";
+        return;
+      }
+
+      if (amount < 10) {
+        error.textContent = "El mínimo para añadir saldo es 10 €.";
+        return;
+      }
+
+      if (amount > 200) {
+        error.textContent = "El máximo para añadir saldo es 200 €.";
+        return;
+      }
+
+      userBalance += amount;
+      updateBalanceUI();
+      closeAddBalanceModal();
+      tg.showAlert(`Has añadido ${formatPrice(amount)} de saldo.`);
+    }
+
+    updateBalanceUI();
+    renderProducts();
+  </script>
 </body>
 </html>
