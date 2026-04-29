@@ -120,13 +120,18 @@
   tg.ready();
   tg.expand();
 
-  let selectedPlan = "";
+  let selectedPlan = null;
 
   tg.MainButton.hide();
 
-  function selectPlan(plan) {
-    selectedPlan = plan;
-    tg.MainButton.setText("Comprar " + plan);
+  function selectPlan(name, details, price) {
+    selectedPlan = {
+      name: name,
+      details: details,
+      price: price
+    };
+
+    tg.MainButton.setText("Comprar " + name);
     tg.MainButton.show();
     tg.MainButton.enable();
   }
@@ -137,11 +142,7 @@
       return;
     }
 
-    const data = JSON.stringify({
-      plan: selectedPlan
-    });
-
-    tg.sendData(data);
+    tg.sendData(JSON.stringify(selectedPlan));
     tg.close();
   });
 </script>
