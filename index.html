@@ -74,30 +74,10 @@
       font-size: 14px;
     }
 
-    .price {
-      font-size: 22px;
-      font-weight: bold;
+    .base-price {
+      font-size: 15px;
+      color: #666;
       margin-bottom: 12px;
-    }
-
-    .bulk-box {
-      background: #f8f8f8;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 12px;
-      border: 1px solid #e5e5e5;
-    }
-
-    .bulk-box h4 {
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
-
-    .bulk-box ul {
-      padding-left: 18px;
-      color: #444;
-      font-size: 13px;
-      margin-bottom: 10px;
     }
 
     .qty-row {
@@ -124,18 +104,20 @@
       background: #fafafa;
       border: 1px solid #eee;
       border-radius: 12px;
-      padding: 10px 12px;
+      padding: 12px;
       margin-bottom: 12px;
-      font-size: 14px;
-      color: #333;
     }
 
-    .summary div {
+    .summary-small {
+      font-size: 13px;
+      color: #666;
       margin-bottom: 6px;
     }
 
-    .summary div:last-child {
-      margin-bottom: 0;
+    .summary-total {
+      font-size: 22px;
+      font-weight: bold;
+      color: #111;
     }
 
     .buy-btn {
@@ -323,26 +305,11 @@
       const container = document.getElementById("cards");
 
       container.innerHTML = products.map(product => {
-        const bulkHtml = product.hasBulkDiscount
-          ? `
-            <div class="bulk-box">
-              <h4>Descuento por cantidad</h4>
-              <ul>
-                <li>2 a 4 eSIMs → 12,50 € / unidad</li>
-                <li>5 a 9 eSIMs → 12,00 € / unidad</li>
-                <li>10 a 19 eSIMs → 11,00 € / unidad</li>
-                <li>20 o más → 10,00 € / unidad</li>
-              </ul>
-            </div>
-          `
-          : "";
-
         return `
           <div class="card">
             <h3>${product.name}</h3>
             <p>${product.description}</p>
-            <div class="price">Desde ${formatPrice(product.basePrice)}</div>
-            ${bulkHtml}
+            <div class="base-price">Precio base: ${formatPrice(product.basePrice)}</div>
 
             <div class="qty-row">
               <label for="qty-${product.id}">Cantidad</label>
@@ -357,8 +324,12 @@
             </div>
 
             <div class="summary">
-              <div>Precio unitario: <strong id="unit-${product.id}">${formatPrice(product.basePrice)}</strong></div>
-              <div>Total: <strong id="total-${product.id}">${formatPrice(product.basePrice)}</strong></div>
+              <div class="summary-small" id="unit-${product.id}">
+                Precio por unidad: ${formatPrice(product.basePrice)}
+              </div>
+              <div class="summary-total" id="total-${product.id}">
+                Total: ${formatPrice(product.basePrice)}
+              </div>
             </div>
 
             <button class="buy-btn" onclick="buyProduct('${product.id}')">Comprar</button>
@@ -383,8 +354,11 @@
       const unitPrice = getUnitPrice(product, quantity);
       const totalPrice = getTotalPrice(product, quantity);
 
-      document.getElementById(`unit-${productId}`).textContent = formatPrice(unitPrice);
-      document.getElementById(`total-${productId}`).textContent = formatPrice(totalPrice);
+      document.getElementById(`unit-${productId}`).textContent =
+        `Precio por unidad: ${formatPrice(unitPrice)}`;
+
+      document.getElementById(`total-${productId}`).textContent =
+        `Total: ${formatPrice(totalPrice)}`;
     }
 
     function buyProduct(productId) {
@@ -400,7 +374,14 @@
       const totalPrice = getTotalPrice(product, quantity);
 
       if (userBalance < totalPrice) {
-        tg.showAlert(`No tienes saldo suficiente. Total: ${formatPrice(totalPrice)}.`);
+        const missingRaw = totalPrice - userBalance;
+        let suggestedAmount = Math.ceil(missingRaw);
+
+        if (suggestedAmount < 10) suggestedAmount = 10;
+        if (suggestedAmount > 200) suggestedAmount = 200;
+
+        tg.showAlert(`No tienes saldo suficiente. Te faltan ${formatPrice(missingRaw)}.`);
+        openAddBalanceModal(suggestedAmount);
         return;
       }
 
@@ -409,10 +390,20 @@
       tg.showAlert(`Has comprado ${quantity} eSIM(s) de ${product.name} por ${formatPrice(totalPrice)}.`);
     }
 
-    function openAddBalanceModal() {
+    function openAddBalanceModal(suggestedAmount = "") {
       document.getElementById("addBalanceModal").classList.remove("hidden");
       document.getElementById("balanceError").textContent = "";
-      document.getElementById("balanceAmount").value = "";
+
+      const input = document.getElementById("balanceAmount");
+
+      if (suggestedAmount !== "") {
+        let safeAmount = suggestedAmount;
+        if (safeAmount < 10) safeAmount = 10;
+        if (safeAmount > 200) safeAmount = 200;
+        input.value = safeAmount;
+      } else {
+        input.value = "";
+      }
     }
 
     function closeAddBalanceModal() {
