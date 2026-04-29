@@ -6,6 +6,51 @@
   <title>eSim's Bot</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    .topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.balance-box {
+  display: flex;
+  flex-direction: column;
+  background: #1e293b;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.balance-label {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.balance-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.add-balance-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  background: #3b82f6;
+  color: white;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.add-balance-btn:hover {
+  background: #2563eb;
+}
     * {
       box-sizing: border-box;
     }
@@ -92,6 +137,16 @@
   </style>
 </head>
 <body>
+  <div class="topbar">
+  <div class="balance-box">
+    <span class="balance-label">Saldo</span>
+    <span class="balance-value" id="balanceValue">0,00 €</span>
+  </div>
+
+  <button class="add-balance-btn" onclick="openAddBalance()">
+    + Añadir saldo
+  </button>
+</div>
   <div class="grid">
   <div class="card">
     <h2>Vodafone</h2>
@@ -121,8 +176,16 @@
   tg.expand();
 
   let selectedPlan = null;
+  let currentBalance = "0,00 €";
+
+  const balanceElement = document.getElementById("balanceValue");
+  balanceElement.textContent = currentBalance;
 
   tg.MainButton.hide();
+
+  function openAddBalance() {
+    tg.showAlert("Aquí abriremos la pantalla de añadir saldo en el siguiente paso.");
+  }
 
   function selectPlan(name, details, price) {
     selectedPlan = {
