@@ -129,6 +129,7 @@
 <script>
   const tg = window.Telegram.WebApp;
   tg.ready();
+  tg.expand();
 
   let selectedPlan = "";
 
@@ -136,18 +137,23 @@
 
   function selectPlan(plan) {
     selectedPlan = plan;
-
     tg.MainButton.setText("Comprar " + plan);
     tg.MainButton.show();
     tg.MainButton.enable();
   }
 
   tg.onEvent("mainButtonClicked", function () {
-    if (selectedPlan) {
-      tg.showAlert("Has seleccionado: " + selectedPlan);
-    } else {
+    if (!selectedPlan) {
       tg.showAlert("Primero selecciona una eSIM.");
+      return;
     }
+
+    const data = JSON.stringify({
+      plan: selectedPlan
+    });
+
+    tg.sendData(data);
+    tg.close();
   });
 </script>
 </body>
