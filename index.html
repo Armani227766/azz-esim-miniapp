@@ -415,46 +415,57 @@
     </div>
   </div>
 
-  <script>
+    <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
     tg.ready();
     
-    // Configurar color de la cabecera de Telegram
     tg.setHeaderColor('#1c1c1e');
 
-    // 1. LEER DATOS DEL BOT DESDE LA URL
     const urlParams = new URLSearchParams(window.location.search);
     const urlBalance = parseFloat(urlParams.get('balance'));
     let userBalance = isNaN(urlBalance) ? 0 : urlBalance;
     
-    // Leer productos dinámicos (los que mandamos desde el bot con base64)
     let products = [];
     const productsRaw = urlParams.get('products');
     if (productsRaw) {
       try {
         const decoded = decodeURIComponent(productsRaw);
-        products = JSON.parse(atob(decoded));
+        const botProducts = JSON.parse(atob(decoded));
         
-        // Mapear los productos del bot al formato del frontend
-        products = products.map(p => ({
-          id: p.id,
-          name: p.name,
-          description: p.description || "Tarifa eSIM",
-          basePrice: parseFloat(p.unit_price) || 0,
-          hasBulkDiscount: false, // Puedes añadir lógica de descuentos aquí luego
-          tiers: []
-        }));
+        products = botProducts.map(p => {
+          let hasBulkDiscount = false;
+          let tiers = [];
+          
+          // Mantenemos la lógica de descuentos solo para Vodafone y Lebara
+          if (p.id === "vodafone" || p.id === "lebara") {
+            hasBulkDiscount = true;
+            tiers = [
+              { min: 20, unitPrice: 10 },
+              { min: 10, unitPrice: 11 },
+              { min: 5, unitPrice: 12 },
+              { min: 2, unitPrice: 12.5 }
+            ];
+          }
+
+          return {
+            id: p.id,
+            name: p.name,
+            description: p.description || "Tarifa eSIM",
+            basePrice: parseFloat(p.unit_price) || 0,
+            hasBulkDiscount: hasBulkDiscount,
+            tiers: tiers
+          };
+        });
       } catch (e) {
         console.error("Error parseando productos de la URL:", e);
       }
     }
 
-    // Fallback si no llegan productos por URL
     if (products.length === 0) {
       products = [
-        { id: "vodafone", name: "Vodafone", description: "90GB · Llamadas ilimitadas", basePrice: 12.99, hasBulkDiscount: false, tiers: [] },
-        { id: "lebara", name: "Lebara", description: "90GB · Llamadas", basePrice: 12.99, hasBulkDiscount: false, tiers: [] }
+        { id: "vodafone", name: "Vodafone", description: "90GB · Llamadas ilimitadas", basePrice: 12.99, hasBulkDiscount: true, tiers: [{ min: 20, unitPrice: 10 }, { min: 10, unitPrice: 11 }, { min: 5, unitPrice: 12 }, { min: 2, unitPrice: 12.5 }] },
+        { id: "lebara", name: "Lebara", description: "90GB · Llamadas", basePrice: 12.99, hasBulkDiscount: true, tiers: [{ min: 20, unitPrice: 10 }, { min: 10, unitPrice: 11 }, { min: 5, unitPrice: 12 }, { min: 2, unitPrice: 12.5 }] }
       ];
     }
 
@@ -492,7 +503,6 @@
       updateProductSummary(productId);
     }
 
-    // Asignar iconos dinámicos según nombre
     function getIcon(name) {
       const n = name.toLowerCase();
       if (n.includes('vodafone')) return '🔴';
@@ -512,6 +522,12 @@
 
       container.innerHTML = products.map(product => {
         const icon = getIcon(product.name);
+        
+        let discountBadge = "";
+        if (product.hasBulkDiscount) {
+          discountBadge = `<div style="font-size: 12px; color: #34c759; margin-bottom: 12px; font-weight: 500;">🏷️ Descuento automático por cantidad aplicado</div>`;
+        }
+
         return `
           <div class="card">
             <div class="card-header">
@@ -520,6 +536,7 @@
             </div>
             <p>${product.description}</p>
             <div class="base-price">${formatPrice(product.basePrice)} / unidad</div>
+            ${discountBadge}
             
             <div class="qty-row">
               <label>Cantidad</label>
@@ -543,8 +560,16 @@
       const product = products.find(p => p.id === productId);
       const input = document.getElementById(`qty-${productId}`);
       let quantity = parseInt(input.value, 10);
+      
       const totalPrice = getTotalPrice(product, quantity);
-      document.getElementById(`total-${productId}`).textContent = formatPrice(totalPrice);
+      const unitPrice = getUnitPrice(product, quantity);
+      
+      let text = formatPrice(totalPrice);
+      if (unitPrice < product.basePrice) {
+        text += ` <span style="font-size: 14px; color: #34c759; font-weight: 500;">(${formatPrice(unitPrice)}/ud)</span>`;
+      }
+      
+      document.getElementById(`total-${productId}`).innerHTML = text;
     }
 
     function buyProduct(productId) {
