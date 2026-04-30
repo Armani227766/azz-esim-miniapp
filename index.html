@@ -2,217 +2,365 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>eSIM Wallet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>eSIM Store</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --primary: #007aff;
+      --success: #34c759;
+      --bg: #f2f2f7;
+      --card-bg: #ffffff;
+      --text-main: #1c1c1e;
+      --text-muted: #8e8e93;
+      --radius: 20px;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: #f5f5f5;
-      color: #111;
+      background: var(--bg);
+      color: var(--text-main);
       padding: 16px;
+      padding-bottom: 40px;
     }
 
+    /* Tarjeta de Saldo Superior */
     .wallet {
-      background: #111;
+      background: linear-gradient(135deg, #1c1c1e 0%, #2c2c2e 100%);
       color: white;
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 18px;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
     }
     
+    .wallet::after {
+      content: '';
+      position: absolute;
+      top: -50px;
+      right: -50px;
+      width: 150px;
+      height: 150px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+
     .wallet h2 {
-      font-size: 15px;
-      opacity: 0.85;
-      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
     }
 
     .balance {
-      font-size: 32px;
-      font-weight: bold;
-      margin-bottom: 14px;
+      font-size: 38px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
     }
 
     .add-balance-btn {
-      background: #2ecc71;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
       color: white;
-      border: none;
-      padding: 12px 16px;
-      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 14px 20px;
+      border-radius: 14px;
       font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
       width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .add-balance-btn:active {
+      transform: scale(0.97);
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* Lista de Productos */
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      margin-left: 4px;
+      color: var(--text-main);
     }
 
     .cards {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
     }
 
     .card {
-      background: white;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      transition: transform 0.2s ease;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
     }
 
     .card h3 {
-      margin-bottom: 6px;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .product-icon {
+      background: #f0f0f5;
+      padding: 8px 12px;
+      border-radius: 10px;
       font-size: 20px;
     }
 
     .card p {
-      color: #555;
-      margin-bottom: 8px;
+      color: var(--text-muted);
       font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 16px;
     }
 
     .base-price {
-      font-size: 15px;
-      color: #666;
-      margin-bottom: 12px;
+      display: inline-block;
+      background: #e5f1ff;
+      color: var(--primary);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
     }
 
     .qty-row {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 12px;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8f8f8;
+      padding: 12px;
+      border-radius: 14px;
+      margin-bottom: 16px;
     }
 
     .qty-row label {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-main);
     }
 
-    .qty-row input,
-    .modal-box input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: none;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    .qty-input {
+      width: 40px;
+      text-align: center;
       font-size: 16px;
-    }
-
-    .summary {
-      background: #fafafa;
-      border: 1px solid #eee;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-
-    .summary-small {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 6px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      outline: none;
     }
 
     .summary-total {
-      font-size: 22px;
-      font-weight: bold;
-      color: #111;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: right;
     }
 
     .buy-btn {
       width: 100%;
-      background: #007aff;
+      background: var(--primary);
       color: white;
       border: none;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 15px;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0, 122, 255, 0.3);
     }
 
+    .buy-btn:active {
+      transform: scale(0.98);
+      background: #0062cc;
+    }
+
+    /* Modales */
     .modal.hidden {
-      display: none;
+      opacity: 0;
+      pointer-events: none;
     }
 
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.45);
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
+      padding: 20px;
       z-index: 1000;
+      opacity: 1;
+      transition: opacity 0.3s ease;
     }
 
     .modal-box {
       background: white;
       width: 100%;
-      max-width: 360px;
-      border-radius: 16px;
-      padding: 20px;
+      max-width: 380px;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      transform: translateY(0);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal.hidden .modal-box {
+      transform: translateY(30px);
     }
 
     .modal-box h3 {
+      font-size: 22px;
+      font-weight: 700;
       margin-bottom: 8px;
     }
 
     .modal-box p {
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 12px;
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      line-height: 1.4;
     }
 
-    #balanceAmount {
+    .modal-box input[type="number"] {
+      width: 100%;
+      padding: 16px;
+      background: #f2f2f7;
+      border: 1px solid #e5e5ea;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 600;
       margin-bottom: 8px;
+      outline: none;
+      transition: border 0.2s;
+    }
+    
+    .modal-box input[type="number"]:focus {
+      border-color: var(--primary);
     }
 
     .error {
-      color: #d60000;
-      font-size: 14px;
+      color: #ff3b30;
+      font-size: 13px;
       min-height: 18px;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .summary-box {
+      background: #f8f8f8;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #555;
+    }
+    
+    .summary-row.total {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #ddd;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .modal-actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
     }
 
     .modal-actions button {
       flex: 1;
       border: none;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 15px;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
     }
 
     .cancel-btn {
-      background: #eaeaea;
-      color: #111;
+      background: #f2f2f7;
+      color: var(--text-main);
     }
 
     .confirm-btn {
-      background: #2ecc71;
+      background: var(--success);
       color: white;
+      box-shadow: 0 4px 10px rgba(52, 199, 89, 0.3);
     }
   </style>
 </head>
 <body>
+
   <div class="wallet">
-    <h2>Saldo</h2>
+    <h2>Mi Saldo</h2>
     <div class="balance" id="balance">0,00 €</div>
-    <button class="add-balance-btn" onclick="openAddBalanceModal()">+ Añadir saldo</button>
+    <button class="add-balance-btn" onclick="openAddBalanceModal()">+ Añadir Fondos</button>
   </div>
 
+  <div class="section-title">Tarifas Disponibles</div>
   <div class="cards" id="cards"></div>
 
+  <!-- Modal Añadir Saldo -->
   <div id="addBalanceModal" class="modal hidden">
     <div class="modal-box">
-      <h3>Añadir saldo</h3>
+      <h3>Recargar Monedero</h3>
       <p>Introduce un importe entre 10 € y 200 €.</p>
       <input
         id="balanceAmount"
@@ -225,28 +373,44 @@
       <div id="balanceError" class="error"></div>
       <div class="modal-actions">
         <button class="cancel-btn" onclick="closeAddBalanceModal()">Cancelar</button>
-        <button class="confirm-btn" onclick="confirmAddBalance()">Confirmar</button>
+        <button class="confirm-btn" onclick="confirmAddBalance()">Continuar</button>
       </div>
     </div>
   </div>
 
+  <!-- Modal Confirmar Compra -->
   <div id="confirmPurchaseModal" class="modal hidden">
     <div class="modal-box">
-      <h3>Confirmar compra</h3>
-      <p>Revisa los datos antes de completar la compra.</p>
-      <div class="summary">
-        <div class="summary-small" id="confirmProduct">Producto: -</div>
-        <div class="summary-small" id="confirmQuantity">Cantidad: -</div>
-        <div class="summary-small" id="confirmUnitPrice">Precio unitario: -</div>
-        <div class="summary-small" id="confirmOriginalTotal">Total sin descuento: -</div>
-        <div class="summary-small" id="confirmDiscount">Descuento aplicado: -</div>
-        <div class="summary-small" id="confirmBalanceBefore">Saldo actual: -</div>
-        <div class="summary-total" id="confirmTotal">Total: -</div>
-        <div class="summary-small" id="confirmBalanceAfter">Saldo después: -</div>
+      <h3>Confirmar Pedido</h3>
+      <p>Revisa el resumen de tu compra antes de pagar.</p>
+      <div class="summary-box">
+        <div class="summary-row">
+          <span id="confirmProduct">Producto</span>
+          <span id="confirmProductValue" style="font-weight:600;">-</span>
+        </div>
+        <div class="summary-row">
+          <span>Cantidad</span>
+          <span id="confirmQuantity">-</span>
+        </div>
+        <div class="summary-row">
+          <span>Precio unit.</span>
+          <span id="confirmUnitPrice">-</span>
+        </div>
+        <div class="summary-row" id="discountRow" style="color: #34c759; display: none;">
+          <span>Ahorro aplicado</span>
+          <span id="confirmDiscount">-</span>
+        </div>
+        <div class="summary-row total">
+          <span>A Pagar</span>
+          <span id="confirmTotal">-</span>
+        </div>
       </div>
+      <p style="text-align: center; margin-bottom: 15px; font-size: 13px;">
+        Saldo restante tras compra: <strong id="confirmBalanceAfter">-</strong>
+      </p>
       <div class="modal-actions">
         <button class="cancel-btn" onclick="closeConfirmPurchaseModal()">Cancelar</button>
-        <button class="confirm-btn" onclick="confirmPurchase()">Confirmar compra</button>
+        <button class="buy-btn" onclick="confirmPurchase()">Pagar eSIM</button>
       </div>
     </div>
   </div>
@@ -254,38 +418,47 @@
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
+    tg.ready();
+    
+    // Configurar color de la cabecera de Telegram
+    tg.setHeaderColor('#1c1c1e');
 
-    // 1. LEER EL SALDO ENVIADO POR EL BOT DESDE LA URL
+    // 1. LEER DATOS DEL BOT DESDE LA URL
     const urlParams = new URLSearchParams(window.location.search);
     const urlBalance = parseFloat(urlParams.get('balance'));
     let userBalance = isNaN(urlBalance) ? 0 : urlBalance;
     
-    let pendingPurchase = null;
-
-    // 2. LEER LOS PRODUCTOS ENVIADOS POR EL BOT DESDE LA URL
+    // Leer productos dinámicos (los que mandamos desde el bot con base64)
     let products = [];
-    const urlProducts = urlParams.get('products');
-    
-    if (urlProducts) {
+    const productsRaw = urlParams.get('products');
+    if (productsRaw) {
       try {
-        // Descodificamos de URL y de Base64
-        const decodedString = decodeURIComponent(urlProducts);
-        const jsonString = atob(decodedString);
-        const dbProducts = JSON.parse(jsonString);
+        const decoded = decodeURIComponent(productsRaw);
+        products = JSON.parse(atob(decoded));
         
-        // Formateamos los productos de la BD para que la tienda los entienda
-        products = dbProducts.map(p => ({
+        // Mapear los productos del bot al formato del frontend
+        products = products.map(p => ({
           id: p.id,
           name: p.name,
-          description: p.description,
-          basePrice: parseFloat(p.unit_price),
-          hasBulkDiscount: false, // La lógica de descuentos en volumen se puede añadir luego a la BD
+          description: p.description || "Tarifa eSIM",
+          basePrice: parseFloat(p.unit_price) || 0,
+          hasBulkDiscount: false, // Puedes añadir lógica de descuentos aquí luego
           tiers: []
         }));
       } catch (e) {
-        console.error("Error al leer productos de la URL:", e);
+        console.error("Error parseando productos de la URL:", e);
       }
     }
+
+    // Fallback si no llegan productos por URL
+    if (products.length === 0) {
+      products = [
+        { id: "vodafone", name: "Vodafone", description: "90GB · Llamadas ilimitadas", basePrice: 12.99, hasBulkDiscount: false, tiers: [] },
+        { id: "lebara", name: "Lebara", description: "90GB · Llamadas", basePrice: 12.99, hasBulkDiscount: false, tiers: [] }
+      ];
+    }
+
+    let pendingPurchase = null;
 
     function formatPrice(value) {
       return value.toFixed(2).replace(".", ",") + " €";
@@ -298,9 +471,7 @@
     function getUnitPrice(product, quantity) {
       if (!product.hasBulkDiscount) return product.basePrice;
       for (const tier of product.tiers) {
-        if (quantity >= tier.min) {
-          return tier.unitPrice;
-        }
+        if (quantity >= tier.min) return tier.unitPrice;
       }
       return product.basePrice;
     }
@@ -309,66 +480,78 @@
       return getUnitPrice(product, quantity) * quantity;
     }
 
+    function changeQty(productId, delta) {
+      const input = document.getElementById(`qty-${productId}`);
+      let current = parseInt(input.value, 10);
+      if (isNaN(current)) current = 1;
+      
+      let newVal = current + delta;
+      if (newVal < 1) newVal = 1;
+      
+      input.value = newVal;
+      updateProductSummary(productId);
+    }
+
+    // Asignar iconos dinámicos según nombre
+    function getIcon(name) {
+      const n = name.toLowerCase();
+      if (n.includes('vodafone')) return '🔴';
+      if (n.includes('lebara')) return '🔵';
+      if (n.includes('movistar')) return '🟢';
+      if (n.includes('lyca')) return '🌐';
+      if (n.includes('orange')) return '🟠';
+      return '📱';
+    }
+
     function renderProducts() {
       const container = document.getElementById("cards");
       if (products.length === 0) {
-        container.innerHTML = "<p style='text-align:center; margin-top:20px;'>No hay tarifas disponibles ahora mismo.</p>";
+        container.innerHTML = '<p style="text-align:center; padding: 20px; color:#888;">No hay tarifas disponibles.</p>';
         return;
       }
-      
+
       container.innerHTML = products.map(product => {
+        const icon = getIcon(product.name);
         return `
           <div class="card">
-            <h3>${product.name}</h3>
-            <p>${product.description}</p>
-            <div class="base-price">Precio base: ${formatPrice(product.basePrice)}</div>
-            <div class="qty-row">
-              <label for="qty-${product.id}">Cantidad</label>
-              <input
-                id="qty-${product.id}"
-                type="number"
-                min="1"
-                step="1"
-                value="1"
-                oninput="updateProductSummary('${product.id}')"
-              />
+            <div class="card-header">
+              <h3>${product.name}</h3>
+              <div class="product-icon">${icon}</div>
             </div>
-            <div class="summary">
-              <div class="summary-total" id="total-${product.id}">
-                Total: ${formatPrice(product.basePrice)}
+            <p>${product.description}</p>
+            <div class="base-price">${formatPrice(product.basePrice)} / unidad</div>
+            
+            <div class="qty-row">
+              <label>Cantidad</label>
+              <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('${product.id}', -1)">-</button>
+                <input class="qty-input" id="qty-${product.id}" type="number" value="1" readonly />
+                <button class="qty-btn" onclick="changeQty('${product.id}', 1)">+</button>
               </div>
             </div>
-            <button class="buy-btn" onclick="buyProduct('${product.id}')">Comprar</button>
+            
+            <div class="summary-total" id="total-${product.id}">
+              ${formatPrice(product.basePrice)}
+            </div>
+            <button class="buy-btn" onclick="buyProduct('${product.id}')">Adquirir eSIM</button>
           </div>
         `;
       }).join("");
-
-      products.forEach(product => updateProductSummary(product.id));
     }
 
     function updateProductSummary(productId) {
       const product = products.find(p => p.id === productId);
       const input = document.getElementById(`qty-${productId}`);
       let quantity = parseInt(input.value, 10);
-
-      if (isNaN(quantity) || quantity < 1) {
-        quantity = 1;
-        input.value = 1;
-      }
-
       const totalPrice = getTotalPrice(product, quantity);
-      document.getElementById(`total-${productId}`).textContent = `Total: ${formatPrice(totalPrice)}`;
+      document.getElementById(`total-${productId}`).textContent = formatPrice(totalPrice);
     }
 
     function buyProduct(productId) {
+      tg.HapticFeedback.impactOccurred('light');
       const product = products.find(p => p.id === productId);
       const input = document.getElementById(`qty-${productId}`);
       let quantity = parseInt(input.value, 10);
-
-      if (isNaN(quantity) || quantity < 1) {
-        quantity = 1;
-        input.value = 1;
-      }
 
       const totalPrice = getTotalPrice(product, quantity);
 
@@ -376,9 +559,8 @@
         const missingRaw = totalPrice - userBalance;
         let suggestedAmount = Math.ceil(missingRaw);
         if (suggestedAmount < 10) suggestedAmount = 10;
-        if (suggestedAmount > 200) suggestedAmount = 200;
-
-        tg.showAlert(`No tienes saldo suficiente. Te faltan ${formatPrice(missingRaw)}.`);
+        
+        tg.showAlert(`Saldo insuficiente. Faltan ${formatPrice(missingRaw)}.`);
         openAddBalanceModal(suggestedAmount);
         return;
       }
@@ -402,17 +584,22 @@
 
     function openConfirmPurchaseModal() {
       if (!pendingPurchase) return;
-
       const balanceAfter = userBalance - pendingPurchase.totalPrice;
 
-      document.getElementById("confirmProduct").textContent = `Producto: ${pendingPurchase.productName}`;
-      document.getElementById("confirmQuantity").textContent = `Cantidad: ${pendingPurchase.quantity}`;
-      document.getElementById("confirmUnitPrice").textContent = `Precio unitario: ${formatPrice(pendingPurchase.unitPrice)}`;
-      document.getElementById("confirmOriginalTotal").textContent = `Total sin descuento: ${formatPrice(pendingPurchase.originalTotal)}`;
-      document.getElementById("confirmDiscount").textContent = `Descuento aplicado: ${formatPrice(pendingPurchase.discountAmount)}`;
-      document.getElementById("confirmBalanceBefore").textContent = `Saldo actual: ${formatPrice(userBalance)}`;
-      document.getElementById("confirmTotal").textContent = `Total: ${formatPrice(pendingPurchase.totalPrice)}`;
-      document.getElementById("confirmBalanceAfter").textContent = `Saldo después: ${formatPrice(balanceAfter)}`;
+      document.getElementById("confirmProductValue").textContent = pendingPurchase.productName;
+      document.getElementById("confirmQuantity").textContent = pendingPurchase.quantity;
+      document.getElementById("confirmUnitPrice").textContent = formatPrice(pendingPurchase.unitPrice);
+      
+      const discountRow = document.getElementById("discountRow");
+      if (pendingPurchase.discountAmount > 0) {
+        discountRow.style.display = "flex";
+        document.getElementById("confirmDiscount").textContent = `-${formatPrice(pendingPurchase.discountAmount)}`;
+      } else {
+        discountRow.style.display = "none";
+      }
+
+      document.getElementById("confirmTotal").textContent = formatPrice(pendingPurchase.totalPrice);
+      document.getElementById("confirmBalanceAfter").textContent = formatPrice(balanceAfter);
 
       document.getElementById("confirmPurchaseModal").classList.remove("hidden");
     }
@@ -422,6 +609,7 @@
     }
 
     function confirmPurchase() {
+      tg.HapticFeedback.notificationOccurred('success');
       if (!pendingPurchase) return;
 
       const payload = {
@@ -439,13 +627,13 @@
     }
 
     function openAddBalanceModal(suggestedAmount = "") {
+      tg.HapticFeedback.impactOccurred('medium');
       document.getElementById("addBalanceModal").classList.remove("hidden");
       document.getElementById("balanceError").textContent = "";
       const input = document.getElementById("balanceAmount");
 
       if (suggestedAmount !== "") {
         let safeAmount = suggestedAmount;
-        if (safeAmount < 10) safeAmount = 10;
         if (safeAmount > 200) safeAmount = 200;
         input.value = safeAmount;
       } else {
@@ -469,14 +657,15 @@
         return;
       }
       if (amount < 10) {
-        error.textContent = "El mínimo para añadir saldo es 10 €.";
+        error.textContent = "El mínimo es 10 €.";
         return;
       }
       if (amount > 200) {
-        error.textContent = "El máximo para añadir saldo es 200 €.";
+        error.textContent = "El máximo es 200 €.";
         return;
       }
 
+      tg.HapticFeedback.notificationOccurred('success');
       const payload = {
         type: "add_balance",
         amount: amount
