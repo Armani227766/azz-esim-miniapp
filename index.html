@@ -386,9 +386,17 @@
   </style>
 </head>
 <body>
+  
 
   <!-- PANEL PRINCIPAL -->
   <div class="wallet-panel">
+    <div class="wallet-panel" style="margin-top: 10px; padding: 15px;">
+  <div class="wallet-label">// COUPON_SYSTEM</div>
+  <div style="display:flex; gap: 5px;">
+    <input type="text" id="couponCode" class="cyber-input" placeholder="CÓDIGO" style="padding: 10px;">
+    <button class="btn-confirm" onclick="applyCoupon()" style="padding: 10px;">APPLY</button>
+  </div>
+</div>
     <div class="wallet-label">// SYS_BALANCE_STATUS</div>
     <div class="balance-val cyber-number" id="balance">0,00 €</div>
     <button class="btn-cyber" onclick="openAddBalanceModal()">[ INJECT_FUNDS ]</button>
@@ -642,6 +650,13 @@
 
     updateBalanceUI();
     renderProducts();
+    function applyCoupon() {
+    const code = document.getElementById("couponCode").value.toUpperCase();
+    if (!code) return;
+    
+    // Enviamos el cupón al bot mediante sendData
+    tg.sendData(JSON.stringify({ type: "apply_coupon", code: code }));
+}
   </script>
 </body>
 </html>
