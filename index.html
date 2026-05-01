@@ -46,13 +46,29 @@
       letter-spacing: 0.5px;
     }
 
+    /* --- CABECERA Y LOGO --- */
+    .header-logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .header-logo img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 0 25px var(--neon-purple-glow);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+
     /* --- PANEL DE SALDO (WALLET) --- */
     .wallet-panel {
       background: var(--panel-bg);
       border: 1px solid rgba(168, 85, 247, 0.3);
       border-radius: 12px;
       padding: 24px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       position: relative;
       overflow: hidden;
       box-shadow: 0 0 20px var(--neon-purple-glow), inset 0 0 10px rgba(0,0,0,0.5);
@@ -106,6 +122,58 @@
       color: #FFF;
       box-shadow: 0 0 15px var(--neon-purple);
       transform: scale(0.98);
+    }
+
+    /* --- CUPONES --- */
+    .coupon-box {
+      background: var(--panel-bg);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .coupon-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--neon-blue);
+      box-shadow: 0 0 10px var(--neon-blue);
+    }
+    .coupon-input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .coupon-input-row input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.05);
+      color: #FFF;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      outline: none;
+    }
+    .coupon-input-row input:focus {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+    .btn-apply {
+      background: var(--neon-blue);
+      border: none;
+      color: #000;
+      padding: 0 16px;
+      border-radius: 6px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: var(--transition);
+    }
+    .btn-apply:active {
+      transform: scale(0.95);
     }
 
     /* --- CATÁLOGO DE PRODUCTOS --- */
@@ -379,29 +447,36 @@
       cursor: pointer;
       box-shadow: 0 0 15px var(--neon-purple-glow);
     }
-    
+
     .btn-confirm:active {
       transform: scale(0.96);
     }
   </style>
 </head>
 <body>
-  
 
-  <!-- PANEL PRINCIPAL -->
-  <div class="wallet-panel">
-    <div class="wallet-panel" style="margin-top: 10px; padding: 15px;">
-  <div class="wallet-label">// COUPON_SYSTEM</div>
-  <div style="display:flex; gap: 5px;">
-    <input type="text" id="couponCode" class="cyber-input" placeholder="CÓDIGO" style="padding: 10px;">
-    <button class="btn-confirm" onclick="applyCoupon()" style="padding: 10px;">APPLY</button>
+  <!-- HEADER CON LOGO (Usando la URL subida a GitHub/Servidor) -->
+  <div class="header-logo">
+    <img src="https://i.imgur.com/yTfGZkQ.jpeg" alt="AZZ eSIM Logo">
   </div>
-</div>
+
+  <!-- PANEL PRINCIPAL DE SALDO -->
+  <div class="wallet-panel">
     <div class="wallet-label">// SYS_BALANCE_STATUS</div>
     <div class="balance-val cyber-number" id="balance">0,00 €</div>
     <button class="btn-cyber" onclick="openAddBalanceModal()">[ INJECT_FUNDS ]</button>
   </div>
 
+  <!-- CAJA DE CUPONES -->
+  <div class="coupon-box">
+    <div class="wallet-label" style="color: var(--neon-blue);">// COUPON_SYSTEM</div>
+    <div class="coupon-input-row">
+      <input type="text" id="couponCode" placeholder="CÓDIGO">
+      <button class="btn-apply" onclick="applyCoupon()">APPLY</button>
+    </div>
+  </div>
+
+  <!-- CATÁLOGO -->
   <div class="section-title">CATALOG_NODE_ACCESS</div>
   <div class="cards-grid" id="productsGrid"></div>
 
@@ -410,7 +485,7 @@
     <div class="modal-box">
       <div class="modal-title">INJECT_FUNDS</div>
       <div class="modal-desc">Transferencia segura a la red principal (Mín: 10€ - Máx: 200€)</div>
-      
+
       <input class="cyber-input" id="balanceAmount" type="number" min="10" max="200" step="1" placeholder="Cantidad (€)">
       <div id="balanceError" class="error-msg"></div>
 
@@ -440,28 +515,28 @@
     </div>
   </div>
 
-  <!-- LÓGICA JAVASCRIPT INTACTA -->
+  <!-- LÓGICA JAVASCRIPT -->
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
     tg.ready();
-    tg.setHeaderColor('#05030A'); // Color oscuro para la cabecera de Telegram
+    tg.setHeaderColor('#05030A');
 
     // 1. LEER DATOS
     const urlParams = new URLSearchParams(window.location.search);
     let userBalance = parseFloat(urlParams.get('balance')) || 0;
-    
+
     let products = [];
     const productsRaw = urlParams.get('products');
     if (productsRaw) {
       try {
         const decoded = decodeURIComponent(productsRaw);
         const botProducts = JSON.parse(atob(decoded));
-        
+
         products = botProducts.map(p => {
           let hasBulkDiscount = false;
           let tiers = [];
-          
+
           if (p.id === "vodafone" || p.id === "lebara") {
             hasBulkDiscount = true;
             tiers = [
@@ -526,7 +601,7 @@
             </div>
             <p class="product-desc">${p.description}</p>
             ${discountBadge}
-            
+
             <div class="qty-row">
               <span style="font-size: 14px; color: var(--text-muted);">UNITS_REQ:</span>
               <div class="qty-controls">
@@ -535,7 +610,7 @@
                 <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
               </div>
             </div>
-            
+
             <div class="total-price cyber-number" id="total-${p.id}">${formatPrice(p.basePrice)}</div>
             <button class="btn-cyber" onclick="buyProduct('${p.id}')">INITIALIZE</button>
           </div>
@@ -557,7 +632,7 @@
       const quantity = parseInt(document.getElementById(`qty-${productId}`).value, 10);
       const total = getTotalPrice(product, quantity);
       const unit = getUnitPrice(product, quantity);
-      
+
       let text = formatPrice(total);
       if (unit < product.basePrice) {
         text += ` <span style="font-size: 14px; color: var(--neon-blue); font-weight: normal;">(${formatPrice(unit)}/ud)</span>`;
@@ -606,7 +681,7 @@
         ${discountHtml}
         <div class="summary-row total"><span>TOTAL_COST:</span><strong class="cyber-number">${formatPrice(pendingPurchase.totalPrice)}</strong></div>
       `;
-      
+
       document.getElementById("confirmBalanceAfter").textContent = formatPrice(balanceAfter);
       document.getElementById("confirmPurchaseModal").classList.add("active");
     }
@@ -648,15 +723,22 @@
       tg.sendData(JSON.stringify({ type: "add_balance", amount }));
     }
 
+    // NUEVO: FUNCION APLICAR CUPON
+    function applyCoupon() {
+      tg.HapticFeedback.impactOccurred('light');
+      const input = document.getElementById("couponCode");
+      const code = (input.value || "").trim().toUpperCase();
+
+      if (!code) {
+        tg.showAlert("ERR: Código vacío");
+        return;
+      }
+
+      tg.sendData(JSON.stringify({ type: "apply_coupon", code: code }));
+    }
+
     updateBalanceUI();
     renderProducts();
-    function applyCoupon() {
-    const code = document.getElementById("couponCode").value.toUpperCase();
-    if (!code) return;
-    
-    // Enviamos el cupón al bot mediante sendData
-    tg.sendData(JSON.stringify({ type: "apply_coupon", code: code }));
-}
   </script>
 </body>
 </html>
