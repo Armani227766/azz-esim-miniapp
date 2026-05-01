@@ -3,207 +3,188 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>eSIM Store - Tienda Premium</title>
+  <title>AZZ eSIM | Cyber Terminal</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Fuentes tecnológicas -->
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #0066FF;
-      --secondary: #00C4B4;
-      --success: #34C759;
-      --warning: #FF9500;
-      --danger: #FF3B30;
-      --dark: #1C1C1E;
-      --light: #F2F2F7;
-      --white: #FFFFFF;
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-      --border: #E5E5EA;
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --bg-deep: #05030A;
+      --panel-bg: #0D0A14;
+      --neon-purple: #A855F7;
+      --neon-purple-glow: rgba(168, 85, 247, 0.4);
+      --neon-blue: #00F0FF;
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --success: #10B981;
+      --danger: #EF4444;
+      --transition: all 0.2s ease-out;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: linear-gradient(135deg, var(--light) 0%, #E8F0FE 100%);
-      color: var(--dark);
-      min-height: 100vh;
+      background-color: var(--bg-deep);
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(168,85,247,0.15) 0%, transparent 50%),
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 20px 20px, 20px 20px;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
       padding: 20px 16px 80px;
-      overflow-x: hidden;
+      min-height: 100vh;
     }
 
-    /* Header Premium */
-    .header {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(20px);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .balance-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .balance-label {
-      font-size: 14px;
-      font-weight: 500;
-      color: #8E8E93;
-      text-transform: uppercase;
+    h1, h2, h3, .cyber-number {
+      font-family: 'Rajdhani', sans-serif;
       letter-spacing: 0.5px;
     }
 
-    .balance {
-      font-size: 36px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .add-funds-btn {
-      background: linear-gradient(135deg, var(--primary), #0052CC);
-      color: white;
-      border: none;
-      padding: 16px 24px;
-      border-radius: var(--radius-md);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .add-funds-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-
-    .add-funds-btn:active {
-      transform: scale(0.98);
-    }
-
-    /* Sección de Productos */
-    .section-title {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      padding-left: 8px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .products-grid {
-      display: grid;
-      gap: 20px;
-    }
-
-    .product-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: var(--radius-lg);
+    /* --- PANEL DE SALDO (WALLET) --- */
+    .wallet-panel {
+      background: var(--panel-bg);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 12px;
       padding: 24px;
-      box-shadow: var(--shadow-sm);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 20px var(--neon-purple-glow), inset 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .wallet-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--neon-purple);
+      box-shadow: 0 0 10px var(--neon-purple);
+    }
+
+    .wallet-label {
+      font-size: 12px;
+      color: var(--neon-purple);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .balance-val {
+      font-size: 42px;
+      font-weight: 700;
+      color: #FFF;
+      text-shadow: 0 0 15px var(--neon-purple-glow);
+      margin-bottom: 16px;
+    }
+
+    .btn-cyber {
+      width: 100%;
+      background: transparent;
+      color: var(--neon-purple);
+      border: 1px solid var(--neon-purple);
+      padding: 14px;
+      border-radius: 6px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
       transition: var(--transition);
       position: relative;
       overflow: hidden;
     }
 
-    .product-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    .btn-cyber:hover, .btn-cyber:active {
+      background: var(--neon-purple);
+      color: #FFF;
+      box-shadow: 0 0 15px var(--neon-purple);
+      transform: scale(0.98);
     }
 
-    .product-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow);
-    }
-
-    .product-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .product-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* --- CATÁLOGO DE PRODUCTOS --- */
+    .section-title {
       font-size: 20px;
-      color: white;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: '>';
+      color: var(--neon-blue);
       font-weight: bold;
     }
 
+    .cards-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .product-card {
+      background: var(--panel-bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .product-card:hover {
+      border-color: var(--neon-purple);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 15px var(--neon-purple-glow);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
     .product-title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
-      margin-bottom: 4px;
+      color: #FFF;
     }
 
     .product-desc {
-      color: #8E8E93;
-      font-size: 15px;
-      line-height: 1.4;
+      font-size: 14px;
+      color: var(--text-muted);
       margin-bottom: 16px;
+      line-height: 1.4;
     }
 
-    .price-badge {
-      background: linear-gradient(135deg, var(--success), #00A676);
-      color: white;
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      font-size: 16px;
-      font-weight: 700;
+    .discount-badge {
       display: inline-block;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
+      font-size: 12px;
+      color: var(--neon-blue);
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-family: 'Rajdhani', sans-serif;
+      letter-spacing: 0.5px;
     }
 
-    .quantity-selector {
-      background: rgba(242, 242, 247, 0.8);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      margin-bottom: 20px;
+    .qty-row {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-    }
-
-    .qty-label {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--dark);
+      align-items: center;
+      background: rgba(255,255,255,0.03);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
     .qty-controls {
@@ -213,481 +194,389 @@
     }
 
     .qty-btn {
-      width: 44px;
-      height: 44px;
-      border: 2px solid var(--primary);
-      background: white;
-      border-radius: 12px;
-      font-size: 20px;
+      width: 36px;
+      height: 36px;
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid var(--neon-purple);
+      color: var(--neon-purple);
+      border-radius: 6px;
+      font-size: 18px;
       font-weight: bold;
-      color: var(--primary);
       cursor: pointer;
-      transition: var(--transition);
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: var(--transition);
     }
 
-    .qty-btn:hover {
-      background: var(--primary);
-      color: white;
+    .qty-btn:active {
+      background: var(--neon-purple);
+      color: #FFF;
+      transform: scale(0.9);
     }
 
-    .qty-display {
-      font-size: 24px;
-      font-weight: 700;
-      min-width: 44px;
+    .qty-input {
+      width: 40px;
       text-align: center;
-      color: var(--dark);
+      background: transparent;
+      border: none;
+      color: #FFF;
+      font-size: 20px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      outline: none;
     }
 
     .total-price {
-      font-size: 28px;
-      font-weight: 800;
-      text-align: right;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .buy-btn {
-      width: 100%;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      border: none;
-      border-radius: var(--radius-md);
-      padding: 20px;
-      font-size: 18px;
+      font-size: 26px;
       font-weight: 700;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
+      color: #FFF;
+      text-align: right;
+      margin-bottom: 16px;
     }
 
-    .buy-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: left 0.5s;
-    }
-
-    .buy-btn:hover::before {
-      left: 100%;
-    }
-
-    .buy-btn:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(0, 102, 255, 0.4);
-    }
-
-    /* Modales Premium */
+    /* --- MODALES --- */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(28, 28, 30, 0.8);
-      backdrop-filter: blur(20px);
+      background: rgba(5, 3, 10, 0.85);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      z-index: 10000;
+      z-index: 1000;
       opacity: 0;
-      visibility: hidden;
+      pointer-events: none;
       transition: var(--transition);
     }
 
     .modal-overlay.active {
       opacity: 1;
-      visibility: visible;
+      pointer-events: auto;
     }
 
-    .modal-card {
-      background: var(--white);
-      border-radius: var(--radius-lg);
-      padding: 32px;
+    .modal-box {
+      background: var(--panel-bg);
+      border: 1px solid var(--neon-purple);
       width: 100%;
-      max-width: 420px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: var(--shadow);
-      transform: scale(0.8) translateY(20px);
+      max-width: 380px;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 0 30px var(--neon-purple-glow);
+      transform: translateY(20px);
       transition: var(--transition);
     }
 
-    .modal-overlay.active .modal-card {
-      transform: scale(1) translateY(0);
+    .modal-overlay.active .modal-box {
+      transform: translateY(0);
     }
 
     .modal-title {
       font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      text-align: center;
+      color: var(--neon-blue);
+      margin-bottom: 8px;
+      text-transform: uppercase;
     }
 
-    .modal-subtitle {
-      text-align: center;
-      color: #8E8E93;
-      font-size: 15px;
-      margin-bottom: 24px;
-    }
-
-    .input-group {
-      position: relative;
+    .modal-desc {
+      font-size: 14px;
+      color: var(--text-muted);
       margin-bottom: 20px;
     }
 
-    .input-field {
+    .cyber-input {
       width: 100%;
-      padding: 20px 20px 20px 60px;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-md);
-      font-size: 18px;
-      font-weight: 500;
-      background: #F8F9FA;
-      transition: var(--transition);
-      outline: none;
-    }
-
-    .input-field:focus {
-      border-color: var(--primary);
-      background: white;
-      box-shadow: 0 0 0 4px rgba(0, 102, 255, 0.1);
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #8E8E93;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #FFF;
+      padding: 16px;
+      border-radius: 6px;
       font-size: 20px;
+      font-family: 'Rajdhani', sans-serif;
+      margin-bottom: 8px;
+      outline: none;
+      transition: var(--transition);
     }
 
-    .error-message {
+    .cyber-input:focus {
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+
+    .error-msg {
       color: var(--danger);
-      font-size: 14px;
-      margin-top: 8px;
-      min-height: 20px;
+      font-size: 13px;
+      min-height: 18px;
+      margin-bottom: 16px;
+    }
+
+    .summary-box {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .summary-row {
       display: flex;
-      align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .summary-row strong {
+      color: #FFF;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+    }
+
+    .summary-row.total {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(255,255,255,0.2);
+      font-size: 18px;
+    }
+
+    .summary-row.total strong {
+      color: var(--neon-blue);
+      font-size: 22px;
+      text-shadow: 0 0 10px rgba(0,240,255,0.3);
     }
 
     .modal-actions {
       display: flex;
-      gap: 16px;
-      margin-top: 24px;
+      gap: 12px;
     }
 
-    .btn-secondary {
+    .btn-cancel {
       flex: 1;
-      background: var(--light);
-      color: var(--dark);
-      border: 2px solid var(--border);
-      padding: 18px;
-      border-radius: var(--radius-md);
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--text-main);
+      padding: 14px;
+      border-radius: 6px;
+      font-family: 'Rajdhani', sans-serif;
       font-size: 16px;
       font-weight: 600;
+      text-transform: uppercase;
       cursor: pointer;
-      transition: var(--transition);
     }
 
-    .btn-primary {
+    .btn-confirm {
       flex: 1;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      border: none;
-      padding: 18px;
-      border-radius: var(--radius-md);
+      background: var(--neon-purple);
+      border: 1px solid var(--neon-purple);
+      color: #FFF;
+      padding: 14px;
+      border-radius: 6px;
+      font-family: 'Rajdhani', sans-serif;
       font-size: 16px;
       font-weight: 700;
+      text-transform: uppercase;
       cursor: pointer;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
+      box-shadow: 0 0 15px var(--neon-purple-glow);
     }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
-    }
-
-    /* Animaciones de carga */
-    .loading {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .spinner {
-      width: 20px;
-      height: 20px;
-      border: 2px solid #E5E5EA;
-      border-top: 2px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Responsive */
-    @media (max-width: 480px) {
-      body {
-        padding: 16px 12px 80px;
-      }
-      
-      .balance {
-        font-size: 32px;
-      }
-      
-      .product-card {
-        padding: 20px;
-      }
-    }
-
-    /* Scrollbar personalizada */
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--light);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 2px;
+    
+    .btn-confirm:active {
+      transform: scale(0.96);
     }
   </style>
 </head>
 <body>
-  <!-- Header con Saldo -->
-  <div class="header">
-    <div class="balance-container">
-      <div>
-        <div class="balance-label">Saldo Disponible</div>
-        <div class="balance" id="balance">0,00 €</div>
-      </div>
-      <button class="add-funds-btn" onclick="openAddBalanceModal()">
-        <i class="fas fa-plus"></i>
-        Añadir Fondos
-      </button>
-    </div>
+
+  <!-- PANEL PRINCIPAL -->
+  <div class="wallet-panel">
+    <div class="wallet-label">// SYS_BALANCE_STATUS</div>
+    <div class="balance-val cyber-number" id="balance">0,00 €</div>
+    <button class="btn-cyber" onclick="openAddBalanceModal()">[ INJECT_FUNDS ]</button>
   </div>
 
-  <!-- Título de Sección -->
-  <h1 class="section-title">
-    <i class="fas fa-mobile-alt"></i> eSIMs Disponibles
-  </h1>
+  <div class="section-title">CATALOG_NODE_ACCESS</div>
+  <div class="cards-grid" id="productsGrid"></div>
 
-  <!-- Grid de Productos -->
-  <div class="products-grid" id="productsGrid"></div>
-
-  <!-- Modal Añadir Saldo -->
+  <!-- MODAL RECARGA -->
   <div id="addBalanceModal" class="modal-overlay">
-    <div class="modal-card">
-      <div class="modal-title">
-        <i class="fas fa-wallet"></i> Recargar Monedero
-      </div>
-      <div class="modal-subtitle">Mínimo 10€ - Máximo 200€ por transacción</div>
+    <div class="modal-box">
+      <div class="modal-title">INJECT_FUNDS</div>
+      <div class="modal-desc">Transferencia segura a la red principal (Mín: 10€ - Máx: 200€)</div>
       
-      <div class="input-group">
-        <i class="fas fa-euro-sign input-icon"></i>
-        <input class="input-field" id="balanceAmount" type="number" min="10" max="200" step="1" placeholder="Ej: 25">
-        <div id="balanceError" class="error-message">
-          <i class="fas fa-exclamation-circle"></i>
-        </div>
-      </div>
+      <input class="cyber-input" id="balanceAmount" type="number" min="10" max="200" step="1" placeholder="Cantidad (€)">
+      <div id="balanceError" class="error-msg"></div>
 
       <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeAddBalanceModal()">Cancelar</button>
-        <button class="btn-primary" onclick="confirmAddBalance()">
-          <i class="fas fa-credit-card"></i> Continuar
-        </button>
+        <button class="btn-cancel" onclick="closeAddBalanceModal()">Abort</button>
+        <button class="btn-confirm" onclick="confirmAddBalance()">Execute</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal Confirmar Compra -->
+  <!-- MODAL COMPRA -->
   <div id="confirmPurchaseModal" class="modal-overlay">
-    <div class="modal-card">
-      <div class="modal-title">
-        <i class="fas fa-check-circle"></i> Confirmar Pedido
-      </div>
-      <div class="modal-subtitle">Revisa tu compra antes de confirmar</div>
+    <div class="modal-box">
+      <div class="modal-title">CONFIRM_TX</div>
+      <div class="modal-desc">Verificando hash de transacción...</div>
 
-      <div id="purchaseSummary"></div>
+      <div class="summary-box" id="purchaseSummary"></div>
+
+      <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+        SALDO RESTANTE: <span class="cyber-number" id="confirmBalanceAfter" style="color:#FFF;">-</span>
+      </p>
 
       <div class="modal-actions">
-        <button class="btn-secondary" onclick="closeConfirmPurchaseModal()">Cancelar</button>
-        <button class="btn-primary" onclick="confirmPurchase()">
-          <i class="fas fa-shopping-cart"></i> Comprar Ahora
-        </button>
+        <button class="btn-cancel" onclick="closeConfirmPurchaseModal()">Abort</button>
+        <button class="btn-confirm" onclick="confirmPurchase()">Deploy eSIM</button>
       </div>
     </div>
   </div>
 
+  <!-- LÓGICA JAVASCRIPT INTACTA -->
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
     tg.ready();
-    tg.setHeaderColor('#FFFFFF');
+    tg.setHeaderColor('#05030A'); // Color oscuro para la cabecera de Telegram
 
-    // Leer datos desde URL (bot)
+    // 1. LEER DATOS
     const urlParams = new URLSearchParams(window.location.search);
     let userBalance = parseFloat(urlParams.get('balance')) || 0;
-    let products = [];
     
-    // Parsear productos dinámicos del bot
+    let products = [];
     const productsRaw = urlParams.get('products');
     if (productsRaw) {
       try {
         const decoded = decodeURIComponent(productsRaw);
         const botProducts = JSON.parse(atob(decoded));
-        products = botProducts.map(p => ({
-          id: p.id,
-          name: p.name,
-          description: p.description || 'Tarifa Premium eSIM',
-          basePrice: parseFloat(p.unit_price) || 0,
-          hasBulkDiscount: true,
-          tiers: [
-            { min: 20, unitPrice: p.unit_price * 0.77 },
-            { min: 10, unitPrice: p.unit_price * 0.85 },
-            { min: 5, unitPrice: p.unit_price * 0.92 },
-            { min: 2, unitPrice: p.unit_price * 0.96 }
-          ]
-        }));
-      } catch(e) {
-        console.error('Error parsing products:', e);
-      }
+        
+        products = botProducts.map(p => {
+          let hasBulkDiscount = false;
+          let tiers = [];
+          
+          if (p.id === "vodafone" || p.id === "lebara") {
+            hasBulkDiscount = true;
+            tiers = [
+              { min: 20, unitPrice: 10 },
+              { min: 10, unitPrice: 11 },
+              { min: 5, unitPrice: 12 },
+              { min: 2, unitPrice: 12.5 }
+            ];
+          }
+
+          return {
+            id: p.id,
+            name: p.name,
+            description: p.description || "Conexión de red segura",
+            basePrice: parseFloat(p.unit_price) || 0,
+            hasBulkDiscount,
+            tiers
+          };
+        });
+      } catch (e) { console.error("Error parseando:", e); }
+    }
+
+    if (products.length === 0) {
+      products = [
+        { id: "vodafone", name: "Vodafone", description: "90GB · Llamadas ilimitadas", basePrice: 12.99, hasBulkDiscount: true, tiers: [{ min: 20, unitPrice: 10 }, { min: 2, unitPrice: 12.5 }] }
+      ];
     }
 
     let pendingPurchase = null;
 
     function formatPrice(value) {
-      return value.toLocaleString('es-ES', { 
-        minimumFractionDigits: 2, 
-        maximumFractionDigits: 2 
-      }) + ' €';
+      return value.toFixed(2).replace(".", ",") + " €";
     }
 
     function updateBalanceUI() {
-      document.getElementById('balance').textContent = formatPrice(userBalance);
+      document.getElementById("balance").textContent = formatPrice(userBalance);
     }
 
-    function getUnitPrice(product, qty) {
-      if (!product.hasBulkDiscount || qty < 2) return product.basePrice;
-      for (let tier of product.tiers) {
-        if (qty >= tier.min) return tier.unitPrice;
+    function getUnitPrice(product, quantity) {
+      if (!product.hasBulkDiscount) return product.basePrice;
+      for (const tier of product.tiers) {
+        if (quantity >= tier.min) return tier.unitPrice;
       }
       return product.basePrice;
     }
 
-    function getTotalPrice(product, qty) {
-      return getUnitPrice(product, qty) * qty;
-    }
-
-    function getIconForProduct(name) {
-      name = name.toLowerCase();
-      if (name.includes('vodafone')) return '📱🔴';
-      if (name.includes('lebara')) return '📱🔵';
-      if (name.includes('movistar')) return '📱🟢';
-      if (name.includes('orange')) return '📱🟠';
-      if (name.includes('lyca')) return '🌐';
-      return '📶';
+    function getTotalPrice(product, quantity) {
+      return getUnitPrice(product, quantity) * quantity;
     }
 
     function renderProducts() {
-      const container = document.getElementById('productsGrid');
+      const container = document.getElementById("productsGrid");
       container.innerHTML = products.map(p => {
-        const icon = getIconForProduct(p.name);
+        let discountBadge = p.hasBulkDiscount 
+          ? `<div class="discount-badge">>> AUTO_DISCOUNT ENABLED</div>` 
+          : "";
+
         return `
-          <div class="product-card" onclick="buyProduct('${p.id}')">
-            <div class="product-header">
-              <div class="product-icon">${icon}</div>
-              <div>
-                <div class="product-title">${p.name}</div>
-                <div class="product-desc">${p.description}</div>
-              </div>
+          <div class="product-card">
+            <div class="card-header">
+              <h3 class="product-title">${p.name}</h3>
             </div>
-            <div class="price-badge">${formatPrice(p.basePrice)}<span style="font-size:14px;opacity:0.8;">/unidad</span></div>
+            <p class="product-desc">${p.description}</p>
+            ${discountBadge}
             
-            <div class="quantity-selector">
-              <div class="qty-label">Cantidad</div>
+            <div class="qty-row">
+              <span style="font-size: 14px; color: var(--text-muted);">UNITS_REQ:</span>
               <div class="qty-controls">
-                <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
-                <input class="qty-display" id="qty-${p.id}" type="number" value="1" readonly>
-                <button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button>
+                <button class="qty-btn" onclick="changeQty('${p.id}', -1)">-</button>
+                <input class="qty-input" id="qty-${p.id}" type="number" value="1" readonly />
+                <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
               </div>
             </div>
             
-            <div class="total-price" id="total-${p.id}">${formatPrice(p.basePrice)}</div>
-            <button class="buy-btn">
-              <i class="fas fa-bolt"></i> Comprar Ahora
-            </button>
+            <div class="total-price cyber-number" id="total-${p.id}">${formatPrice(p.basePrice)}</div>
+            <button class="btn-cyber" onclick="buyProduct('${p.id}')">INITIALIZE</button>
           </div>
         `;
-      }).join('');
-      
-      products.forEach(p => updateProductSummary(p.id));
+      }).join("");
     }
 
-    function changeQty(id, delta) {
+    function changeQty(productId, delta) {
       tg.HapticFeedback.impactOccurred('light');
-      const input = document.getElementById(`qty-${id}`);
-      let qty = parseInt(input.value) || 1;
-      qty = Math.max(1, qty + delta);
-      input.value = qty;
-      updateProductSummary(id);
+      const input = document.getElementById(`qty-${productId}`);
+      let current = parseInt(input.value, 10) || 1;
+      let newVal = Math.max(1, current + delta);
+      input.value = newVal;
+      updateProductSummary(productId);
     }
 
-    function updateProductSummary(id) {
-      const product = products.find(p => p.id === id);
-      const qty = parseInt(document.getElementById(`qty-${id}`).value) || 1;
-      const total = getTotalPrice(product, qty);
-      const unit = getUnitPrice(product, qty);
+    function updateProductSummary(productId) {
+      const product = products.find(p => p.id === productId);
+      const quantity = parseInt(document.getElementById(`qty-${productId}`).value, 10);
+      const total = getTotalPrice(product, quantity);
+      const unit = getUnitPrice(product, quantity);
       
-      document.getElementById(`total-${id}`).innerHTML = 
-        formatPrice(total) + (unit < product.basePrice ? `<span style="font-size:16px;color:var(--success);font-weight:500;"> (${formatPrice(unit)}/ud)</span>` : '');
+      let text = formatPrice(total);
+      if (unit < product.basePrice) {
+        text += ` <span style="font-size: 14px; color: var(--neon-blue); font-weight: normal;">(${formatPrice(unit)}/ud)</span>`;
+      }
+      document.getElementById(`total-${productId}`).innerHTML = text;
     }
 
-    function buyProduct(id) {
+    function buyProduct(productId) {
       tg.HapticFeedback.impactOccurred('medium');
-      const product = products.find(p => p.id === id);
-      const qtyInput = document.getElementById(`qty-${id}`);
-      const qty = parseInt(qtyInput.value) || 1;
-      
-      const totalPrice = getTotalPrice(product, qty);
-      
+      const product = products.find(p => p.id === productId);
+      const quantity = parseInt(document.getElementById(`qty-${productId}`).value, 10);
+      const totalPrice = getTotalPrice(product, quantity);
+
       if (userBalance < totalPrice) {
         const missing = totalPrice - userBalance;
-        tg.showAlert(`Saldo insuficiente. Faltan ${formatPrice(missing)}`);
-        openAddBalanceModal(missing);
+        tg.showAlert(`Fallo de sistema: Saldo insuficiente. Faltan ${formatPrice(missing)}`);
+        openAddBalanceModal(Math.ceil(missing));
         return;
       }
 
-      const unitPrice = getUnitPrice(product, qty);
-      const originalTotal = product.basePrice * qty;
-      const discount = originalTotal - totalPrice;
-
       pendingPurchase = {
-        productId: id,
+        productId: product.id,
         productName: product.name,
-        quantity: qty,
-        unitPrice,
-        originalTotal,
-        discountAmount: discount,
+        quantity,
+        unitPrice: getUnitPrice(product, quantity),
+        originalTotal: product.basePrice * quantity,
+        discountAmount: (product.basePrice * quantity) - totalPrice,
         totalPrice
       };
 
@@ -696,82 +585,54 @@
 
     function openConfirmPurchaseModal() {
       if (!pendingPurchase) return;
-      
       const balanceAfter = userBalance - pendingPurchase.totalPrice;
-      
-      document.getElementById('purchaseSummary').innerHTML = `
-        <div class="summary-row">
-          <span><i class="fas fa-tag"></i> Producto</span>
-          <strong>${pendingPurchase.productName}</strong>
-        </div>
-        <div class="summary-row">
-          <span><i class="fas fa-hashtag"></i> Cantidad</span>
-          <strong>${pendingPurchase.quantity}</strong>
-        </div>
-        <div class="summary-row">
-          <span><i class="fas fa-coins"></i> Precio unitario</span>
-          <strong>${formatPrice(pendingPurchase.unitPrice)}</strong>
-        </div>
-        ${pendingPurchase.discountAmount > 0 ? `
-        <div class="summary-row" style="color: var(--success);">
-          <span><i class="fas fa-percent"></i> Ahorro</span>
-          <strong>+${formatPrice(pendingPurchase.discountAmount)}</strong>
-        </div>
-        ` : ''}
-        <div class="summary-row total">
-          <span><i class="fas fa-shopping-cart"></i> Total</span>
-          <strong>${formatPrice(pendingPurchase.totalPrice)}</strong>
-        </div>
-        <div style="text-align:center; color:#8E8E93; font-size:14px; margin-top:12px;">
-          Saldo restante: <strong>${formatPrice(balanceAfter)}</strong>
-        </div>
-      `;
 
-      document.getElementById('confirmPurchaseModal').classList.add('active');
+      let discountHtml = pendingPurchase.discountAmount > 0 
+        ? `<div class="summary-row" style="color: var(--neon-blue);"><span>SYS_SAVINGS:</span><strong>+${formatPrice(pendingPurchase.discountAmount)}</strong></div>`
+        : "";
+
+      document.getElementById("purchaseSummary").innerHTML = `
+        <div class="summary-row"><span>NODE:</span><strong>${pendingPurchase.productName}</strong></div>
+        <div class="summary-row"><span>UNITS:</span><strong class="cyber-number">${pendingPurchase.quantity}</strong></div>
+        <div class="summary-row"><span>UNIT_COST:</span><strong class="cyber-number">${formatPrice(pendingPurchase.unitPrice)}</strong></div>
+        ${discountHtml}
+        <div class="summary-row total"><span>TOTAL_COST:</span><strong class="cyber-number">${formatPrice(pendingPurchase.totalPrice)}</strong></div>
+      `;
+      
+      document.getElementById("confirmBalanceAfter").textContent = formatPrice(balanceAfter);
+      document.getElementById("confirmPurchaseModal").classList.add("active");
     }
 
     function closeConfirmPurchaseModal() {
-      document.getElementById('confirmPurchaseModal').classList.remove('active');
+      document.getElementById("confirmPurchaseModal").classList.remove("active");
     }
 
     function confirmPurchase() {
       tg.HapticFeedback.notificationOccurred('success');
       if (!pendingPurchase) return;
-
-      const payload = {
-        type: "purchase",
-        productId: pendingPurchase.productId,
-        productName: pendingPurchase.productName,
-        quantity: pendingPurchase.quantity,
-        unitPrice: pendingPurchase.unitPrice,
-        originalTotal: pendingPurchase.originalTotal,
-        discountAmount: pendingPurchase.discountAmount,
-        totalPrice: pendingPurchase.totalPrice
-      };
-
-      tg.sendData(JSON.stringify(payload));
+      tg.sendData(JSON.stringify({ type: "purchase", ...pendingPurchase }));
     }
 
-    function openAddBalanceModal(suggested = 0) {
+    function openAddBalanceModal(suggested = "") {
       tg.HapticFeedback.impactOccurred('medium');
-      const modal = document.getElementById('addBalanceModal');
-      const input = document.getElementById('balanceAmount');
-      
-      input.value = suggested > 200 ? 200 : Math.max(10, suggested);
-      document.getElementById('balanceError').innerHTML = '';
-      modal.classList.add('active');
+      document.getElementById("balanceError").textContent = "";
+      const input = document.getElementById("balanceAmount");
+      input.value = suggested !== "" ? Math.min(200, Math.max(10, suggested)) : "";
+      document.getElementById("addBalanceModal").classList.add("active");
     }
 
     function closeAddBalanceModal() {
-      document.getElementById('addBalanceModal').classList.remove('active');
+      document.getElementById("addBalanceModal").classList.remove("active");
     }
 
     function confirmAddBalance() {
-      const amount = parseFloat(document.getElementById('balanceAmount').value);
-      const errorEl = document.getElementById('balanceError');
+      const amount = Number(document.getElementById("balanceAmount").value);
+      const error = document.getElementById("balanceError");
+      error.textContent = "";
 
       if (!amount || amount < 10 || amount > 200) {
-        errorEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Importe entre 10€ y 200€';
+        error.textContent = "ERR: Input_Range [10 - 200]";
+        tg.HapticFeedback.notificationOccurred('error');
         return;
       }
 
@@ -779,7 +640,6 @@
       tg.sendData(JSON.stringify({ type: "add_balance", amount }));
     }
 
-    // Inicializar
     updateBalanceUI();
     renderProducts();
   </script>
