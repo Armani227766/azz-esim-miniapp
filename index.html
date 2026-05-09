@@ -10,8 +10,8 @@
         :root {
             --bg-base: #0b0c10;
             --bg-card: #15161c;
-            --accent: #2B9EB3;
-            --accent-glow: rgba(43, 158, 179, 0.4);
+            --accent: #c7cbd6;
+            --accent-glow: rgba(173, 124, 255, 0.18);
             --text-main: #ffffff;
             --text-muted: #8b8e98;
             --border-subtle: rgba(255, 255, 255, 0.05);
@@ -78,7 +78,7 @@
         }
 
         .card-logo i {
-            color: var(--accent);
+            color: #b89aff;
         }
 
         .balance-label {
@@ -132,7 +132,7 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            color: var(--accent);
+            color: #b89aff;
             border: 1px solid var(--border-subtle);
             box-shadow: 0 8px 16px rgba(0,0,0,0.2);
             transition: transform 0.2s, background 0.2s;
@@ -194,8 +194,8 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            background: rgba(43, 158, 179, 0.15);
-            color: var(--accent);
+            background: rgba(173,124,255,0.12);
+            color: #b89aff;
             padding: 4px 8px;
             border-radius: 8px;
             font-size: 10px;
@@ -323,12 +323,12 @@
         }
 
         .input-styled:focus {
-            border-color: var(--accent);
+            border-color: #b89aff;
         }
 
         .btn-primary {
-            background: var(--accent);
-            color: white;
+            background: linear-gradient(180deg, rgba(42,42,50,0.96) 0%, rgba(25,25,31,0.98) 100%);
+            color: #eceef3;
             width: 100%;
             padding: 16px;
             border: none;
@@ -391,7 +391,7 @@
         .auth-fingerprint {
             text-align: center;
             margin: 20px 0;
-            color: var(--accent);
+            color: #b89aff;
             font-size: 40px;
             animation: pulse 2s infinite;
         }
@@ -485,6 +485,41 @@
             100% { transform: rotate(360deg); }
         }
 
+    
+        .metal-text {
+            background: linear-gradient(180deg, #f4f5f8 0%, #d9dce4 26%, #b9bec8 52%, #f0f2f6 76%, #d7dbe3 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            text-shadow:
+                0 1px 0 rgba(255,255,255,0.10),
+                0 0 6px rgba(173,124,255,0.18),
+                0 0 14px rgba(173,124,255,0.10);
+        }
+        .metal-soft {
+            color: #d5d8e0;
+            text-shadow: 0 0 8px rgba(173,124,255,0.12);
+        }
+        .violet-ui {
+            color: #d9dbe3;
+            box-shadow: 0 0 0 1px rgba(173,124,255,0.18), 0 10px 24px rgba(0,0,0,0.26), 0 0 18px rgba(173,124,255,0.08);
+        }
+        .violet-btn {
+            background: linear-gradient(180deg, rgba(42,42,50,0.96) 0%, rgba(25,25,31,0.98) 100%);
+            color: #eceef3;
+            border: 1px solid rgba(173,124,255,0.26);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 16px rgba(173,124,255,0.08);
+        }
+        .violet-btn:active {
+            transform: scale(0.97);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 0 20px rgba(173,124,255,0.14);
+        }
+        .provider-icon i, .action-icon i, .card-logo i, .toast i {
+            color: #b89aff !important;
+            text-shadow: 0 0 10px rgba(173,124,255,0.18);
+        }
+    
     </style>
 </head>
 <body>
@@ -492,11 +527,7 @@
     <!-- SPLASH SCREEN (iOS STYLE) -->
     <div id="splash-screen">
         <div class="splash-logo-container">
-            <!-- AQUÍ PONDRÁS TU LOGO: Solo cambia la URL en el atributo src="" -->
-            <img src="URL_DE_TU_LOGO_AQUI.png" alt="eSim Market Logo" class="splash-logo-img" id="customLogo" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
-
-            <!-- Fallback en caso de que no haya imagen aún -->
-            <div id="fallbackLogo" style="display: none; font-size: 24px; font-weight: 700; margin-top: 15px;">eSim Market</div>
+            <img src="1000007639.jpeg" alt="eSim Market Logo" class="splash-logo-img" id="customLogo" style="width:120px;height:120px;border-radius:24px;object-fit:cover;box-shadow:0 0 20px rgba(173,124,255,0.18);">
         </div>
         <div class="spinner"></div>
     </div>
@@ -504,16 +535,17 @@
 
     <!-- VIRTUAL WALLET CARD -->
     <div class="wallet-container">
-        <div class="virtual-card">
+        <div class="virtual-card violet-ui">
             <div class="card-header-top">
-                <div class="card-logo">
-                    <i class="fa-solid fa-microchip"></i> eSim Market
+                <div class="card-logo metal-text" style="display:flex;align-items:center;gap:10px;">
+                    <img src="1000007639.jpeg" alt="Logo" style="width:28px;height:28px;border-radius:6px;object-fit:cover;box-shadow:0 0 10px rgba(173,124,255,0.15);">
+                    <span>eSim Market</span>
                 </div>
                 <i class="fa-brands fa-nfc-symbol" style="font-size: 20px; opacity: 0.5;"></i>
             </div>
 
-            <div class="balance-label">Fondos Disponibles</div>
-            <div class="balance-amount" id="balance-display">
+            <div class="balance-label metal-soft">Fondos Disponibles</div>
+            <div class="balance-amount metal-text" id="balance-display">
                 0,00 <span class="balance-currency">€</span>
             </div>
         </div>
@@ -522,22 +554,22 @@
     <!-- QUICK ACTIONS -->
     <div class="quick-actions">
         <button class="action-btn" onclick="openSheet('rechargeSheet')">
-            <div class="action-icon"><i class="fa-solid fa-plus"></i></div>
-            <span class="action-label">Recargar</span>
+            <div class="action-icon violet-ui"><i class="fa-solid fa-plus"></i></div>
+            <span class="action-label metal-soft">Recargar</span>
         </button>
         <button class="action-btn" onclick="openSheet('couponSheet')">
-            <div class="action-icon"><i class="fa-solid fa-ticket"></i></div>
-            <span class="action-label">Cupones</span>
+            <div class="action-icon violet-ui"><i class="fa-solid fa-ticket"></i></div>
+            <span class="action-label metal-soft">Cupones</span>
         </button>
         <button class="action-btn" onclick="tg.close()">
-            <div class="action-icon"><i class="fa-solid fa-xmark"></i></div>
-            <span class="action-label">Cerrar</span>
+            <div class="action-icon violet-ui"><i class="fa-solid fa-xmark"></i></div>
+            <span class="action-label metal-soft">Cerrar</span>
         </button>
     </div>
 
     <!-- ESIM CAROUSEL -->
     <div class="section-header">
-        <div class="section-title">Tarifas Globales</div>
+        <div class="section-title metal-text">Tarifas Globales</div>
     </div>
 
     <div class="products-carousel" id="productsGrid">
@@ -548,34 +580,34 @@
     <div class="sheet-overlay" id="overlay" onclick="closeAllSheets()"></div>
 
     <!-- RECHARGE SHEET -->
-    <div class="bottom-sheet" id="rechargeSheet">
+    <div class="bottom-sheet violet-ui" id="rechargeSheet">
         <div class="sheet-handle"></div>
-        <h2 class="sheet-title">Añadir Fondos</h2>
-        <p class="sheet-subtitle">Introduce la cantidad que deseas depositar</p>
+        <h2 class="sheet-title metal-text">Añadir Fondos</h2>
+        <p class="sheet-subtitle metal-soft">Introduce la cantidad que deseas depositar</p>
 
         <input type="number" id="recharge-amount" class="input-styled" placeholder="0.00" min="10" step="1">
-        <button class="btn-primary" onclick="confirmRecharge()">Continuar al Pago</button>
+        <button class="btn-primary violet-btn" onclick="confirmRecharge()">Continuar al Pago</button>
     </div>
 
     <!-- COUPON SHEET -->
-    <div class="bottom-sheet" id="couponSheet">
+    <div class="bottom-sheet violet-ui" id="couponSheet">
         <div class="sheet-handle"></div>
-        <h2 class="sheet-title">Canjear Cupón</h2>
-        <p class="sheet-subtitle">Introduce el código promocional</p>
+        <h2 class="sheet-title metal-text">Canjear Cupón</h2>
+        <p class="sheet-subtitle metal-soft">Introduce el código promocional</p>
 
         <input type="text" id="coupon-code" class="input-styled" placeholder="CÓDIGO">
-        <button class="btn-primary" onclick="applyCoupon()">Validar Código</button>
+        <button class="btn-primary violet-btn" onclick="applyCoupon()">Validar Código</button>
     </div>
 
     <!-- PURCHASE SHEET -->
-    <div class="bottom-sheet" id="purchaseSheet">
+    <div class="bottom-sheet violet-ui" id="purchaseSheet">
         <div class="sheet-handle"></div>
-        <h2 class="sheet-title">Confirmar Compra</h2>
+        <h2 class="sheet-title metal-text">Confirmar Compra</h2>
 
         <div class="stepper">
-            <button class="step-btn" onclick="updatePurchaseQty(-1)">-</button>
+            <button class="step-btn violet-btn" onclick="updatePurchaseQty(-1)">-</button>
             <div class="step-val"><span id="review-qty">1</span> uds.</div>
-            <button class="step-btn" onclick="updatePurchaseQty(1)">+</button>
+            <button class="step-btn violet-btn" onclick="updatePurchaseQty(1)">+</button>
         </div>
 
         <div class="receipt-box">
@@ -593,7 +625,7 @@
             </div>
         </div>
 
-        <button class="btn-primary" onclick="executePurchase()" id="btn-execute">Confirmar Pago</button>
+        <button class="btn-primary violet-btn" onclick="executePurchase()" id="btn-execute">Confirmar Pago</button>
     </div>
 
     <!-- TOAST -->
@@ -693,13 +725,13 @@
                 const badge = p.hasBulkDiscount ? `<div class="product-badge">OFERTA VOL.</div>` : '';
 
                 return `
-                <div class="product-card">
+                <div class="product-card violet-ui">
                     ${badge}
                     <div class="provider-icon"><i class="fa-solid ${icon}"></i></div>
-                    <div class="product-name">${p.name}</div>
-                    <div class="product-desc">${p.description}</div>
-                    <div class="price-tag">${formatPrice(p.basePrice)} €</div>
-                    <button class="btn-buy" onclick="initPurchase('${p.id}')">Seleccionar</button>
+                    <div class="product-name metal-text">${p.name}</div>
+                    <div class="product-desc metal-soft">${p.description}</div>
+                    <div class="price-tag metal-text">${formatPrice(p.basePrice)} €</div>
+                    <button class="btn-buy violet-btn" onclick="initPurchase('${p.id}')">Seleccionar</button>
                 </div>
                 `;
             }).join("");
