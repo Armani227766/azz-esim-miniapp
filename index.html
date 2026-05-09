@@ -465,7 +465,7 @@
             border-radius: 24px; /* Estilo icono iOS */
             object-fit: cover;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: #1c1d24; /* Color de fondo por si la imagen tarda */
+            background: transparent; /* Fondo transparente para logos PNG */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -527,7 +527,7 @@
     <!-- SPLASH SCREEN (iOS STYLE) -->
     <div id="splash-screen">
         <div class="splash-logo-container">
-            <img src="1000007639.png" alt="eSim Market Logo" class="splash-logo-img" id="customLogo" style="width:120px;height:120px;border-radius:24px;object-fit:cover;box-shadow:0 0 20px rgba(173,124,255,0.18);">
+            <img src="1000007639.png" alt="eSim Market Logo" class="splash-logo-img" id="customLogo" style="width:120px;height:120px;border-radius:24px;object-fit:contain;box-shadow:none;background:transparent;filter:drop-shadow(0 0 20px rgba(173,124,255,0.18));">
         </div>
         <div class="spinner"></div>
     </div>
@@ -538,7 +538,7 @@
         <div class="virtual-card violet-ui">
             <div class="card-header-top">
                 <div class="card-logo metal-text" style="display:flex;align-items:center;gap:10px;">
-                    <img src="1000007639.png" alt="Logo" style="width:28px;height:28px;border-radius:6px;object-fit:cover;box-shadow:0 0 10px rgba(173,124,255,0.15);">
+                    <img src="1000007639.png" alt="Logo" style="width:28px;height:28px;object-fit:contain;background:transparent;filter:drop-shadow(0 0 10px rgba(173,124,255,0.15));">
                     <span>eSim Market</span>
                 </div>
                 <i class="fa-brands fa-nfc-symbol" style="font-size: 20px; opacity: 0.5;"></i>
