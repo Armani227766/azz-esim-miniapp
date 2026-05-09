@@ -1,731 +1,807 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>AZZ eSIM | Cyber Terminal</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- Fuentes tecnológicas -->
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-deep: #05030A;
-      --panel-bg: #0D0A14;
-      --neon-purple: #A855F7;
-      --neon-purple-glow: rgba(168, 85, 247, 0.4);
-      --neon-blue: #00F0FF;
-      --text-main: #E2E8F0;
-      --text-muted: #94A3B8;
-      --success: #10B981;
-      --danger: #EF4444;
-      --transition: all 0.2s ease-out;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Azz's Group - eSIM Market</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0b0c10;
+            --bg-card: #15161c;
+            --accent: #2B9EB3;
+            --accent-glow: rgba(43, 158, 179, 0.4);
+            --text-main: #ffffff;
+            --text-muted: #8b8e98;
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --glass-bg: rgba(21, 22, 28, 0.7);
+            --danger: #ff4757;
+            --success: #2ed573;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    body {
-      background-color: var(--bg-deep);
-      background-image: 
-        radial-gradient(circle at 50% 0%, rgba(168,85,247,0.15) 0%, transparent 50%),
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 100% 100%, 20px 20px, 20px 20px;
-      color: var(--text-main);
-      font-family: 'Inter', sans-serif;
-      padding: 20px 16px 80px;
-      min-height: 100vh;
-    }
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            padding-bottom: 40px;
+            overflow-x: hidden;
+        }
 
-    h1, h2, h3, .cyber-number {
-      font-family: 'Rajdhani', sans-serif;
-      letter-spacing: 0.5px;
-    }
+        /* --- VIRTUAL CARD WALLET --- */
+        .wallet-container {
+            padding: 20px;
+            position: relative;
+        }
 
-    /* --- PANEL DE SALDO (WALLET) --- */
-    .wallet-panel {
-      background: var(--panel-bg);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 20px var(--neon-purple-glow), inset 0 0 10px rgba(0,0,0,0.5);
-    }
+        .virtual-card {
+            background: linear-gradient(135deg, #1e222d 0%, #0d0f14 100%);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-subtle);
+        }
 
-    .wallet-panel::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 4px; height: 100%;
-      background: var(--neon-purple);
-      box-shadow: 0 0 10px var(--neon-purple);
-    }
+        .virtual-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
 
-    .wallet-label {
-      font-size: 12px;
-      color: var(--neon-purple);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
+        .card-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
 
-    .balance-val {
-      font-size: 42px;
-      font-weight: 700;
-      color: #FFF;
-      text-shadow: 0 0 15px var(--neon-purple-glow);
-      margin-bottom: 16px;
-    }
+        .card-logo {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-    .btn-cyber {
-      width: 100%;
-      background: transparent;
-      color: var(--neon-purple);
-      border: 1px solid var(--neon-purple);
-      padding: 14px;
-      border-radius: 6px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-    }
+        .card-logo i {
+            color: var(--accent);
+        }
 
-    .btn-cyber:hover, .btn-cyber:active {
-      background: var(--neon-purple);
-      color: #FFF;
-      box-shadow: 0 0 15px var(--neon-purple);
-      transform: scale(0.98);
-    }
+        .balance-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
 
-    /* --- CATÁLOGO DE PRODUCTOS --- */
-    .section-title {
-      font-size: 20px;
-      color: var(--text-main);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .section-title::before {
-      content: '>';
-      color: var(--neon-blue);
-      font-weight: bold;
-    }
+        .balance-amount {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
 
-    .cards-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+        .balance-currency {
+            font-size: 20px;
+            color: var(--text-muted);
+        }
 
-    .product-card {
-      background: var(--panel-bg);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 20px;
-      transition: var(--transition);
-      position: relative;
-    }
+        /* --- QUICK ACTIONS --- */
+        .quick-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 0 20px;
+            margin-bottom: 35px;
+        }
 
-    .product-card:hover {
-      border-color: var(--neon-purple);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.5), 0 0 15px var(--neon-purple-glow);
-    }
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+        }
 
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--accent);
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background 0.2s;
+        }
 
-    .product-title {
-      font-size: 22px;
-      font-weight: 700;
-      color: #FFF;
-    }
+        .action-btn:active .action-icon {
+            transform: scale(0.92);
+            background: #1c1d24;
+        }
 
-    .product-desc {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      line-height: 1.4;
-    }
+        .action-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
 
-    .discount-badge {
-      display: inline-block;
-      font-size: 12px;
-      color: var(--neon-blue);
-      background: rgba(0, 240, 255, 0.1);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 4px 8px;
-      border-radius: 4px;
-      margin-bottom: 16px;
-      font-family: 'Rajdhani', sans-serif;
-      letter-spacing: 0.5px;
-    }
+        /* --- ESIM CAROUSEL --- */
+        .section-header {
+            padding: 0 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
 
-    .qty-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255,255,255,0.03);
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
 
-    .qty-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+        .products-carousel {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px 20px;
+            gap: 15px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* Firefox */
+        }
 
-    .qty-btn {
-      width: 36px;
-      height: 36px;
-      background: rgba(168, 85, 247, 0.1);
-      border: 1px solid var(--neon-purple);
-      color: var(--neon-purple);
-      border-radius: 6px;
-      font-size: 18px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-    }
+        .products-carousel::-webkit-scrollbar {
+            display: none; /* Safari/Chrome */
+        }
 
-    .qty-btn:active {
-      background: var(--neon-purple);
-      color: #FFF;
-      transform: scale(0.9);
-    }
+        .product-card {
+            flex: 0 0 240px; /* Fixed width for carousel items */
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            scroll-snap-align: start;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
 
-    .qty-input {
-      width: 40px;
-      text-align: center;
-      background: transparent;
-      border: none;
-      color: #FFF;
-      font-size: 20px;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
-      outline: none;
-    }
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(43, 158, 179, 0.15);
+            color: var(--accent);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
 
-    .total-price {
-      font-size: 26px;
-      font-weight: 700;
-      color: #FFF;
-      text-align: right;
-      margin-bottom: 16px;
-    }
+        .provider-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #1c1d24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: white;
+        }
 
-    /* --- MODALES --- */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(5, 3, 10, 0.85);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: var(--transition);
-    }
+        .product-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
 
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+        .product-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
 
-    .modal-box {
-      background: var(--panel-bg);
-      border: 1px solid var(--neon-purple);
-      width: 100%;
-      max-width: 380px;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 0 30px var(--neon-purple-glow);
-      transform: translateY(20px);
-      transition: var(--transition);
-    }
+        .price-tag {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
 
-    .logo-shell {
-      width: 154px;
-      height: 154px;
-      margin: 10px auto 22px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.12), rgba(168,85,247,0.08) 42%, rgba(5,3,10,0.35) 100%);
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 10px 28px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -10px 22px rgba(0,0,0,0.22);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      overflow: hidden;
-    }
+        .btn-buy {
+            background: var(--text-main);
+            color: var(--bg-base);
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.1s;
+        }
 
-    .logo-shell::before {
-      content: '';
-      position: absolute;
-      inset: -8px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.10), rgba(255,255,255,0.03) 42%, transparent 72%);
-      filter: blur(2px);
-      pointer-events: none;
-    }
+        .btn-buy:active {
+            transform: scale(0.96);
+        }
 
-    .logo-shell::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: radial-gradient(circle at 50% 34%, transparent 54%, rgba(0,0,0,0.18) 100%);
-      pointer-events: none;
-    }
+        /* --- BOTTOM SHEET MODALS (iOS Style) --- */
+        .sheet-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
 
-    .logo-shell img {
-      position: relative;
-      z-index: 1;
-      width: 132px;
-      height: 132px;
-      object-fit: cover;
-      border-radius: 50%;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 8px 18px rgba(0,0,0,0.22);
-    }
+        .sheet-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
-    .modal-overlay.active .modal-box {
-      transform: translateY(0);
-    }
+        .bottom-sheet {
+            position: fixed;
+            bottom: -100%;
+            left: 0; right: 0;
+            background: var(--bg-card);
+            border-radius: 30px 30px 0 0;
+            padding: 24px;
+            z-index: 1001;
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            border-top: 1px solid var(--border-subtle);
+            box-shadow: 0 -20px 40px rgba(0,0,0,0.5);
+        }
 
-    .modal-title {
-      font-size: 24px;
-      color: var(--neon-blue);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
+        .bottom-sheet.active {
+            bottom: 0;
+        }
 
-    .modal-desc {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin: 0 auto 24px;
+        }
 
-    .cyber-input {
-      width: 100%;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: #FFF;
-      padding: 16px;
-      border-radius: 6px;
-      font-size: 20px;
-      font-family: 'Rajdhani', sans-serif;
-      margin-bottom: 8px;
-      outline: none;
-      transition: var(--transition);
-    }
+        .sheet-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
 
-    .cyber-input:focus {
-      border-color: var(--neon-blue);
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
-    }
+        .sheet-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 24px;
+        }
 
-    .error-msg {
-      color: var(--danger);
-      font-size: 13px;
-      min-height: 18px;
-      margin-bottom: 16px;
-    }
+        .input-styled {
+            width: 100%;
+            background: var(--bg-base);
+            border: 1px solid var(--border-subtle);
+            padding: 16px;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
 
-    .summary-box {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
+        .input-styled:focus {
+            border-color: var(--accent);
+        }
 
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 14px;
-      color: var(--text-muted);
-    }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
 
-    .summary-row strong {
-      color: #FFF;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px;
-    }
+        /* --- PURCHASE REVIEW SHEET --- */
+        .receipt-box {
+            background: var(--bg-base);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
 
-    .summary-row.total {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px dashed rgba(255,255,255,0.2);
-      font-size: 18px;
-    }
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
 
-    .summary-row.total strong {
-      color: var(--neon-blue);
-      font-size: 22px;
-      text-shadow: 0 0 10px rgba(0,240,255,0.3);
-    }
+        .receipt-row:last-child {
+            margin-bottom: 0;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-subtle);
+            font-size: 18px;
+            font-weight: 700;
+        }
 
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-    }
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-base);
+            border-radius: 14px;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-subtle);
+        }
 
-    .btn-cancel {
-      flex: 1;
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.2);
-      color: var(--text-main);
-      padding: 14px;
-      border-radius: 6px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
+        .step-btn {
+            background: var(--bg-card);
+            border: none;
+            color: white;
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
 
-    .btn-confirm {
-      flex: 1;
-      background: var(--neon-purple);
-      border: 1px solid var(--neon-purple);
-      color: #FFF;
-      padding: 14px;
-      border-radius: 6px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 0 0 15px var(--neon-purple-glow);
-    }
+        .step-val {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .auth-fingerprint {
+            text-align: center;
+            margin: 20px 0;
+            color: var(--accent);
+            font-size: 40px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.5; transform: scale(0.95); }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 14px 24px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
     
+        /* --- SPLASH SCREEN (iOS STYLE) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* Desenfoque tipo cristal (Frosted Glass) */
+            background: rgba(11, 12, 16, 0.65);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.6s;
+        }
 
-    .btn-cyber, .btn-confirm, .btn-cancel, .qty-btn {
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 10px 20px rgba(0,0,0,0.18);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .btn-cyber:hover, .btn-cyber:active, .btn-confirm:active, .btn-cancel:active, .qty-btn:active {
-      transform: scale(0.98);
-      filter: saturate(1.05);
-    }
-    .btn-confirm {
-      background: linear-gradient(180deg, rgba(168,85,247,0.95), rgba(126,34,206,0.92));
-    }
-    .btn-cancel {
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
-    }
-    .qty-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-    }
-  </style>
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.05); /* Efecto zoom out sutil al desaparecer */
+        }
+
+        .splash-logo-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Contenedor preparado para tu imagen/logo */
+        .splash-logo-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px; /* Estilo icono iOS */
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #1c1d24; /* Color de fondo por si la imagen tarda */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            /* Spinner estilo iOS (más fino y minimalista) */
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
 </head>
 <body>
-  <div class="logo-shell">
-    <img src="1000006996.jpeg" alt="AZZ eSIM">
-  </div>
 
-  <!-- PANEL PRINCIPAL -->
-  <div class="wallet-panel">
-    <div class="wallet-panel" style="margin-top: 10px; padding: 15px;">
-  <div class="wallet-label">// COUPON_SYSTEM</div>
-  <div style="display:flex; gap: 5px;">
-    <input type="text" id="couponCode" class="cyber-input" placeholder="CÓDIGO" style="padding: 10px;">
-    <button class="btn-confirm" onclick="applyCoupon()" style="padding: 10px;">APPLY</button>
-  </div>
-</div>
-    <div class="wallet-label">// SYS_BALANCE_STATUS</div>
-    <div class="balance-val cyber-number" id="balance">0,00 €</div>
-    <button class="btn-cyber" onclick="openAddBalanceModal()">[ INJECT_FUNDS ]</button>
-  </div>
+    <!-- SPLASH SCREEN (iOS STYLE) -->
+    <div id="splash-screen">
+        <div class="splash-logo-container">
+            <!-- AQUÍ PONDRÁS TU LOGO: Solo cambia la URL en el atributo src="" -->
+            <img src="URL_DE_TU_LOGO_AQUI.png" alt="eSim Market Logo" class="splash-logo-img" id="customLogo" onerror="this.style.display='none'; document.getElementById('fallbackLogo').style.display='block';">
 
-  <div class="section-title">CATALOG_NODE_ACCESS</div>
-  <div class="cards-grid" id="productsGrid"></div>
-
-  <!-- MODAL RECARGA -->
-  <div id="addBalanceModal" class="modal-overlay">
-    <div class="modal-box">
-      <div class="modal-title">INJECT_FUNDS</div>
-      <div class="modal-desc">Transferencia segura a la red principal (Mín: 10€ - Máx: 200€)</div>
-      
-      <input class="cyber-input" id="balanceAmount" type="number" min="10" max="200" step="1" placeholder="Cantidad (€)">
-      <div id="balanceError" class="error-msg"></div>
-
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeAddBalanceModal()">Abort</button>
-        <button class="btn-confirm" onclick="confirmAddBalance()">Execute</button>
-      </div>
+            <!-- Fallback en caso de que no haya imagen aún -->
+            <div id="fallbackLogo" style="display: none; font-size: 24px; font-weight: 700; margin-top: 15px;">eSim Market</div>
+        </div>
+        <div class="spinner"></div>
     </div>
-  </div>
 
-  <!-- MODAL COMPRA -->
-  <div id="confirmPurchaseModal" class="modal-overlay">
-    <div class="modal-box">
-      <div class="modal-title">CONFIRM_TX</div>
-      <div class="modal-desc">Verificando hash de transacción...</div>
 
-      <div class="summary-box" id="purchaseSummary"></div>
+    <!-- VIRTUAL WALLET CARD -->
+    <div class="wallet-container">
+        <div class="virtual-card">
+            <div class="card-header-top">
+                <div class="card-logo">
+                    <i class="fa-solid fa-microchip"></i> eSim Market
+                </div>
+                <i class="fa-brands fa-nfc-symbol" style="font-size: 20px; opacity: 0.5;"></i>
+            </div>
 
-      <p style="text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
-        SALDO RESTANTE: <span class="cyber-number" id="confirmBalanceAfter" style="color:#FFF;">-</span>
-      </p>
-
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeConfirmPurchaseModal()">Abort</button>
-        <button class="btn-confirm" onclick="confirmPurchase()">Deploy eSIM</button>
-      </div>
+            <div class="balance-label">Fondos Disponibles</div>
+            <div class="balance-amount" id="balance-display">
+                0,00 <span class="balance-currency">€</span>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- LÓGICA JAVASCRIPT INTACTA -->
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    tg.ready();
-    tg.setHeaderColor('#05030A'); // Color oscuro para la cabecera de Telegram
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+        <button class="action-btn" onclick="openSheet('rechargeSheet')">
+            <div class="action-icon"><i class="fa-solid fa-plus"></i></div>
+            <span class="action-label">Recargar</span>
+        </button>
+        <button class="action-btn" onclick="openSheet('couponSheet')">
+            <div class="action-icon"><i class="fa-solid fa-ticket"></i></div>
+            <span class="action-label">Cupones</span>
+        </button>
+        <button class="action-btn" onclick="tg.close()">
+            <div class="action-icon"><i class="fa-solid fa-xmark"></i></div>
+            <span class="action-label">Cerrar</span>
+        </button>
+    </div>
 
-    // 1. LEER DATOS
-    const urlParams = new URLSearchParams(window.location.search);
-    let userBalance = parseFloat(urlParams.get('balance')) || 0;
-    
-    let products = [];
-    const productsRaw = urlParams.get('products');
-    if (productsRaw) {
-      try {
-        const decoded = decodeURIComponent(productsRaw);
-        const botProducts = JSON.parse(atob(decoded));
-        
-        products = botProducts.map(p => {
-          let hasBulkDiscount = false;
-          let tiers = [];
-          
-          if (p.id === "vodafone" || p.id === "lebara") {
-            hasBulkDiscount = true;
-            tiers = [
-              { min: 20, unitPrice: 10 },
-              { min: 10, unitPrice: 11 },
-              { min: 5, unitPrice: 12 },
-              { min: 2, unitPrice: 12.5 }
-            ];
-          }
+    <!-- ESIM CAROUSEL -->
+    <div class="section-header">
+        <div class="section-title">Tarifas Globales</div>
+    </div>
 
-          return {
-            id: p.id,
-            name: p.name,
-            description: p.description || "Conexión de red segura",
-            basePrice: parseFloat(p.unit_price) || 0,
-            hasBulkDiscount,
-            tiers
-          };
-        });
-      } catch (e) { console.error("Error parseando:", e); }
-    }
+    <div class="products-carousel" id="productsGrid">
+        <!-- Products will be injected here by JS -->
+    </div>
 
-    if (products.length === 0) {
-      products = [
-        { id: "vodafone", name: "Vodafone", description: "90GB · Llamadas ilimitadas", basePrice: 12.99, hasBulkDiscount: true, tiers: [{ min: 20, unitPrice: 10 }, { min: 2, unitPrice: 12.5 }] }
-      ];
-    }
+    <!-- OVERLAY -->
+    <div class="sheet-overlay" id="overlay" onclick="closeAllSheets()"></div>
 
-    let pendingPurchase = null;
+    <!-- RECHARGE SHEET -->
+    <div class="bottom-sheet" id="rechargeSheet">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title">Añadir Fondos</h2>
+        <p class="sheet-subtitle">Introduce la cantidad que deseas depositar</p>
 
-    function formatPrice(value) {
-      return value.toFixed(2).replace(".", ",") + " €";
-    }
+        <input type="number" id="recharge-amount" class="input-styled" placeholder="0.00" min="10" step="1">
+        <button class="btn-primary" onclick="confirmRecharge()">Continuar al Pago</button>
+    </div>
 
-    function updateBalanceUI() {
-      document.getElementById("balance").textContent = formatPrice(userBalance);
-    }
+    <!-- COUPON SHEET -->
+    <div class="bottom-sheet" id="couponSheet">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title">Canjear Cupón</h2>
+        <p class="sheet-subtitle">Introduce el código promocional</p>
 
-    function getUnitPrice(product, quantity) {
-      if (!product.hasBulkDiscount) return product.basePrice;
-      for (const tier of product.tiers) {
-        if (quantity >= tier.min) return tier.unitPrice;
-      }
-      return product.basePrice;
-    }
+        <input type="text" id="coupon-code" class="input-styled" placeholder="CÓDIGO">
+        <button class="btn-primary" onclick="applyCoupon()">Validar Código</button>
+    </div>
 
-    function getTotalPrice(product, quantity) {
-      return getUnitPrice(product, quantity) * quantity;
-    }
+    <!-- PURCHASE SHEET -->
+    <div class="bottom-sheet" id="purchaseSheet">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title">Confirmar Compra</h2>
 
-    function renderProducts() {
-      const container = document.getElementById("productsGrid");
-      container.innerHTML = products.map(p => {
-        let discountBadge = p.hasBulkDiscount 
-          ? `<div class="discount-badge">>> AUTO_DISCOUNT ENABLED</div>` 
-          : "";
+        <div class="stepper">
+            <button class="step-btn" onclick="updatePurchaseQty(-1)">-</button>
+            <div class="step-val"><span id="review-qty">1</span> uds.</div>
+            <button class="step-btn" onclick="updatePurchaseQty(1)">+</button>
+        </div>
 
-        return `
-          <div class="product-card">
-            <div class="card-header">
-              <h3 class="product-title">${p.name}</h3>
+        <div class="receipt-box">
+            <div class="receipt-row">
+                <span style="color: var(--text-muted)">Producto</span>
+                <span id="review-name" style="font-weight:500;">Vodafone 90GB</span>
             </div>
-            <p class="product-desc">${p.description}</p>
-            ${discountBadge}
-            
-            <div class="qty-row">
-              <span style="font-size: 14px; color: var(--text-muted);">UNITS_REQ:</span>
-              <div class="qty-controls">
-                <button class="qty-btn" onclick="changeQty('${p.id}', -1)">-</button>
-                <input class="qty-input" id="qty-${p.id}" type="number" value="1" readonly />
-                <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
-              </div>
+            <div class="receipt-row">
+                <span style="color: var(--text-muted)">Precio Ud.</span>
+                <span id="review-unit-price">12.99 €</span>
             </div>
+            <div class="receipt-row">
+                <span>Total a pagar</span>
+                <span id="review-total" style="color: var(--accent)">12.99 €</span>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="executePurchase()" id="btn-execute">Confirmar Pago</button>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toastMsg">
+        <i class="fa-solid fa-circle-info" style="color: var(--accent)"></i>
+        <span id="toastText">Mensaje</span>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        tg.setHeaderColor('#0b0c10'); // Darkest bg color
+        tg.setBackgroundColor('#0b0c10');
+
+        // --- STATE ---
+        let userBalance = 0;
+        let products = [];
+        let currentPurchase = { id: null, qty: 1, basePrice: 0, hasBulk: false, tiers: [], name: '' };
+
+        // --- INIT ---
+        function initApp() {
+            const urlParams = new URLSearchParams(window.location.search);
+            userBalance = parseFloat(urlParams.get('balance')) || 0;
+            updateBalanceUI();
+
+            const productsRaw = urlParams.get('products');
+            if (productsRaw) {
+                try {
+                    const decoded = decodeURIComponent(productsRaw);
+                    const botProducts = JSON.parse(atob(decoded));
+
+                    products = botProducts.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        description: p.description || "Conexión premium",
+                        basePrice: parseFloat(p.unit_price) || 0,
+                        hasBulkDiscount: (p.id === "vodafone" || p.id === "lebara"),
+                        tiers: (p.id === "vodafone" || p.id === "lebara") ? [
+                            { min: 20, price: 10 }, { min: 10, price: 11 },
+                            { min: 5, price: 12 }, { min: 2, price: 12.5 }
+                        ] : []
+                    }));
+                } catch (e) { console.error("Error parse:", e); }
+            }
+
+            if(products.length === 0) {
+                // Fallback for testing
+                products = [
+                    { id: "vodafone", name: "Vodafone", description: "90GB Llamadas", basePrice: 12.99, hasBulkDiscount: true, tiers: [{min: 2, price: 12.5}] },
+                    { id: "lebara", name: "Lebara", description: "90GB Data Only", basePrice: 12.99, hasBulkDiscount: false, tiers: [] }
+                ];
+            }
+
             
-            <div class="total-price cyber-number" id="total-${p.id}">${formatPrice(p.basePrice)}</div>
-            <button class="btn-cyber" onclick="buyProduct('${p.id}')">INITIALIZE</button>
-          </div>
-        `;
-      }).join("");
-    }
+            renderCarousel();
 
-    function changeQty(productId, delta) {
-      tg.HapticFeedback.impactOccurred('light');
-      const input = document.getElementById(`qty-${productId}`);
-      let current = parseInt(input.value, 10) || 1;
-      let newVal = Math.max(1, current + delta);
-      input.value = newVal;
-      updateProductSummary(productId);
-    }
+            // Remove splash screen after 800ms to give a smooth loading effect
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hidden');
+            }, 800);
+        }
 
-    function updateProductSummary(productId) {
-      const product = products.find(p => p.id === productId);
-      const quantity = parseInt(document.getElementById(`qty-${productId}`).value, 10);
-      const total = getTotalPrice(product, quantity);
-      const unit = getUnitPrice(product, quantity);
-      
-      let text = formatPrice(total);
-      if (unit < product.basePrice) {
-        text += ` <span style="font-size: 14px; color: var(--neon-blue); font-weight: normal;">(${formatPrice(unit)}/ud)</span>`;
-      }
-      document.getElementById(`total-${productId}`).innerHTML = text;
-    }
 
-    function buyProduct(productId) {
-      tg.HapticFeedback.impactOccurred('medium');
-      const product = products.find(p => p.id === productId);
-      const quantity = parseInt(document.getElementById(`qty-${productId}`).value, 10);
-      const totalPrice = getTotalPrice(product, quantity);
+        // --- UI UPDATES ---
+        function formatPrice(val) {
+            return val.toFixed(2).replace(".", ",");
+        }
 
-      if (userBalance < totalPrice) {
-        const missing = totalPrice - userBalance;
-        tg.showAlert(`Fallo de sistema: Saldo insuficiente. Faltan ${formatPrice(missing)}`);
-        openAddBalanceModal(Math.ceil(missing));
-        return;
-      }
+        function updateBalanceUI() {
+            document.getElementById("balance-display").innerHTML = `${formatPrice(userBalance)} <span class="balance-currency">€</span>`;
+        }
 
-      pendingPurchase = {
-        productId: product.id,
-        productName: product.name,
-        quantity,
-        unitPrice: getUnitPrice(product, quantity),
-        originalTotal: product.basePrice * quantity,
-        discountAmount: (product.basePrice * quantity) - totalPrice,
-        totalPrice
-      };
+        function showToast(msg) {
+            const t = document.getElementById("toastMsg");
+            document.getElementById("toastText").innerText = msg;
+            t.classList.add("show");
+            setTimeout(() => t.classList.remove("show"), 3000);
+        }
 
-      openConfirmPurchaseModal();
-    }
+        // --- SHEETS LOGIC ---
+        function openSheet(id) {
+            document.getElementById("overlay").classList.add("active");
+            document.getElementById(id).classList.add("active");
+        }
 
-    function openConfirmPurchaseModal() {
-      if (!pendingPurchase) return;
-      const balanceAfter = userBalance - pendingPurchase.totalPrice;
+        function closeAllSheets() {
+            document.getElementById("overlay").classList.remove("active");
+            document.querySelectorAll(".bottom-sheet").forEach(s => s.classList.remove("active"));
+        }
 
-      let discountHtml = pendingPurchase.discountAmount > 0 
-        ? `<div class="summary-row" style="color: var(--neon-blue);"><span>SYS_SAVINGS:</span><strong>+${formatPrice(pendingPurchase.discountAmount)}</strong></div>`
-        : "";
+        // --- CAROUSEL RENDER ---
+        function renderCarousel() {
+            const container = document.getElementById("productsGrid");
+            container.innerHTML = products.map(p => {
+                const icon = p.name.toLowerCase().includes('vodafone') ? 'fa-bolt' : 'fa-signal';
+                const badge = p.hasBulkDiscount ? `<div class="product-badge">OFERTA VOL.</div>` : '';
 
-      document.getElementById("purchaseSummary").innerHTML = `
-        <div class="summary-row"><span>NODE:</span><strong>${pendingPurchase.productName}</strong></div>
-        <div class="summary-row"><span>UNITS:</span><strong class="cyber-number">${pendingPurchase.quantity}</strong></div>
-        <div class="summary-row"><span>UNIT_COST:</span><strong class="cyber-number">${formatPrice(pendingPurchase.unitPrice)}</strong></div>
-        ${discountHtml}
-        <div class="summary-row total"><span>TOTAL_COST:</span><strong class="cyber-number">${formatPrice(pendingPurchase.totalPrice)}</strong></div>
-      `;
-      
-      document.getElementById("confirmBalanceAfter").textContent = formatPrice(balanceAfter);
-      document.getElementById("confirmPurchaseModal").classList.add("active");
-    }
+                return `
+                <div class="product-card">
+                    ${badge}
+                    <div class="provider-icon"><i class="fa-solid ${icon}"></i></div>
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-desc">${p.description}</div>
+                    <div class="price-tag">${formatPrice(p.basePrice)} €</div>
+                    <button class="btn-buy" onclick="initPurchase('${p.id}')">Seleccionar</button>
+                </div>
+                `;
+            }).join("");
+        }
 
-    function closeConfirmPurchaseModal() {
-      document.getElementById("confirmPurchaseModal").classList.remove("active");
-    }
+        // --- PURCHASE LOGIC ---
+        function getUnitPrice(prod, qty) {
+            if(!prod.hasBulkDiscount) return prod.basePrice;
+            for(let t of prod.tiers) {
+                if(qty >= t.min) return t.price;
+            }
+            return prod.basePrice;
+        }
 
-    function confirmPurchase() {
-      tg.HapticFeedback.notificationOccurred('success');
-      if (!pendingPurchase) return;
-      tg.sendData(JSON.stringify({ type: "purchase", ...pendingPurchase }));
-    }
+        function initPurchase(id) {
+            const p = products.find(x => x.id === id);
+            currentPurchase = { ...p, qty: 1 };
+            updatePurchaseUI();
+            openSheet('purchaseSheet');
+        }
 
-    function openAddBalanceModal(suggested = "") {
-      tg.HapticFeedback.impactOccurred('medium');
-      document.getElementById("balanceError").textContent = "";
-      const input = document.getElementById("balanceAmount");
-      input.value = suggested !== "" ? Math.min(200, Math.max(10, suggested)) : "";
-      document.getElementById("addBalanceModal").classList.add("active");
-    }
+        function updatePurchaseQty(delta) {
+            let newQty = currentPurchase.qty + delta;
+            if(newQty < 1) newQty = 1;
+            if(newQty > 50) newQty = 50;
+            currentPurchase.qty = newQty;
+            updatePurchaseUI();
+        }
 
-    function closeAddBalanceModal() {
-      document.getElementById("addBalanceModal").classList.remove("active");
-    }
+        function updatePurchaseUI() {
+            const unitP = getUnitPrice(currentPurchase, currentPurchase.qty);
+            const totalP = unitP * currentPurchase.qty;
 
-    function confirmAddBalance() {
-      const amount = Number(document.getElementById("balanceAmount").value);
-      const error = document.getElementById("balanceError");
-      error.textContent = "";
+            document.getElementById('review-qty').innerText = currentPurchase.qty;
+            document.getElementById('review-name').innerText = currentPurchase.name;
+            document.getElementById('review-unit-price').innerText = formatPrice(unitP) + " €";
+            document.getElementById('review-total').innerText = formatPrice(totalP) + " €";
 
-      if (!amount || amount < 10 || amount > 200) {
-        error.textContent = "ERR: Input_Range [10 - 200]";
-        tg.HapticFeedback.notificationOccurred('error');
-        return;
-      }
+            const btn = document.getElementById('btn-execute');
+            if(userBalance < totalP) {
+                btn.style.background = "var(--bg-card)";
+                btn.style.color = "var(--danger)";
+                btn.style.border = "1px solid var(--danger)";
+                btn.innerText = "Saldo Insuficiente";
+                btn.onclick = () => showToast("Recarga saldo primero");
+            } else {
+                btn.style.background = "var(--accent)";
+                btn.style.color = "white";
+                btn.style.border = "none";
+                btn.innerText = "Confirmar Pago";
+                btn.onclick = executePurchase;
+            }
+        }
 
-      tg.HapticFeedback.notificationOccurred('success');
-      tg.sendData(JSON.stringify({ type: "add_balance", amount }));
-    }
+        function executePurchase() {
+            const unitP = getUnitPrice(currentPurchase, currentPurchase.qty);
+            const totalP = unitP * currentPurchase.qty;
+            const originalTotal = currentPurchase.basePrice * currentPurchase.qty;
 
-    updateBalanceUI();
-    renderProducts();
-    function applyCoupon() {
-    const code = document.getElementById("couponCode").value.toUpperCase();
-    if (!code) return;
-    
-    // Enviamos el cupón al bot mediante sendData
-    tg.sendData(JSON.stringify({ type: "apply_coupon", code: code }));
-}
-  </script>
+            if(userBalance < totalP) {
+                showToast("Saldo Insuficiente");
+                return;
+            }
+
+            const payload = {
+                type: "purchase",
+                productId: currentPurchase.id,
+                productName: currentPurchase.name,
+                quantity: currentPurchase.qty,
+                unitPrice: unitP,
+                totalPrice: totalP,
+                originalTotal: originalTotal,
+                discountAmount: originalTotal - totalP
+            };
+
+            tg.sendData(JSON.stringify(payload));
+            tg.close();
+        }
+
+        // --- ACTIONS ---
+        function confirmRecharge() {
+            const val = parseFloat(document.getElementById("recharge-amount").value);
+            if(isNaN(val) || val <= 0) {
+                showToast("Importe inválido");
+                return;
+            }
+            tg.sendData(JSON.stringify({ type: "add_balance", amount: val }));
+            tg.close();
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById("coupon-code").value.trim();
+            if(!code) {
+                showToast("Introduce un código");
+                return;
+            }
+            tg.sendData(JSON.stringify({ type: "apply_coupon", code: code }));
+            tg.close();
+        }
+
+        // Run
+        initApp();
+    </script>
 </body>
 </html>
