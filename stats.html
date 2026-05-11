@@ -123,51 +123,66 @@
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
 
-        let rawData = { o: [], u: [] };
+        let rawData = { o: [], u: [], c: [] };
         let charts = {};
 
         // Extraer datos iniciales
         const urlParams = new URLSearchParams(window.location.search);
         const dataParam = urlParams.get('data');
         if (dataParam) {
-            rawData = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
-            updateDashboard(); // Carga inicial
+            // Si el bot no mandó la "c" porque es una versión antigua, la inicializamos vacía
+            let parsed = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
+            rawData = {
+                o: parsed.o || [],
+                u: parsed.u || [],
+                c: parsed.c || []
+            };
         }
+
+        // Carga inicial
+        updateDashboard();
 
         // Función principal de filtrado y dibujado
         function updateDashboard() {
             const start = document.getElementById('dateStart').value;
             const end = document.getElementById('dateEnd').value;
 
-            // 1. Filtrar las fechas
+            // 1. Filtrar las fechas en todas las listas
             const fOrders = rawData.o.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
             const fUploads = rawData.u.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
+            const fRecharges = rawData.c.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
 
             // 2. Calcular totales
-            const totalRev = fOrders.reduce((acc, curr) => acc + curr.r, 0);
+            // AHORA LOS INGRESOS REALES SALEN DE LAS RECARGAS (fRecharges)
+            const totalRev = fRecharges.reduce((acc, curr) => acc + curr.r, 0); 
+            // LAS VENTAS SALEN DE LOS PEDIDOS (fOrders)
             const totalQty = fOrders.reduce((acc, curr) => acc + curr.q, 0);
-            
+
             // Animación suave de números
-            document.getElementById('val-ingresos').innerText = totalRev.toFixed(2) + " €";
+            document.getElementById('val-ingresos').innerText = totalRev.toFixed(2) + ' €';
             document.getElementById('val-ventas').innerText = totalQty;
 
-            // 3. Preparar datos históricos (por fecha)
+            // 3. Preparar datos históricos (Curva principal) -> Ahora dibuja los INGRESOS REALES
             const historyMap = {};
-            fOrders.forEach(o => { historyMap[o.d] = (historyMap[o.d] || 0) + o.r; });
+            fRecharges.forEach(c => {
+                historyMap[c.d] = (historyMap[c.d] || 0) + c.r;
+            });
             const histDates = Object.keys(historyMap).sort();
             const histValues = histDates.map(d => historyMap[d]);
 
             // 4. Preparar datos Top Tarifas
             const prodMap = {};
-            fOrders.forEach(o => { prodMap[o.p] = (prodMap[o.p] || 0) + o.r; });
+            fOrders.forEach(o => {
+                prodMap[o.p] = (prodMap[o.p] || 0) + o.r;
+            });
             const prods = Object.keys(prodMap).sort((a, b) => prodMap[b] - prodMap[a]).slice(0, 5);
             const prodValues = prods.map(p => prodMap[p]);
 
             // 5. Dibujar Gráficos
-            drawChart('historyChart', 'line', histDates, histValues, 'Ingresos Diarios');
-            drawChart('revenueChart', 'doughnut', prods, prodValues);
+            drawChart('historyChart', 'line', histDates, histValues, 'Ingresos por Recargas (€)');
+            drawChart('revenueChart', 'doughnut', prods, prodValues, '');
 
-            // 6. Rellenar Tabla del Staff (Agrupar por Administrador)
+            // 6. Rellenar Tabla del Staff (Se queda exactamente igual)
             const staffMap = {};
             fUploads.forEach(u => {
                 if(!staffMap[u.a]) staffMap[u.a] = { q: 0, items: {} };
@@ -176,12 +191,12 @@
             });
 
             const staffList = document.getElementById('staff-list');
-            staffList.innerHTML = "";
+            staffList.innerHTML = '';
             if(Object.keys(staffMap).length === 0) {
-                staffList.innerHTML = "<li class='text-sm'>No hay subidas en este periodo.</li>";
+                staffList.innerHTML = '<li class="text-sm">No hay subidas en este periodo.</li>';
             } else {
                 for (const [admin, data] of Object.entries(staffMap)) {
-                    let desc = "";
+                    let desc = '';
                     for(const [p, q] of Object.entries(data.items)) desc += `${q}x ${p}, `;
                     
                     const li = document.createElement('li');
@@ -189,7 +204,7 @@
                         <div style="display:flex; gap:12px; align-items:center;">
                             <div class="avatar">${admin.substring(0,2).toUpperCase()}</div>
                             <div class="flex-col">
-                                <span class="text-bold">@${admin}</span>
+                                <span class="text-bold">${admin}</span>
                                 <span class="text-sm">${desc.slice(0, -2)}</span>
                             </div>
                         </div>
@@ -200,11 +215,11 @@
             }
         }
 
-        // Función para recrear gráficos y que no se superpongan
-        function drawChart(id, type, labels, data, labelName="") {
+        // Función para recrear gráficos (Se queda exactamente igual)
+        function drawChart(id, type, labels, data, labelName) {
             const ctx = document.getElementById(id).getContext('2d');
-            if (charts[id]) charts[id].destroy(); // Borra el viejo
-
+            if (charts[id]) charts[id].destroy(); 
+            
             const isLine = type === 'line';
             let bg = isLine ? 'rgba(59, 130, 246, 0.2)' : ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
             let border = isLine ? '#3b82f6' : 'transparent';
@@ -213,10 +228,19 @@
                 type: type,
                 data: {
                     labels: labels,
-                    datasets: [{ label: labelName, data: data, backgroundColor: bg, borderColor: border, borderWidth: isLine?3:0, fill: isLine, tension: 0.4 }]
+                    datasets: [{
+                        label: labelName,
+                        data: data,
+                        backgroundColor: bg,
+                        borderColor: border,
+                        borderWidth: isLine ? 3 : 0,
+                        fill: isLine,
+                        tension: 0.4
+                    }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: { legend: { display: !isLine, position: 'right' } },
                     scales: isLine ? { x: { grid: { display: false } }, y: { beginAtZero: true } } : {}
                 }
