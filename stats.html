@@ -3,189 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard Ultimate</title>
+    <title>Dashboard Business</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
         :root {
-            --bg-color: #f0f4f8;
-            --text-color: #1e293b;
-            --card-bg: rgba(255, 255, 255, 0.85);
-            --accent: #3b82f6;
-            --glass-border: rgba(255, 255, 255, 0.4);
+            --bg-dark: #0a0b10;
+            --card-bg: #12141d;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --text-main: #ffffff;
+            --text-muted: #8b92a5;
+            
+            --accent-green: #00ff88;
+            --accent-green-bg: rgba(0, 255, 136, 0.1);
+            
+            --accent-blue: #3b82f6;
+            --accent-blue-bg: rgba(59, 130, 246, 0.1);
+            
+            --accent-purple: #8b5cf6;
+            --accent-orange: #f59e0b;
         }
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #0f172a;
-                --text-color: #f8fafc;
-                --card-bg: rgba(30, 41, 59, 0.85);
-                --glass-border: rgba(255, 255, 255, 0.05);
-            }
-        }
+
+        * { box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             margin: 0;
             padding: 16px;
-            padding-bottom: 40px;
-            transition: background 0.3s ease;
+            padding-bottom: 80px; /* Espacio para botones fijos si los hay */
         }
+
+        /* Cabecera */
         .header {
-            text-align: center;
-            margin-bottom: 24px;
-            animation: fadeIn 0.5s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
         .header h1 {
+            font-size: 18px;
+            font-weight: 600;
             margin: 0;
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            text-align: center;
+            flex-grow: 1;
         }
-        .filter-bar {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        .icon-btn {
+            color: var(--text-main);
+            font-size: 20px;
+            background: none;
+            border: none;
+        }
+
+        /* Barra de Filtros */
+        .filter-row {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            display: flex;
             align-items: center;
-        }
-        .filter-bar input {
+            justify-content: space-between;
             flex: 1;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #cbd5e1;
-            background: transparent;
-            color: var(--text-color);
-            font-size: 14px;
-            outline: none;
         }
-        .grid-cards {
+
+        /* Tarjetas Superiores */
+        .kpi-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
             margin-bottom: 24px;
         }
-        .card {
+        .kpi-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
         }
-        .card:active { transform: scale(0.97); }
-        .card h2 {
-            margin: 0 0 8px 0;
-            font-size: 13px;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .card .value {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--accent);
-        }
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin: 30px 0 15px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .chart-box {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-        }
-        .canvas-wrapper { position: relative; height: 200px; width: 100%; }
+        .kpi-card.green { background: linear-gradient(145deg, #12141d, rgba(0, 255, 136, 0.05)); border-color: rgba(0, 255, 136, 0.2); }
+        .kpi-card.blue { background: linear-gradient(145deg, #12141d, rgba(59, 130, 246, 0.05)); border-color: rgba(59, 130, 246, 0.2); }
         
-        ul { list-style: none; padding: 0; margin: 0; }
-        li {
+        .kpi-title { font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 8px;}
+        .kpi-value { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .kpi-card.green .kpi-value { color: var(--accent-green); }
+        .kpi-card.blue .kpi-value { color: var(--accent-blue); }
+        
+        .kpi-trend { font-size: 12px; display: flex; align-items: center; gap: 4px; }
+        .trend-up { color: var(--accent-green); }
+
+        /* Contenedores de Gráficas */
+        .chart-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .section-header {
             display: flex;
             justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--glass-border);
             align-items: center;
+            margin-bottom: 20px;
         }
-        li:last-child { border-bottom: none; }
-        .flex-col { display: flex; flex-direction: column; }
-        .text-bold { font-weight: 600; font-size: 15px; }
-        .text-sm { font-size: 12px; opacity: 0.7; }
-        .text-accent { color: var(--accent); font-weight: 700; font-size: 16px; }
-        .avatar {
-            background: #e2e8f0; color: #333;
-            width: 36px; height: 36px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 14px;
-        }
+        .section-title { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .section-title i { color: var(--accent-blue); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .canvas-wrapper { position: relative; height: 180px; width: 100%; }
+
+        /* Lista de Proveedores (Staff) */
+        .provider-list { list-style: none; padding: 0; margin: 0; }
+        .provider-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
         }
+        .provider-item:last-child { border-bottom: none; }
+        
+        .avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--accent-blue-bg); color: var(--accent-blue);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 14px; margin-right: 12px;
+        }
+        .provider-info { flex-grow: 1; }
+        .provider-name { font-size: 14px; font-weight: 600; margin-bottom: 2px;}
+        .provider-sub { font-size: 12px; color: var(--text-muted); }
+        
+        .provider-stats { text-align: right; }
+        .provider-val { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .provider-val.highlight { color: var(--accent-purple); }
+
     </style>
 </head>
 <body>
 
+    <!-- Header -->
     <div class="header">
+        <i class="fas fa-bars icon-btn"></i>
         <h1>Dashboard</h1>
+        <i class="fas fa-bell icon-btn" style="position:relative;">
+            <span style="position:absolute; top:-4px; right:-4px; background:var(--accent-purple); width:8px; height:8px; border-radius:50%;"></span>
+        </i>
     </div>
 
-    <!-- Filtro de Fechas -->
-    <div class="filter-bar">
-        <input type="date" id="dateStart" onchange="updateDashboard()">
-        <span style="opacity: 0.5;">a</span>
-        <input type="date" id="dateEnd" onchange="updateDashboard()">
+    <!-- Filtros estéticos (puedes programarlos luego si quieres) -->
+    <div class="filter-row">
+        <div class="filter-btn">Hoy, 24 de Mayo <i class="fas fa-chevron-down"></i></div>
+        <div class="filter-btn" style="flex: 0.5;">Filtros <i class="fas fa-filter"></i></div>
     </div>
 
-    <!-- Tarjetas -->
-    <div class="grid-cards">
-        <div class="card">
-            <h2>Ingresos Reales</h2>
-            <div class="value" id="val-ingresos">0.00 €</div>
+    <!-- KPIs -->
+    <div class="kpi-grid">
+        <div class="kpi-card green">
+            <div class="kpi-title">Ingresos Reales</div>
+            <div class="kpi-value" id="val-ingresos">€ 0.00</div>
+            <div class="kpi-trend trend-up"><i class="fas fa-arrow-trend-up"></i> <span>Activo</span></div>
         </div>
-        <div class="card">
-            <h2>eSIMs Vendidas</h2>
-            <div class="value" id="val-ventas">0</div>
+        <div class="kpi-card blue">
+            <div class="kpi-title">Ventas</div>
+            <div class="kpi-value" id="val-ventas">0</div>
+            <div class="kpi-trend trend-up"><i class="fas fa-arrow-trend-up"></i> <span>Total</span></div>
         </div>
     </div>
 
-    <div class="section-title">Ingresos Reales por Día</div>
-    <div class="chart-box">
-        <div class="canvas-wrapper"><canvas id="historyChart"></canvas></div>
+    <!-- Gráfica Combinada -->
+    <div class="chart-section">
+        <div class="section-header">
+            <div class="section-title"><i class="fas fa-chart-line"></i> Subidas vs Vendidas</div>
+            <span style="font-size: 12px; color: var(--text-muted);">Diario <i class="fas fa-chevron-down"></i></span>
+        </div>
+        <div class="canvas-wrapper" style="height: 220px;">
+            <canvas id="lineChart"></canvas>
+        </div>
     </div>
 
-    <div class="section-title">Top Tarifas (Vendidas)</div>
-    <div class="chart-box">
-        <div class="canvas-wrapper"><canvas id="revenueChart"></canvas></div>
+    <!-- Gráfica Fuentes de Pago (Top Tarifas) -->
+    <div class="chart-section">
+        <div class="section-header">
+            <div class="section-title"><i class="fas fa-chart-pie"></i> Top Tarifas (Ingresos)</div>
+        </div>
+        <div class="canvas-wrapper" style="height: 200px; display: flex; justify-content: center;">
+            <canvas id="doughnutChart"></canvas>
+        </div>
     </div>
 
-    <div class="section-title">Actividad del Staff</div>
-    <div class="chart-box">
-        <ul id="staff-list"></ul>
+    <!-- Proveedores (Staff) -->
+    <div class="chart-section">
+        <div class="section-header">
+            <div class="section-title"><i class="fas fa-user-tie"></i> Proveedores / Staff</div>
+            <span style="font-size: 12px; color: var(--text-muted); background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 8px;">Ver todos</span>
+        </div>
+        <ul class="provider-list" id="staff-list">
+            <!-- Rellenado por JS -->
+        </ul>
     </div>
 
     <script>
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
+        window.Telegram.WebApp.setHeaderColor('#0a0b10');
 
         let rawData = { o: [], u: [], c: [] };
-        let charts = {};
 
         // Extraer datos iniciales
         const urlParams = new URLSearchParams(window.location.search);
@@ -193,121 +225,118 @@
         if (dataParam) {
             try {
                 const parsed = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
-                rawData = {
-                    o: parsed.o || [],
-                    u: parsed.u || [],
-                    c: parsed.c || []
-                };
-            } catch (e) {
-                console.error("Error al decodificar", e);
-            }
+                rawData = { o: parsed.o || [], u: parsed.u || [], c: parsed.c || [] };
+            } catch (e) { console.error(e); }
         }
 
-        // Carga inicial
-        updateDashboard();
-
-        // Función principal de filtrado y dibujado
-        function updateDashboard() {
-            const start = document.getElementById('dateStart').value;
-            const end = document.getElementById('dateEnd').value;
-
-            // 1. Filtrar las fechas
-            const fOrders = rawData.o.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
-            const fUploads = rawData.u.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
-            const fRecharges = rawData.c.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
-
-            // 2. Calcular totales
-            const totalRev = fRecharges.reduce((acc, curr) => acc + curr.r, 0); 
-            const totalQty = fOrders.reduce((acc, curr) => acc + curr.q, 0);
-
-            // Animación suave de números
-            document.getElementById('val-ingresos').innerText = totalRev.toFixed(2) + ' €';
+        function initDashboard() {
+            // Totales
+            const totalRev = rawData.c.reduce((acc, curr) => acc + curr.r, 0); 
+            const totalQty = rawData.o.reduce((acc, curr) => acc + curr.q, 0);
+            
+            document.getElementById('val-ingresos').innerText = '€ ' + totalRev.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('val-ventas').innerText = totalQty;
 
-            // 3. Preparar datos históricos (Curva de ingresos)
-            const historyMap = {};
-            fRecharges.forEach(c => {
-                historyMap[c.d] = (historyMap[c.d] || 0) + c.r;
-            });
-            const histDates = Object.keys(historyMap).sort();
-            const histValues = histDates.map(d => historyMap[d]);
-
-            // 4. Preparar datos Top Tarifas
-            const prodMap = {};
-            fOrders.forEach(o => {
-                prodMap[o.p] = (prodMap[o.p] || 0) + o.r; // Por gasto de saldo
-            });
-            const prods = Object.keys(prodMap).sort((a, b) => prodMap[b] - prodMap[a]).slice(0, 5);
-            const prodValues = prods.map(p => prodMap[p]);
-
-            // 5. Dibujar Gráficos
-            drawChart('historyChart', 'line', histDates, histValues, 'Ingresos por Recargas (€)');
-            drawChart('revenueChart', 'doughnut', prods, prodValues, 'Ventas');
-
-            // 6. Rellenar Tabla del Staff
-            const staffMap = {};
-            fUploads.forEach(u => {
-                if(!staffMap[u.a]) staffMap[u.a] = { q: 0, items: {} };
-                staffMap[u.a].q += u.q;
-                staffMap[u.a].items[u.p] = (staffMap[u.a].items[u.p] || 0) + u.q;
-            });
-
-            const staffList = document.getElementById('staff-list');
-            staffList.innerHTML = '';
-            if(Object.keys(staffMap).length === 0) {
-                staffList.innerHTML = '<li class="text-sm">No hay subidas en este periodo.</li>';
-            } else {
-                for (const [admin, data] of Object.entries(staffMap)) {
-                    let desc = '';
-                    for(const [p, q] of Object.entries(data.items)) desc += `${q}x ${p}, `;
-                    
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        <div style="display:flex; gap:12px; align-items:center;">
-                            <div class="avatar">${admin.substring(0,2).toUpperCase()}</div>
-                            <div class="flex-col">
-                                <span class="text-bold">${admin}</span>
-                                <span class="text-sm">${desc.slice(0, -2)}</span>
-                            </div>
-                        </div>
-                        <div class="text-accent">+${data.q}</div>
-                    `;
-                    staffList.appendChild(li);
-                }
-            }
-        }
-
-        // Función para recrear gráficos y que no se superpongan
-        function drawChart(id, type, labels, data, labelName) {
-            const ctx = document.getElementById(id).getContext('2d');
-            if (charts[id]) charts[id].destroy(); 
+            // Preparar Gráfica de Líneas (Ventas vs Subidas por día)
+            const datesSet = new Set([...rawData.o.map(x=>x.d), ...rawData.u.map(x=>x.d)]);
+            const datesArr = Array.from(datesSet).sort();
             
-            const isLine = type === 'line';
-            let bg = isLine ? 'rgba(59, 130, 246, 0.2)' : ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
-            let border = isLine ? '#3b82f6' : 'transparent';
+            const ventasPorDia = datesArr.map(d => rawData.o.filter(x => x.d === d).reduce((sum, x) => sum + x.q, 0));
+            const subidasPorDia = datesArr.map(d => rawData.u.filter(x => x.d === d).reduce((sum, x) => sum + x.q, 0));
 
-            charts[id] = new Chart(ctx, {
-                type: type,
+            // Configurar Chart.js por defecto (Dark Mode)
+            Chart.defaults.color = '#8b92a5';
+            Chart.defaults.font.family = 'Inter';
+
+            // Dibujar Gráfica de Líneas
+            new Chart(document.getElementById('lineChart').getContext('2d'), {
+                type: 'line',
                 data: {
-                    labels: labels,
+                    labels: datesArr.map(d => d.slice(-5)), // Mostrar solo mes-día
+                    datasets: [
+                        {
+                            label: 'Vendidas',
+                            data: ventasPorDia,
+                            borderColor: '#00ff88',
+                            backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#00ff88'
+                        },
+                        {
+                            label: 'Subidas',
+                            data: subidasPorDia,
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#8b5cf6'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', align: 'start', labels: { boxWidth: 10, usePointStyle: true } } },
+                    scales: { 
+                        x: { grid: { display: false, drawBorder: false } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false }, beginAtZero: true }
+                    }
+                }
+            });
+
+            // Preparar Gráfica de Anillo (Top Tarifas)
+            const prodMap = {};
+            rawData.o.forEach(o => { prodMap[o.p] = (prodMap[o.p] || 0) + o.r; });
+            const topProds = Object.keys(prodMap).sort((a, b) => prodMap[b] - prodMap[a]).slice(0, 4);
+            const topVals = topProds.map(p => prodMap[p]);
+
+            new Chart(document.getElementById('doughnutChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: topProds,
                     datasets: [{
-                        label: labelName,
-                        data: data,
-                        backgroundColor: bg,
-                        borderColor: border,
-                        borderWidth: isLine ? 3 : 0,
-                        fill: isLine,
-                        tension: 0.4
+                        data: topVals,
+                        backgroundColor: ['#00ff88', '#3b82f6', '#f59e0b', '#8b5cf6'],
+                        borderWidth: 0,
+                        cutout: '75%'
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: !isLine, position: 'right' } },
-                    scales: isLine ? { x: { grid: { display: false } }, y: { beginAtZero: true } } : {}
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: '#fff', padding: 20, usePointStyle: true, pointStyle: 'circle' } } }
                 }
             });
+
+            // Rellenar Staff / Proveedores
+            const staffMap = {};
+            rawData.u.forEach(u => {
+                staffMap[u.a] = (staffMap[u.a] || 0) + u.q;
+            });
+            const staffList = document.getElementById('staff-list');
+            if(Object.keys(staffMap).length === 0) {
+                staffList.innerHTML = '<li class="provider-item"><span class="text-muted">No hay actividad.</span></li>';
+            } else {
+                for (const [admin, qty] of Object.entries(staffMap)) {
+                    staffList.innerHTML += `
+                        <li class="provider-item">
+                            <div class="avatar">${admin.substring(0,2).toUpperCase()}</div>
+                            <div class="provider-info">
+                                <div class="provider-name">${admin} <i class="fas fa-check-circle" style="color:var(--accent-blue); font-size:12px;"></i></div>
+                                <div class="provider-sub">@${admin.toLowerCase()}</div>
+                            </div>
+                            <div class="provider-stats">
+                                <div class="provider-val">${qty} <i class="fas fa-cloud-upload-alt" style="color:var(--accent-purple); font-size:12px;"></i></div>
+                                <div class="provider-sub">Subidas</div>
+                            </div>
+                        </li>
+                    `;
+                }
+            }
         }
+
+        initDashboard();
     </script>
 </body>
 </html>
