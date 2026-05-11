@@ -26,63 +26,125 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background: var(--bg-color);
             color: var(--text-color);
-            margin: 0; padding: 16px; padding-bottom: 40px;
+            margin: 0;
+            padding: 16px;
+            padding-bottom: 40px;
             transition: background 0.3s ease;
         }
-        
         /* Efecto UI de cristal animado */
-        .header { text-align: center; margin-bottom: 24px; animation: fadeIn 0.5s ease; }
-        .header h1 { margin: 0; font-size: 28px; font-weight: 800; background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            animation: fadeIn 0.5s ease;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
         .filter-bar {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
-            border-radius: 16px; padding: 16px; margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
             border: 1px solid var(--glass-border);
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: flex; gap: 10px; align-items: center;
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
         .filter-bar input {
-            flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1;
-            background: transparent; color: var(--text-color); font-size: 14px; outline: none;
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 14px;
+            outline: none;
         }
-        
-        .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .card { 
-            background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 20px; text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05); transition: transform 0.2s;
+        .grid-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
         }
         .card:active { transform: scale(0.97); }
-        .card h2 { margin: 0 0 8px 0; font-size: 13px; opacity: 0.8; text-transform: uppercase; letter-spacing: 1px;}
-        .card .value { font-size: 28px; font-weight: 800; color: var(--accent); }
-        
-        .section-title { font-size: 18px; font-weight: 700; margin: 30px 0 15px 0; display: flex; align-items: center; gap: 8px;}
-        
-        .chart-box { 
-            background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 20px; 
-            padding: 20px; margin-bottom: 20px; border: 1px solid var(--glass-border);
+        .card h2 {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .card .value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 30px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
             box-shadow: 0 8px 32px rgba(0,0,0,0.05);
         }
         .canvas-wrapper { position: relative; height: 200px; width: 100%; }
-
+        
         ul { list-style: none; padding: 0; margin: 0; }
-        li { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--glass-border); align-items: center;}
+        li {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--glass-border);
+            align-items: center;
+        }
         li:last-child { border-bottom: none; }
         .flex-col { display: flex; flex-direction: column; }
-        .text-bold { font-weight: 600; font-size: 15px;}
-        .text-sm { font-size: 12px; opacity: 0.7;}
-        .text-accent { color: var(--accent); font-weight: 700; font-size: 16px;}
-        
-        .avatar { background: #e2e8f0; color: #333; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;}
+        .text-bold { font-weight: 600; font-size: 15px; }
+        .text-sm { font-size: 12px; opacity: 0.7; }
+        .text-accent { color: var(--accent); font-weight: 700; font-size: 16px; }
+        .avatar {
+            background: #e2e8f0; color: #333;
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 14px;
+        }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>📊 Dashboard</h1>
+        <h1>Dashboard</h1>
     </div>
 
     <!-- Filtro de Fechas -->
@@ -95,26 +157,26 @@
     <!-- Tarjetas -->
     <div class="grid-cards">
         <div class="card">
-            <h2>💰 Ingresos</h2>
+            <h2>Ingresos</h2>
             <div class="value" id="val-ingresos">0 €</div>
         </div>
         <div class="card">
-            <h2>📦 eSIMs</h2>
+            <h2>eSIMs Vendidas</h2>
             <div class="value" id="val-ventas">0</div>
         </div>
     </div>
 
-    <div class="section-title">📈 Curva de Ventas</div>
+    <div class="section-title">Ingresos Reales por Día</div>
     <div class="chart-box">
         <div class="canvas-wrapper"><canvas id="historyChart"></canvas></div>
     </div>
 
-    <div class="section-title">🏆 Top Tarifas</div>
+    <div class="section-title">Top Tarifas (Por Gasto)</div>
     <div class="chart-box">
         <div class="canvas-wrapper"><canvas id="revenueChart"></canvas></div>
     </div>
 
-    <div class="section-title">👨‍💻 Actividad del Staff</div>
+    <div class="section-title">Actividad del Staff</div>
     <div class="chart-box">
         <ul id="staff-list"></ul>
     </div>
@@ -123,16 +185,27 @@
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
 
-        let rawData = { o: [], u: [] };
+        let rawData = { o: [], u: [], c: [] };
         let charts = {};
 
-        // Extraer datos iniciales
+        // Extraer datos iniciales de la URL
         const urlParams = new URLSearchParams(window.location.search);
         const dataParam = urlParams.get('data');
         if (dataParam) {
-            rawData = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
-            updateDashboard(); // Carga inicial
+            try {
+                const parsed = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
+                rawData = {
+                    o: parsed.o || [],
+                    u: parsed.u || [],
+                    c: parsed.c || []
+                };
+            } catch (e) {
+                console.error("Error al leer datos:", e);
+            }
         }
+
+        // Carga inicial
+        updateDashboard();
 
         // Función principal de filtrado y dibujado
         function updateDashboard() {
@@ -142,32 +215,37 @@
             // 1. Filtrar las fechas
             const fOrders = rawData.o.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
             const fUploads = rawData.u.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
+            const fRecharges = rawData.c.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
 
             // 2. Calcular totales
-            const totalRev = fOrders.reduce((acc, curr) => acc + curr.r, 0);
+            const totalRev = fRecharges.reduce((acc, curr) => acc + curr.r, 0); 
             const totalQty = fOrders.reduce((acc, curr) => acc + curr.q, 0);
-            
-            // Animación suave de números
-            document.getElementById('val-ingresos').innerText = totalRev.toFixed(2) + " €";
+
+            // Actualizar tarjetas
+            document.getElementById('val-ingresos').innerText = totalRev.toFixed(2) + ' €';
             document.getElementById('val-ventas').innerText = totalQty;
 
-            // 3. Preparar datos históricos (por fecha)
+            // 3. Preparar datos históricos (Curva de Ingresos Reales)
             const historyMap = {};
-            fOrders.forEach(o => { historyMap[o.d] = (historyMap[o.d] || 0) + o.r; });
+            fRecharges.forEach(c => {
+                historyMap[c.d] = (historyMap[c.d] || 0) + c.r;
+            });
             const histDates = Object.keys(historyMap).sort();
             const histValues = histDates.map(d => historyMap[d]);
 
-            // 4. Preparar datos Top Tarifas
+            // 4. Preparar datos Top Tarifas (Se calcula en base a lo gastado de saldo)
             const prodMap = {};
-            fOrders.forEach(o => { prodMap[o.p] = (prodMap[o.p] || 0) + o.r; });
+            fOrders.forEach(o => {
+                prodMap[o.p] = (prodMap[o.p] || 0) + o.r;
+            });
             const prods = Object.keys(prodMap).sort((a, b) => prodMap[b] - prodMap[a]).slice(0, 5);
             const prodValues = prods.map(p => prodMap[p]);
 
             // 5. Dibujar Gráficos
-            drawChart('historyChart', 'line', histDates, histValues, 'Ingresos Diarios');
-            drawChart('revenueChart', 'doughnut', prods, prodValues);
+            drawChart('historyChart', 'line', histDates, histValues, 'Recargas (€)');
+            drawChart('revenueChart', 'doughnut', prods, prodValues, 'Ventas');
 
-            // 6. Rellenar Tabla del Staff (Agrupar por Administrador)
+            // 6. Rellenar Tabla del Staff
             const staffMap = {};
             fUploads.forEach(u => {
                 if(!staffMap[u.a]) staffMap[u.a] = { q: 0, items: {} };
@@ -176,12 +254,12 @@
             });
 
             const staffList = document.getElementById('staff-list');
-            staffList.innerHTML = "";
+            staffList.innerHTML = '';
             if(Object.keys(staffMap).length === 0) {
-                staffList.innerHTML = "<li class='text-sm'>No hay subidas en este periodo.</li>";
+                staffList.innerHTML = '<li class="text-sm">No hay subidas en este periodo.</li>';
             } else {
                 for (const [admin, data] of Object.entries(staffMap)) {
-                    let desc = "";
+                    let desc = '';
                     for(const [p, q] of Object.entries(data.items)) desc += `${q}x ${p}, `;
                     
                     const li = document.createElement('li');
@@ -189,7 +267,7 @@
                         <div style="display:flex; gap:12px; align-items:center;">
                             <div class="avatar">${admin.substring(0,2).toUpperCase()}</div>
                             <div class="flex-col">
-                                <span class="text-bold">@${admin}</span>
+                                <span class="text-bold">${admin}</span>
                                 <span class="text-sm">${desc.slice(0, -2)}</span>
                             </div>
                         </div>
@@ -201,10 +279,10 @@
         }
 
         // Función para recrear gráficos y que no se superpongan
-        function drawChart(id, type, labels, data, labelName="") {
+        function drawChart(id, type, labels, data, labelName) {
             const ctx = document.getElementById(id).getContext('2d');
             if (charts[id]) charts[id].destroy(); // Borra el viejo
-
+            
             const isLine = type === 'line';
             let bg = isLine ? 'rgba(59, 130, 246, 0.2)' : ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
             let border = isLine ? '#3b82f6' : 'transparent';
@@ -213,10 +291,19 @@
                 type: type,
                 data: {
                     labels: labels,
-                    datasets: [{ label: labelName, data: data, backgroundColor: bg, borderColor: border, borderWidth: isLine?3:0, fill: isLine, tension: 0.4 }]
+                    datasets: [{
+                        label: labelName,
+                        data: data,
+                        backgroundColor: bg,
+                        borderColor: border,
+                        borderWidth: isLine ? 3 : 0,
+                        fill: isLine,
+                        tension: 0.4
+                    }]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
                     plugins: { legend: { display: !isLine, position: 'right' } },
                     scales: isLine ? { x: { grid: { display: false } }, y: { beginAtZero: true } } : {}
                 }
