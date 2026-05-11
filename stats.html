@@ -44,6 +44,28 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .filter-bar {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .filter-bar input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 14px;
+            outline: none;
+        }
         .grid-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -60,6 +82,7 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.05);
             transition: transform 0.2s;
         }
+        .card:active { transform: scale(0.97); }
         .card h2 {
             margin: 0 0 8px 0;
             font-size: 13px;
@@ -76,6 +99,9 @@
             font-size: 18px;
             font-weight: 700;
             margin: 30px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .chart-box {
             background: var(--card-bg);
@@ -101,6 +127,12 @@
         .text-bold { font-weight: 600; font-size: 15px; }
         .text-sm { font-size: 12px; opacity: 0.7; }
         .text-accent { color: var(--accent); font-weight: 700; font-size: 16px; }
+        .avatar {
+            background: #e2e8f0; color: #333;
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 14px;
+        }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -114,11 +146,18 @@
         <h1>Dashboard</h1>
     </div>
 
+    <!-- Filtro de Fechas -->
+    <div class="filter-bar">
+        <input type="date" id="dateStart" onchange="updateDashboard()">
+        <span style="opacity: 0.5;">a</span>
+        <input type="date" id="dateEnd" onchange="updateDashboard()">
+    </div>
+
     <!-- Tarjetas -->
     <div class="grid-cards">
         <div class="card">
             <h2>Ingresos Reales</h2>
-            <div class="value" id="val-ingresos">0 €</div>
+            <div class="value" id="val-ingresos">0.00 €</div>
         </div>
         <div class="card">
             <h2>eSIMs Vendidas</h2>
@@ -131,12 +170,12 @@
         <div class="canvas-wrapper"><canvas id="historyChart"></canvas></div>
     </div>
 
-    <div class="section-title">Top Tarifas (Por Gasto de Saldo)</div>
+    <div class="section-title">Top Tarifas (Vendidas)</div>
     <div class="chart-box">
         <div class="canvas-wrapper"><canvas id="revenueChart"></canvas></div>
     </div>
 
-    <div class="section-title">Ranking (Detalle)</div>
+    <div class="section-title">Actividad del Staff</div>
     <div class="chart-box">
         <ul id="staff-list"></ul>
     </div>
@@ -145,66 +184,104 @@
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
 
-        let stats = null;
+        let rawData = { o: [], u: [], c: [] };
         let charts = {};
 
-        // Extraer datos de la URL
+        // Extraer datos iniciales
         const urlParams = new URLSearchParams(window.location.search);
         const dataParam = urlParams.get('data');
-        
         if (dataParam) {
             try {
-                stats = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
+                const parsed = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
+                rawData = {
+                    o: parsed.o || [],
+                    u: parsed.u || [],
+                    c: parsed.c || []
+                };
             } catch (e) {
-                console.error("Error al leer datos:", e);
-                document.body.innerHTML = '<h3 style="text-align:center; margin-top:50px;">Error decodificando datos del bot.</h3>';
+                console.error("Error al decodificar", e);
             }
         }
 
-        if (stats) {
-            // Rellenar tarjetas
-            document.getElementById('val-ingresos').innerText = (stats.ingresos_totales || 0).toFixed(2) + ' €';
-            document.getElementById('val-ventas').innerText = stats.esims_vendidas || 0;
+        // Carga inicial
+        updateDashboard();
 
-            // Gráfica de Ingresos Reales Diarios
-            const histIngresos = stats.historico_ingresos || [];
-            const fechas = histIngresos.map(h => h.fecha);
-            const ingresos = histIngresos.map(h => h.ingresos);
-            drawChart('historyChart', 'line', fechas, ingresos, 'Ingresos (€)');
+        // Función principal de filtrado y dibujado
+        function updateDashboard() {
+            const start = document.getElementById('dateStart').value;
+            const end = document.getElementById('dateEnd').value;
 
-            // Gráfica Doughnut (Top 5)
-            const ranking = stats.ranking || [];
-            const prodNames = ranking.map(r => r.product_name);
-            const prodRevenue = ranking.map(r => r.recaudado);
-            drawChart('revenueChart', 'doughnut', prodNames, prodRevenue, 'Saldo Gastado');
+            // 1. Filtrar las fechas
+            const fOrders = rawData.o.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
+            const fUploads = rawData.u.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
+            const fRecharges = rawData.c.filter(item => (!start || item.d >= start) && (!end || item.d <= end));
 
-            // Lista detallada (Top Tarifas en texto)
+            // 2. Calcular totales
+            const totalRev = fRecharges.reduce((acc, curr) => acc + curr.r, 0); 
+            const totalQty = fOrders.reduce((acc, curr) => acc + curr.q, 0);
+
+            // Animación suave de números
+            document.getElementById('val-ingresos').innerText = totalRev.toFixed(2) + ' €';
+            document.getElementById('val-ventas').innerText = totalQty;
+
+            // 3. Preparar datos históricos (Curva de ingresos)
+            const historyMap = {};
+            fRecharges.forEach(c => {
+                historyMap[c.d] = (historyMap[c.d] || 0) + c.r;
+            });
+            const histDates = Object.keys(historyMap).sort();
+            const histValues = histDates.map(d => historyMap[d]);
+
+            // 4. Preparar datos Top Tarifas
+            const prodMap = {};
+            fOrders.forEach(o => {
+                prodMap[o.p] = (prodMap[o.p] || 0) + o.r; // Por gasto de saldo
+            });
+            const prods = Object.keys(prodMap).sort((a, b) => prodMap[b] - prodMap[a]).slice(0, 5);
+            const prodValues = prods.map(p => prodMap[p]);
+
+            // 5. Dibujar Gráficos
+            drawChart('historyChart', 'line', histDates, histValues, 'Ingresos por Recargas (€)');
+            drawChart('revenueChart', 'doughnut', prods, prodValues, 'Ventas');
+
+            // 6. Rellenar Tabla del Staff
+            const staffMap = {};
+            fUploads.forEach(u => {
+                if(!staffMap[u.a]) staffMap[u.a] = { q: 0, items: {} };
+                staffMap[u.a].q += u.q;
+                staffMap[u.a].items[u.p] = (staffMap[u.a].items[u.p] || 0) + u.q;
+            });
+
             const staffList = document.getElementById('staff-list');
             staffList.innerHTML = '';
-            
-            if(ranking.length === 0) {
-                staffList.innerHTML = '<li class="text-sm">No hay ventas registradas.</li>';
+            if(Object.keys(staffMap).length === 0) {
+                staffList.innerHTML = '<li class="text-sm">No hay subidas en este periodo.</li>';
             } else {
-                ranking.forEach(r => {
+                for (const [admin, data] of Object.entries(staffMap)) {
+                    let desc = '';
+                    for(const [p, q] of Object.entries(data.items)) desc += `${q}x ${p}, `;
+                    
                     const li = document.createElement('li');
                     li.innerHTML = `
                         <div style="display:flex; gap:12px; align-items:center;">
+                            <div class="avatar">${admin.substring(0,2).toUpperCase()}</div>
                             <div class="flex-col">
-                                <span class="text-bold">${r.product_name}</span>
-                                <span class="text-sm">${r.cantidad} uds vendidas</span>
+                                <span class="text-bold">${admin}</span>
+                                <span class="text-sm">${desc.slice(0, -2)}</span>
                             </div>
                         </div>
-                        <div class="text-accent">${r.recaudado.toFixed(2)} €</div>
+                        <div class="text-accent">+${data.q}</div>
                     `;
                     staffList.appendChild(li);
-                });
+                }
             }
-        } else {
-            document.body.innerHTML = '<h3 style="text-align:center; margin-top:50px;">No se recibieron datos. Abre esto desde el Bot.</h3>';
         }
 
+        // Función para recrear gráficos y que no se superpongan
         function drawChart(id, type, labels, data, labelName) {
             const ctx = document.getElementById(id).getContext('2d');
+            if (charts[id]) charts[id].destroy(); 
+            
             const isLine = type === 'line';
             let bg = isLine ? 'rgba(59, 130, 246, 0.2)' : ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
             let border = isLine ? '#3b82f6' : 'transparent';
