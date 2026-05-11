@@ -3,150 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Panel de Estadísticas</title>
+    <title>Dashboard Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-color: var(--tg-theme-bg-color, #f3f4f6);
-            --text-color: var(--tg-theme-text-color, #222);
+            --bg-color: var(--tg-theme-bg-color, #f4f6f8);
+            --text-color: var(--tg-theme-text-color, #1f2937);
             --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
-            --accent: var(--tg-theme-button-color, #007aff);
+            --accent: var(--tg-theme-button-color, #3b82f6);
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
             padding: 16px;
+            padding-bottom: 40px;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 22px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .card h2 {
-            margin: 0 0 8px 0;
-            font-size: 14px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .card .value {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--accent);
-        }
-        .list-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .list-card h2 {
-            margin: 0 0 16px 0;
-            font-size: 16px;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-        li:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        .prod-name { font-weight: 500; font-size: 15px; }
+        .header { margin-bottom: 20px; padding-left: 4px; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 700; }
+        .header p { margin: 4px 0 0 0; font-size: 14px; color: #6b7280; }
+        .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .card { background: linear-gradient(135deg, var(--card-bg) 0%, #f9fafb 100%); border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: center; }
+        .card.primary { background: linear-gradient(135deg, var(--accent) 0%, #2563eb 100%); color: white; }
+        .card.primary h2 { color: rgba(255,255,255,0.8); }
+        .card.primary .value { color: white; }
+        .card h2 { margin: 0 0 8px 0; font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .card .value { font-size: 26px; font-weight: 800; color: var(--text-color); }
+        .chart-container { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 24px; }
+        .chart-container h3 { margin: 0 0 16px 0; font-size: 16px; font-weight: 600; }
+        .canvas-wrapper { position: relative; height: 220px; width: 100%; }
+        ul { list-style: none; padding: 0; margin: 0; }
+        li { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e5e7eb; }
+        li:last-child { border-bottom: none; }
+        .prod-name { font-weight: 600; font-size: 14px; }
         .prod-stats { text-align: right; }
-        .prod-qty { display: block; font-size: 13px; color: #666; }
-        .prod-rev { font-weight: bold; font-size: 14px; color: var(--accent); }
+        .prod-rev { font-weight: 700; font-size: 15px; color: var(--accent); display: block;}
+        .prod-qty { font-size: 12px; color: #6b7280; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Dashboard Admin</h1>
+        <h1>Dashboard</h1>
+        <p>Resumen de rendimiento general</p>
     </div>
 
-    <div class="grid">
-        <div class="card">
-            <h2>Ingresos</h2>
+    <div class="grid-cards">
+        <div class="card primary">
+            <h2>Ingresos Totales</h2>
             <div class="value" id="val-ingresos">0.00 €</div>
         </div>
         <div class="card">
-            <h2>Ventas</h2>
-            <div class="value" id="val-ventas">0 uds</div>
+            <h2>eSIMs Vendidas</h2>
+            <div class="value" id="val-ventas">0</div>
         </div>
     </div>
 
-    <div class="list-card">
-        <h2>🔥 Top 5 Tarifas</h2>
-        <ul id="ranking-list">
-            <!-- Se llenará con JavaScript -->
-        </ul>
+    <!-- NUEVO: Gráfico Histórico -->
+    <div class="chart-container">
+        <h3>Histórico de Ingresos (Días)</h3>
+        <div class="canvas-wrapper">
+            <canvas id="historyChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h3>Ingresos por Tarifa</h3>
+        <div class="canvas-wrapper">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h3>Volumen de Ventas (Uds)</h3>
+        <div class="canvas-wrapper">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h3>🏆 Top 5 Tarifas</h3>
+        <ul id="ranking-list"></ul>
     </div>
 
     <script>
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand();
 
-        // Extraer los datos pasados por la URL
         const urlParams = new URLSearchParams(window.location.search);
         const dataParam = urlParams.get('data');
 
         if (dataParam) {
             try {
-                // Decodificar Base64 a JSON
                 const decodedStr = decodeURIComponent(escape(atob(dataParam)));
                 const stats = JSON.parse(decodedStr);
 
-                // Imprimir totales
                 document.getElementById('val-ingresos').innerText = stats.ventas_totales.toFixed(2) + " €";
-                document.getElementById('val-ventas').innerText = stats.esims_vendidas + " uds";
+                document.getElementById('val-ventas').innerText = stats.esims_vendidas;
 
-                // Imprimir ranking
+                // --- 1. Gráfico Histórico (Líneas) ---
+                if (stats.historico && stats.historico.length > 0) {
+                    const histLabels = stats.historico.map(h => h.fecha);
+                    const histIngresos = stats.historico.map(h => h.ingresos);
+
+                    const ctxHistory = document.getElementById('historyChart').getContext('2d');
+                    
+                    // Crear gradiente para la línea
+                    const gradient = ctxHistory.createLinearGradient(0, 0, 0, 220);
+                    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
+                    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+                    new Chart(ctxHistory, {
+                        type: 'line',
+                        data: {
+                            labels: histLabels,
+                            datasets: [{
+                                label: 'Ingresos Diarios (€)',
+                                data: histIngresos,
+                                borderColor: 'rgba(59, 130, 246, 1)',
+                                backgroundColor: gradient,
+                                fill: true,
+                                tension: 0.4, // Hace la curva suave
+                                borderWidth: 3,
+                                pointRadius: 4,
+                                pointBackgroundColor: 'rgba(59, 130, 246, 1)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: true },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }
+
+                // --- 2. Preparar Rankings ---
+                const bgColors = ['rgba(59,130,246,0.8)', 'rgba(16,185,129,0.8)', 'rgba(245,158,11,0.8)', 'rgba(139,92,246,0.8)', 'rgba(236,72,153,0.8)'];
                 const list = document.getElementById('ranking-list');
+                
                 if (stats.ranking && stats.ranking.length > 0) {
-                    list.innerHTML = "";
+                    const labels = [];
+                    const revenueData = [];
+                    const quantityData = [];
+
                     stats.ranking.forEach(item => {
+                        labels.push(item.product_name);
+                        revenueData.push(item.recaudado);
+                        quantityData.push(item.cantidad);
+
                         const li = document.createElement('li');
-                        li.innerHTML = `
-                            <div class="prod-name">${item.product_name}</div>
-                            <div class="prod-stats">
-                                <span class="prod-rev">${item.recaudado.toFixed(2)} €</span>
-                                <span class="prod-qty">${item.cantidad} vendidas</span>
-                            </div>
-                        `;
+                        li.innerHTML = `<div class="prod-name">${item.product_name}</div><div class="prod-stats"><span class="prod-rev">${item.recaudado.toFixed(2)} €</span><span class="prod-qty">${item.cantidad} uds</span></div>`;
                         list.appendChild(li);
                     });
+
+                    // Gráfico Anillo
+                    new Chart(document.getElementById('revenueChart').getContext('2d'), {
+                        type: 'doughnut',
+                        data: { labels: labels, datasets: [{ data: revenueData, backgroundColor: bgColors, borderWidth: 0 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: {size: 11} } } }, cutout: '70%' }
+                    });
+
+                    // Gráfico Barras
+                    new Chart(document.getElementById('salesChart').getContext('2d'), {
+                        type: 'bar',
+                        data: { labels: labels, datasets: [{ label: 'Unidades Vendidas', data: quantityData, backgroundColor: 'rgba(59, 130, 246, 0.8)', borderRadius: 4 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } } }
+                    });
+
                 } else {
                     list.innerHTML = "<li>No hay ventas registradas aún.</li>";
                 }
             } catch (error) {
-                console.error("Error procesando los datos:", error);
-                document.body.innerHTML += "<p style='color:red;text-align:center;'>Error al cargar las estadísticas.</p>";
+                console.error("Error:", error);
             }
         }
     </script>
