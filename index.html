@@ -8,16 +8,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #0b0c10;
-            --bg-card: #15161c;
-            --accent: #c7cbd6;
-            --accent-glow: rgba(173, 124, 255, 0.18);
+            /* Paleta Oscura/Metal Premium */
+            --bg-base: #0f0f11;
+            --bg-card: #1c1c1e;
+            --accent: #8e54e9;
+            --accent-glow: rgba(142, 84, 233, 0.2);
             --text-main: #ffffff;
-            --text-muted: #8b8e98;
-            --border-subtle: rgba(255, 255, 255, 0.05);
-            --glass-bg: rgba(21, 22, 28, 0.7);
-            --danger: #ff4757;
-            --success: #2ed573;
+            --text-muted: #8e8e93;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --danger: #ff453a;
+            --success: #32d74b;
         }
 
         * {
@@ -31,68 +31,57 @@
         body {
             background-color: var(--bg-base);
             color: var(--text-main);
-            padding-bottom: 40px;
+            /* Quitar el padding bottom exagerado porque ahora usamos el MainButton de Telegram */
+            padding-bottom: 20px; 
             overflow-x: hidden;
+            /* Scroll limpio, sin barras visibles en Webkit */
+        }
+        
+        ::-webkit-scrollbar {
+            display: none;
         }
 
         /* --- VIRTUAL CARD WALLET --- */
         .wallet-container {
             padding: 20px;
-            position: relative;
         }
 
         .virtual-card {
-            background: linear-gradient(135deg, #1e222d 0%, #0d0f14 100%);
+            background: linear-gradient(135deg, #2c2c2e 0%, #1c1c1e 100%);
             border-radius: 20px;
             padding: 24px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-subtle);
-        }
-
-        .virtual-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
-            transform: rotate(30deg);
-            pointer-events: none;
         }
 
         .card-header-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .card-logo {
             font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 1px;
+            font-weight: 700;
             color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .card-logo i {
-            color: #b89aff;
-        }
-
         .balance-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 13px;
             color: var(--text-muted);
             margin-bottom: 4px;
+            font-weight: 500;
         }
 
         .balance-amount {
-            font-size: 40px;
+            font-size: 36px;
             font-weight: 700;
-            letter-spacing: -1px;
             display: flex;
             align-items: baseline;
             gap: 4px;
@@ -107,158 +96,141 @@
         .quick-actions {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             padding: 0 20px;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
 
         .action-btn {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
-            background: none;
-            border: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 12px 0;
+            border-radius: 16px;
             color: var(--text-main);
             cursor: pointer;
-        }
-
-        .action-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 16px;
-            background: var(--bg-card);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: #b89aff;
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
             transition: transform 0.2s, background 0.2s;
         }
 
-        .action-btn:active .action-icon {
-            transform: scale(0.92);
-            background: #1c1d24;
+        .action-btn:active {
+            transform: scale(0.95);
+            background: #2c2c2e;
+        }
+
+        .action-btn i {
+            font-size: 20px;
+            color: var(--accent);
         }
 
         .action-label {
             font-size: 12px;
             font-weight: 500;
-            color: var(--text-muted);
         }
 
-        /* --- ESIM CAROUSEL --- */
-        .section-header {
+        /* --- PROVIDER SECTIONS (Vertical) --- */
+        .provider-section {
+            margin-bottom: 30px;
+        }
+
+        .provider-header {
             padding: 0 20px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
+            gap: 10px;
         }
 
-        .section-title {
+        .provider-title {
             font-size: 18px;
-            font-weight: 600;
-        }
-
-        .products-carousel {
-            display: flex;
-            overflow-x: auto;
-            padding: 0 20px 20px;
-            gap: 15px;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none; /* Firefox */
-        }
-
-        .products-carousel::-webkit-scrollbar {
-            display: none; /* Safari/Chrome */
-        }
-
-        .product-card {
-            flex: 0 0 240px; /* Fixed width for carousel items */
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px;
-            scroll-snap-align: start;
-            border: 1px solid var(--border-subtle);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(173,124,255,0.12);
-            color: #b89aff;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 10px;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            color: var(--text-main);
         }
 
         .provider-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: #1c1d24;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: var(--accent);
             font-size: 18px;
-            margin-bottom: 15px;
-            color: white;
+        }
+
+        /* Tarifas en horizontal dentro de cada compañía */
+        .products-row {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px 10px;
+            gap: 15px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .product-card {
+            flex: 0 0 160px; /* Tarjetas más compactas */
+            background: var(--bg-card);
+            border-radius: 18px;
+            padding: 16px;
+            scroll-snap-align: start;
+            border: 2px solid transparent; /* Borde transparente por defecto */
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.2), border-color 0.2s, background 0.2s;
+            cursor: pointer;
+        }
+
+        /* Efecto de selección animado */
+        .product-card.selected {
+            border-color: var(--accent);
+            background: #252528;
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 8px 20px var(--accent-glow);
+        }
+
+        /* Animación al tocar */
+        .product-card:active {
+            transform: scale(0.96);
         }
 
         .product-name {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             margin-bottom: 4px;
+            color: var(--text-main);
         }
 
         .product-desc {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 20px;
-            line-height: 1.4;
+            margin-bottom: 15px;
+            line-height: 1.3;
             flex-grow: 1;
         }
 
         .price-tag {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 15px;
+            color: var(--text-main);
         }
 
-        .btn-buy {
-            background: var(--text-main);
-            color: var(--bg-base);
-            border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 15px;
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(142, 84, 233, 0.15);
+            color: var(--accent);
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-size: 9px;
             font-weight: 700;
-            cursor: pointer;
-            width: 100%;
-            transition: transform 0.1s;
         }
 
-        .btn-buy:active {
-            transform: scale(0.96);
-        }
-
-        /* --- BOTTOM SHEET MODALS (iOS Style) --- */
+        /* --- BOTTOM SHEETS --- */
         .sheet-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
@@ -275,12 +247,11 @@
             bottom: -100%;
             left: 0; right: 0;
             background: var(--bg-card);
-            border-radius: 30px 30px 0 0;
+            border-radius: 24px 24px 0 0;
             padding: 24px;
             z-index: 1001;
             transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
-            border-top: 1px solid var(--border-subtle);
-            box-shadow: 0 -20px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
         }
 
         .bottom-sheet.active {
@@ -288,15 +259,16 @@
         }
 
         .sheet-handle {
-            width: 40px;
+            width: 36px;
             height: 4px;
-            background: rgba(255,255,255,0.2);
+            background: var(--text-muted);
             border-radius: 2px;
-            margin: 0 auto 24px;
+            margin: 0 auto 20px;
+            opacity: 0.5;
         }
 
         .sheet-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             margin-bottom: 8px;
             text-align: center;
@@ -311,10 +283,10 @@
 
         .input-styled {
             width: 100%;
-            background: var(--bg-base);
+            background: #0f0f11;
             border: 1px solid var(--border-subtle);
             padding: 16px;
-            border-radius: 14px;
+            border-radius: 12px;
             color: white;
             font-size: 16px;
             margin-bottom: 20px;
@@ -323,86 +295,28 @@
         }
 
         .input-styled:focus {
-            border-color: #b89aff;
+            border-color: var(--accent);
         }
 
         .btn-primary {
-            background: linear-gradient(180deg, rgba(42,42,50,0.96) 0%, rgba(25,25,31,0.98) 100%);
-            color: #eceef3;
+            background: var(--accent);
+            color: white;
             width: 100%;
             padding: 16px;
             border: none;
-            border-radius: 14px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 4px 15px var(--accent-glow);
+            transition: transform 0.1s;
         }
 
-        /* --- PURCHASE REVIEW SHEET --- */
-        .receipt-box {
-            background: var(--bg-base);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 24px;
+        .btn-primary:active {
+            transform: scale(0.96);
         }
 
-        .receipt-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-
-        .receipt-row:last-child {
-            margin-bottom: 0;
-            padding-top: 12px;
-            border-top: 1px dashed var(--border-subtle);
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .stepper {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--bg-base);
-            border-radius: 14px;
-            padding: 8px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border-subtle);
-        }
-
-        .step-btn {
-            background: var(--bg-card);
-            border: none;
-            color: white;
-            width: 40px; height: 40px;
-            border-radius: 10px;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .step-val {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .auth-fingerprint {
-            text-align: center;
-            margin: 20px 0;
-            color: #b89aff;
-            font-size: 40px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; transform: scale(0.95); }
-            50% { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 0.5; transform: scale(0.95); }
-        }
-
-        /* Toast Notifications */
+        /* Toast */
         .toast {
             position: fixed;
             top: 20px;
@@ -410,9 +324,9 @@
             transform: translateX(-50%) translateY(-20px);
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            padding: 14px 24px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 12px 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -420,6 +334,7 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s;
+            font-size: 14px;
         }
 
         .toast.show {
@@ -427,125 +342,21 @@
             visibility: visible;
             transform: translateX(-50%) translateY(0);
         }
-
-    
-        /* --- SPLASH SCREEN (iOS STYLE) --- */
-        #splash-screen {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            /* Desenfoque tipo cristal (Frosted Glass) */
-            background: rgba(11, 12, 16, 0.65);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.6s;
-        }
-
-        #splash-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(1.05); /* Efecto zoom out sutil al desaparecer */
-        }
-
-        .splash-logo-container {
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Contenedor preparado para tu imagen/logo */
-        .splash-logo-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 24px; /* Estilo icono iOS */
-            object-fit: cover;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: transparent; /* Fondo transparente para logos PNG */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .spinner {
-            /* Spinner estilo iOS (más fino y minimalista) */
-            width: 32px;
-            height: 32px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #ffffff;
-            border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-
-    
-        .metal-text {
-            background: linear-gradient(180deg, #f4f5f8 0%, #d9dce4 26%, #b9bec8 52%, #f0f2f6 76%, #d7dbe3 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            color: transparent;
-            text-shadow:
-                0 1px 0 rgba(255,255,255,0.10),
-                0 0 6px rgba(173,124,255,0.18),
-                0 0 14px rgba(173,124,255,0.10);
-        }
-        .metal-soft {
-            color: #d5d8e0;
-            text-shadow: 0 0 8px rgba(173,124,255,0.12);
-        }
-        .violet-ui {
-            color: #d9dbe3;
-            box-shadow: 0 0 0 1px rgba(173,124,255,0.18), 0 10px 24px rgba(0,0,0,0.26), 0 0 18px rgba(173,124,255,0.08);
-        }
-        .violet-btn {
-            background: linear-gradient(180deg, rgba(42,42,50,0.96) 0%, rgba(25,25,31,0.98) 100%);
-            color: #eceef3;
-            border: 1px solid rgba(173,124,255,0.26);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 16px rgba(173,124,255,0.08);
-        }
-        .violet-btn:active {
-            transform: scale(0.97);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 0 20px rgba(173,124,255,0.14);
-        }
-        .provider-icon i, .action-icon i, .card-logo i, .toast i {
-            color: #b89aff !important;
-            text-shadow: 0 0 10px rgba(173,124,255,0.18);
-        }
-    
     </style>
 </head>
 <body>
 
-    <!-- SPLASH SCREEN (iOS STYLE) -->
-    <div id="splash-screen">
-        <div class="splash-logo-container">
-            <img src="1000007639.png" alt="eSim Market Logo" class="splash-logo-img" id="customLogo" style="width:180px;height:180px;border-radius:24px;object-fit:contain;box-shadow:none;background:transparent;filter:drop-shadow(0 0 20px rgba(173,124,255,0.18));">
-        </div>
-        <div class="spinner"></div>
-    </div>
-
-
     <!-- VIRTUAL WALLET CARD -->
     <div class="wallet-container">
-        <div class="virtual-card violet-ui">
+        <div class="virtual-card">
             <div class="card-header-top">
-                <div class="card-logo metal-text" style="display:flex;align-items:center;gap:10px;">
-                    <img src="1000007639.png" alt="Logo" style="width:28px;height:28px;object-fit:contain;background:transparent;filter:drop-shadow(0 0 10px rgba(173,124,255,0.15));">
+                <div class="card-logo">
+                    <i class="fa-solid fa-microchip" style="color: var(--accent);"></i>
                     <span>eSim Market</span>
                 </div>
-                <i class="fa-brands fa-nfc-symbol" style="font-size: 20px; opacity: 0.5;"></i>
             </div>
-
-            <div class="balance-label metal-soft">Fondos Disponibles</div>
-            <div class="balance-amount metal-text" id="balance-display">
+            <div class="balance-label">Fondos Disponibles</div>
+            <div class="balance-amount" id="balance-display">
                 0,00 <span class="balance-currency">€</span>
             </div>
         </div>
@@ -554,78 +365,43 @@
     <!-- QUICK ACTIONS -->
     <div class="quick-actions">
         <button class="action-btn" onclick="openSheet('rechargeSheet')">
-            <div class="action-icon violet-ui"><i class="fa-solid fa-plus"></i></div>
-            <span class="action-label metal-soft">Recargar</span>
+            <i class="fa-solid fa-plus"></i>
+            <span class="action-label">Recargar</span>
         </button>
         <button class="action-btn" onclick="openSheet('couponSheet')">
-            <div class="action-icon violet-ui"><i class="fa-solid fa-ticket"></i></div>
-            <span class="action-label metal-soft">Cupones</span>
+            <i class="fa-solid fa-ticket"></i>
+            <span class="action-label">Cupones</span>
         </button>
         <button class="action-btn" onclick="tg.close()">
-            <div class="action-icon violet-ui"><i class="fa-solid fa-xmark"></i></div>
-            <span class="action-label metal-soft">Cerrar</span>
+            <i class="fa-solid fa-xmark"></i>
+            <span class="action-label">Cerrar</span>
         </button>
     </div>
 
-    <!-- ESIM CAROUSEL -->
-    <div class="section-header">
-        <div class="section-title metal-text">Tarifas Globales</div>
-    </div>
-
-    <div class="products-carousel" id="productsGrid">
-        <!-- Products will be injected here by JS -->
+    <!-- CONTENEDOR DE COMPAÑÍAS -->
+    <div id="providersContainer">
+        <!-- JS inyectará las secciones aquí -->
     </div>
 
     <!-- OVERLAY -->
     <div class="sheet-overlay" id="overlay" onclick="closeAllSheets()"></div>
 
     <!-- RECHARGE SHEET -->
-    <div class="bottom-sheet violet-ui" id="rechargeSheet">
+    <div class="bottom-sheet" id="rechargeSheet">
         <div class="sheet-handle"></div>
-        <h2 class="sheet-title metal-text">Añadir Fondos</h2>
-        <p class="sheet-subtitle metal-soft">Introduce la cantidad que deseas depositar</p>
-
+        <h2 class="sheet-title">Añadir Fondos</h2>
+        <p class="sheet-subtitle">Introduce la cantidad que deseas depositar</p>
         <input type="number" id="recharge-amount" class="input-styled" placeholder="0.00" min="10" step="1">
-        <button class="btn-primary violet-btn" onclick="confirmRecharge()">Continuar al Pago</button>
+        <button class="btn-primary" onclick="confirmRecharge()">Continuar al Pago</button>
     </div>
 
     <!-- COUPON SHEET -->
-    <div class="bottom-sheet violet-ui" id="couponSheet">
+    <div class="bottom-sheet" id="couponSheet">
         <div class="sheet-handle"></div>
-        <h2 class="sheet-title metal-text">Canjear Cupón</h2>
-        <p class="sheet-subtitle metal-soft">Introduce el código promocional</p>
-
+        <h2 class="sheet-title">Canjear Cupón</h2>
+        <p class="sheet-subtitle">Introduce el código promocional</p>
         <input type="text" id="coupon-code" class="input-styled" placeholder="CÓDIGO">
-        <button class="btn-primary violet-btn" onclick="applyCoupon()">Validar Código</button>
-    </div>
-
-    <!-- PURCHASE SHEET -->
-    <div class="bottom-sheet violet-ui" id="purchaseSheet">
-        <div class="sheet-handle"></div>
-        <h2 class="sheet-title metal-text">Confirmar Compra</h2>
-
-        <div class="stepper">
-            <button class="step-btn violet-btn" onclick="updatePurchaseQty(-1)">-</button>
-            <div class="step-val"><span id="review-qty">1</span> uds.</div>
-            <button class="step-btn violet-btn" onclick="updatePurchaseQty(1)">+</button>
-        </div>
-
-        <div class="receipt-box">
-            <div class="receipt-row">
-                <span style="color: var(--text-muted)">Producto</span>
-                <span id="review-name" style="font-weight:500;">Vodafone 90GB</span>
-            </div>
-            <div class="receipt-row">
-                <span style="color: var(--text-muted)">Precio Ud.</span>
-                <span id="review-unit-price">12.99 €</span>
-            </div>
-            <div class="receipt-row">
-                <span>Total a pagar</span>
-                <span id="review-total" style="color: var(--accent)">12.99 €</span>
-            </div>
-        </div>
-
-        <button class="btn-primary violet-btn" onclick="executePurchase()" id="btn-execute">Confirmar Pago</button>
+        <button class="btn-primary" onclick="applyCoupon()">Validar Código</button>
     </div>
 
     <!-- TOAST -->
@@ -638,15 +414,18 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
         tg.ready();
-        tg.setHeaderColor('#0b0c10'); // Darkest bg color
-        tg.setBackgroundColor('#0b0c10');
+        tg.setHeaderColor('#0f0f11');
+        tg.setBackgroundColor('#0f0f11');
 
-        // --- STATE ---
+        // Configuración del botón principal nativo
+        tg.MainButton.text = "COMPRAR TARIFA";
+        tg.MainButton.color = "#8e54e9";
+        tg.MainButton.textColor = "#ffffff";
+
         let userBalance = 0;
         let products = [];
-        let currentPurchase = { id: null, qty: 1, basePrice: 0, hasBulk: false, tiers: [], name: '' };
+        let selectedProduct = null;
 
-        // --- INIT ---
         function initApp() {
             const urlParams = new URLSearchParams(window.location.search);
             userBalance = parseFloat(urlParams.get('balance')) || 0;
@@ -657,40 +436,81 @@
                 try {
                     const decoded = decodeURIComponent(productsRaw);
                     const botProducts = JSON.parse(atob(decoded));
-
                     products = botProducts.map(p => ({
                         id: p.id,
                         name: p.name,
                         description: p.description || "Conexión premium",
                         basePrice: parseFloat(p.unit_price) || 0,
-                        hasBulkDiscount: (p.id === "vodafone" || p.id === "lebara"),
-                        tiers: (p.id === "vodafone" || p.id === "lebara") ? [
-                            { min: 20, price: 10 }, { min: 10, price: 11 },
-                            { min: 5, price: 12 }, { min: 2, price: 12.5 }
-                        ] : []
+                        hasBulkDiscount: (p.id.toLowerCase().includes('vodafone') || p.id.toLowerCase().includes('lebara')),
+                        provider: getProviderName(p.name)
                     }));
                 } catch (e) { console.error("Error parse:", e); }
             }
 
             if(products.length === 0) {
-                // Fallback for testing
+                // Datos de prueba si se abre fuera del bot
                 products = [
-                    { id: "vodafone", name: "Vodafone", description: "90GB Llamadas", basePrice: 12.99, hasBulkDiscount: true, tiers: [{min: 2, price: 12.5}] },
-                    { id: "lebara", name: "Lebara", description: "90GB Data Only", basePrice: 12.99, hasBulkDiscount: false, tiers: [] }
+                    { id: "vodafone1", name: "Vodafone 50GB", description: "Llamadas ilimitadas", basePrice: 10.00, hasBulkDiscount: true, provider: "Vodafone" },
+                    { id: "vodafone2", name: "Vodafone 90GB", description: "Llamadas ilimitadas", basePrice: 12.99, hasBulkDiscount: true, provider: "Vodafone" },
+                    { id: "lebara1", name: "Lebara 40GB", description: "Datos móviles", basePrice: 9.99, hasBulkDiscount: false, provider: "Lebara" },
+                    { id: "movistar1", name: "Movistar Viaje", description: "Uso internacional", basePrice: 15.00, hasBulkDiscount: false, provider: "Otros" }
                 ];
             }
-
             
-            renderCarousel();
-
-            // Remove splash screen after 800ms to give a smooth loading effect
-            setTimeout(() => {
-                document.getElementById('splash-screen').classList.add('hidden');
-            }, 800);
+            renderProviders();
         }
 
+        // Función para clasificar por compañía basada en el nombre
+        function getProviderName(productName) {
+            const name = productName.toLowerCase();
+            if (name.includes('vodafone')) return "Vodafone";
+            if (name.includes('lebara')) return "Lebara";
+            if (name.includes('movistar')) return "Movistar";
+            if (name.includes('orange')) return "Orange";
+            return "Otras Tarifas";
+        }
 
-        // --- UI UPDATES ---
+        // Función para obtener el icono según la compañía
+        function getProviderIcon(provider) {
+            if (provider === "Vodafone") return "fa-bolt";
+            if (provider === "Lebara") return "fa-globe";
+            if (provider === "Movistar") return "fa-m";
+            return "fa-signal";
+        }
+
+        function renderProviders() {
+            // Agrupar productos por compañía
+            const grouped = products.reduce((acc, p) => {
+                if (!acc[p.provider]) acc[p.provider] = [];
+                acc[p.provider].push(p);
+                return acc;
+            }, {});
+
+            const container = document.getElementById("providersContainer");
+            let html = "";
+
+            for (const [provider, items] of Object.entries(grouped)) {
+                html += `
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <i class="fa-solid ${getProviderIcon(provider)} provider-icon"></i>
+                        <span class="provider-title">${provider}</span>
+                    </div>
+                    <div class="products-row">
+                        ${items.map(p => `
+                            <div class="product-card" id="card-${p.id}" onclick="selectProduct('${p.id}')">
+                                ${p.hasBulkDiscount ? `<div class="product-badge">OFERTA</div>` : ''}
+                                <div class="product-name">${p.name}</div>
+                                <div class="product-desc">${p.description}</div>
+                                <div class="price-tag">${formatPrice(p.basePrice)} €</div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
         function formatPrice(val) {
             return val.toFixed(2).replace(".", ",");
         }
@@ -699,6 +519,52 @@
             document.getElementById("balance-display").innerHTML = `${formatPrice(userBalance)} <span class="balance-currency">€</span>`;
         }
 
+        // Al tocar una tarifa
+        function selectProduct(id) {
+            // Vibración nativa
+            tg.HapticFeedback.impactOccurred('light');
+
+            // Quitar clase selected de todas
+            document.querySelectorAll('.product-card').forEach(el => el.classList.remove('selected'));
+            
+            // Añadir clase a la tocada
+            document.getElementById(`card-${id}`).classList.add('selected');
+            
+            // Guardar selección
+            selectedProduct = products.find(p => p.id === id);
+
+            // Mostrar el botón principal de Telegram
+            tg.MainButton.text = `COMPRAR ${selectedProduct.name} - ${formatPrice(selectedProduct.basePrice)} €`;
+            tg.MainButton.show();
+        }
+
+        // Evento al pulsar el botón nativo de Telegram
+        tg.onEvent('mainButtonClicked', function() {
+            if (!selectedProduct) return;
+            tg.HapticFeedback.impactOccurred('medium');
+
+            if (userBalance < selectedProduct.basePrice) {
+                showToast("Saldo Insuficiente. Recarga primero.");
+                // Opcional: Vibración de error
+                tg.HapticFeedback.notificationOccurred('error');
+                return;
+            }
+
+            const payload = {
+                type: "purchase",
+                productId: selectedProduct.id,
+                productName: selectedProduct.name,
+                quantity: 1,
+                unitPrice: selectedProduct.basePrice,
+                totalPrice: selectedProduct.basePrice,
+                originalTotal: selectedProduct.basePrice,
+                discountAmount: 0
+            };
+
+            tg.sendData(JSON.stringify(payload));
+            tg.close();
+        });
+
         function showToast(msg) {
             const t = document.getElementById("toastMsg");
             document.getElementById("toastText").innerText = msg;
@@ -706,113 +572,24 @@
             setTimeout(() => t.classList.remove("show"), 3000);
         }
 
-        // --- SHEETS LOGIC ---
         function openSheet(id) {
+            tg.HapticFeedback.impactOccurred('light');
             document.getElementById("overlay").classList.add("active");
             document.getElementById(id).classList.add("active");
+            tg.MainButton.hide(); // Ocultamos el botón principal si abrimos un modal
         }
 
         function closeAllSheets() {
             document.getElementById("overlay").classList.remove("active");
             document.querySelectorAll(".bottom-sheet").forEach(s => s.classList.remove("active"));
-        }
-
-        // --- CAROUSEL RENDER ---
-        function renderCarousel() {
-            const container = document.getElementById("productsGrid");
-            container.innerHTML = products.map(p => {
-                const icon = p.name.toLowerCase().includes('vodafone') ? 'fa-bolt' : 'fa-signal';
-                const badge = p.hasBulkDiscount ? `<div class="product-badge">OFERTA VOL.</div>` : '';
-
-                return `
-                <div class="product-card violet-ui">
-                    ${badge}
-                    <div class="provider-icon"><i class="fa-solid ${icon}"></i></div>
-                    <div class="product-name metal-text">${p.name}</div>
-                    <div class="product-desc metal-soft">${p.description}</div>
-                    <div class="price-tag metal-text">${formatPrice(p.basePrice)} €</div>
-                    <button class="btn-buy violet-btn" onclick="initPurchase('${p.id}')">Seleccionar</button>
-                </div>
-                `;
-            }).join("");
-        }
-
-        // --- PURCHASE LOGIC ---
-        function getUnitPrice(prod, qty) {
-            if(!prod.hasBulkDiscount) return prod.basePrice;
-            for(let t of prod.tiers) {
-                if(qty >= t.min) return t.price;
-            }
-            return prod.basePrice;
-        }
-
-        function initPurchase(id) {
-            const p = products.find(x => x.id === id);
-            currentPurchase = { ...p, qty: 1 };
-            updatePurchaseUI();
-            openSheet('purchaseSheet');
-        }
-
-        function updatePurchaseQty(delta) {
-            let newQty = currentPurchase.qty + delta;
-            if(newQty < 1) newQty = 1;
-            if(newQty > 50) newQty = 50;
-            currentPurchase.qty = newQty;
-            updatePurchaseUI();
-        }
-
-        function updatePurchaseUI() {
-            const unitP = getUnitPrice(currentPurchase, currentPurchase.qty);
-            const totalP = unitP * currentPurchase.qty;
-
-            document.getElementById('review-qty').innerText = currentPurchase.qty;
-            document.getElementById('review-name').innerText = currentPurchase.name;
-            document.getElementById('review-unit-price').innerText = formatPrice(unitP) + " €";
-            document.getElementById('review-total').innerText = formatPrice(totalP) + " €";
-
-            const btn = document.getElementById('btn-execute');
-            if(userBalance < totalP) {
-                btn.style.background = "var(--bg-card)";
-                btn.style.color = "var(--danger)";
-                btn.style.border = "1px solid var(--danger)";
-                btn.innerText = "Saldo Insuficiente";
-                btn.onclick = () => showToast("Recarga saldo primero");
-            } else {
-                btn.style.background = "var(--accent)";
-                btn.style.color = "white";
-                btn.style.border = "none";
-                btn.innerText = "Confirmar Pago";
-                btn.onclick = executePurchase;
+            // Si hay algo seleccionado, volvemos a mostrar el botón
+            if (selectedProduct) {
+                tg.MainButton.show();
             }
         }
 
-        function executePurchase() {
-            const unitP = getUnitPrice(currentPurchase, currentPurchase.qty);
-            const totalP = unitP * currentPurchase.qty;
-            const originalTotal = currentPurchase.basePrice * currentPurchase.qty;
-
-            if(userBalance < totalP) {
-                showToast("Saldo Insuficiente");
-                return;
-            }
-
-            const payload = {
-                type: "purchase",
-                productId: currentPurchase.id,
-                productName: currentPurchase.name,
-                quantity: currentPurchase.qty,
-                unitPrice: unitP,
-                totalPrice: totalP,
-                originalTotal: originalTotal,
-                discountAmount: originalTotal - totalP
-            };
-
-            tg.sendData(JSON.stringify(payload));
-            tg.close();
-        }
-
-        // --- ACTIONS ---
         function confirmRecharge() {
+            tg.HapticFeedback.impactOccurred('medium');
             const val = parseFloat(document.getElementById("recharge-amount").value);
             if(isNaN(val) || val <= 0) {
                 showToast("Importe inválido");
@@ -823,6 +600,7 @@
         }
 
         function applyCoupon() {
+            tg.HapticFeedback.impactOccurred('medium');
             const code = document.getElementById("coupon-code").value.trim();
             if(!code) {
                 showToast("Introduce un código");
@@ -832,7 +610,6 @@
             tg.close();
         }
 
-        // Run
         initApp();
     </script>
 </body>
