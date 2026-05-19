@@ -1,953 +1,919 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>eSIM Market</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-  <style>
-    :root {
-      --bg-base: #07080d;
-      --bg-deep: #0a0b12;
-      --bg-card: rgba(16, 18, 27, 0.9);
-      --bg-card-2: rgba(20, 22, 34, 0.95);
-      --accent: #a875ff;
-      --accent-2: #7b61ff;
-      --accent-glow: rgba(168, 117, 255, 0.24);
-      --text-main: #f7f7fb;
-      --text-soft: #d7d8e3;
-      --text-muted: #8e91a3;
-      --border-subtle: rgba(255,255,255,0.07);
-      --success: #32d583;
-      --danger: #ff5b6e;
-      --shadow-lg: 0 18px 50px rgba(0,0,0,0.45);
-      --shadow-md: 0 10px 24px rgba(0,0,0,0.28);
-      --radius-xl: 26px;
-      --radius-lg: 22px;
-      --radius-md: 18px;
-      --radius-sm: 14px;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
-      background:
-        radial-gradient(circle at 50% 10%, rgba(123,97,255,0.18), transparent 28%),
-        radial-gradient(circle at 50% 100%, rgba(168,117,255,0.16), transparent 30%),
-        linear-gradient(180deg, #05060a 0%, #090b13 46%, #06070c 100%);
-      color: var(--text-main);
-      min-height: 100%;
-      overflow-x: hidden;
-    }
-
-    body {
-      padding-bottom: 34px;
-    }
-
-    .page-shell {
-      position: relative;
-    }
-
-    .page-shell::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 50% 22%, rgba(168,117,255,0.08), transparent 24%),
-        radial-gradient(circle at 50% 78%, rgba(76,52,168,0.08), transparent 30%);
-      z-index: 0;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 30;
-      padding: 16px 16px 10px;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      background: linear-gradient(180deg, rgba(6,7,12,0.88), rgba(6,7,12,0.54), transparent);
-    }
-
-    .topbar-inner {
-      display: grid;
-      grid-template-columns: 44px 1fr 44px;
-      align-items: center;
-      gap: 10px;
-      max-width: 460px;
-      margin: 0 auto;
-    }
-
-    .icon-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: 1px solid var(--border-subtle);
-      background: rgba(17, 19, 28, 0.7);
-      color: var(--text-soft);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.05);
-    }
-
-    .brand-title {
-      text-align: center;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--text-main);
-    }
-
-    .content {
-      position: relative;
-      z-index: 1;
-      max-width: 460px;
-      margin: 0 auto;
-      padding: 8px 14px 20px;
-    }
-
-    .hero-card {
-      position: relative;
-      overflow: hidden;
-      border-radius: 24px;
-      padding: 18px 18px 20px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background:
-        radial-gradient(circle at 50% 8%, rgba(168,117,255,0.24), transparent 34%),
-        radial-gradient(circle at 50% 100%, rgba(136,92,255,0.34), transparent 38%),
-        linear-gradient(180deg, rgba(17,18,29,0.96) 0%, rgba(11,12,18,0.98) 100%);
-      box-shadow: 0 14px 34px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.04);
-      margin-bottom: 14px;
-      min-height: 190px;
-    }
-
-    .hero-card::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: -54px;
-      transform: translateX(-50%);
-      width: 132%;
-      height: 132px;
-      border-radius: 50%;
-      border: 1px solid rgba(184,154,255,0.22);
-      box-shadow: 0 0 26px rgba(168,117,255,0.18), 0 0 50px rgba(123,97,255,0.14);
-      opacity: 0.95;
-    }
-
-    .hero-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 35%, transparent 60%, rgba(168,117,255,0.05));
-      pointer-events: none;
-    }
-
-    .hero-chip {
-      width: 46px;
-      height: 46px;
-      margin: 0 auto 14px;
-      border-radius: 16px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
-      border: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #dacfff;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 24px rgba(90,65,180,0.18);
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-label {
-      text-align: center;
-      font-size: 11px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: #bab7c9;
-      margin-bottom: 8px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-balance {
-      text-align: center;
-      font-size: 62px;
-      line-height: 0.95;
-      font-weight: 760;
-      letter-spacing: -0.06em;
-      color: #fafaff;
-      text-shadow: 0 0 16px rgba(168,117,255,0.1);
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-balance span {
-      font-size: 22px;
-      color: #cfd0dc;
-      font-weight: 600;
-      margin-left: 4px;
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .action-pill {
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(19,20,31,0.92), rgba(12,13,22,0.96));
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 18px rgba(0,0,0,0.24);
-      min-height: 54px;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 600;
-    }
-
-    .action-pill i {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: #cfbeff;
-      background: rgba(168,117,255,0.08);
-      box-shadow: 0 0 12px rgba(168,117,255,0.1);
-      font-size: 12px;
-    }
-
-    .action-pill.secondary {
-      opacity: 0.9;
-    }
-
-    .filter-strip {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 2px 2px 8px;
-      margin-bottom: 14px;
-      scrollbar-width: none;
-    }
-
-    .filter-strip::-webkit-scrollbar { display: none; }
-
-    .filter-chip {
-      white-space: nowrap;
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(20,22,33,0.82);
-      color: var(--text-soft);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .provider-section {
-      margin-bottom: 18px;
-    }
-
-    .provider-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 4px 6px 10px;
-    }
-
-    .provider-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .provider-header i {
-      color: #c28cff;
-      font-size: 18px;
-      text-shadow: 0 0 12px rgba(168,117,255,0.18);
-    }
-
-    .provider-title {
-      font-size: 17px;
-      font-weight: 750;
-      letter-spacing: -0.02em;
-    }
-
-    .provider-meta {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
-
-    .products-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .product-card {
-      position: relative;
-      background:
-        linear-gradient(180deg, rgba(17,18,28,0.97) 0%, rgba(10,11,19,0.99) 100%);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 18px;
-      min-height: 178px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 12px 26px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.04);
-      overflow: hidden;
-    }
-
-    .product-card::before {
-      content: "";
-      position: absolute;
-      left: -20%;
-      right: -20%;
-      bottom: -54px;
-      height: 90px;
-      border-radius: 50%;
-      border-top: 1px solid rgba(168,117,255,0.22);
-      box-shadow: 0 -10px 26px rgba(123,97,255,0.08);
-      opacity: 0.8;
-      pointer-events: none;
-    }
-
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .product-name {
-      font-size: 15px;
-      font-weight: 720;
-      line-height: 1.15;
-      color: var(--text-main);
-    }
-
-    .product-badge {
-      flex-shrink: 0;
-      font-size: 10px;
-      font-weight: 800;
-      color: #e8ddff;
-      letter-spacing: 0.05em;
-      padding: 5px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(168,117,255,0.18);
-      background: rgba(168,117,255,0.1);
-    }
-
-    .product-desc {
-      font-size: 12px;
-      line-height: 1.35;
-      color: #a8abbb;
-      margin-bottom: 16px;
-      min-height: 32px;
-    }
-
-    .price-zone {
-      margin-top: auto;
-      margin-bottom: 12px;
-    }
-
-    .price-tag {
-      font-size: 16px;
-      color: #c8c9d6;
-      margin-bottom: 2px;
-    }
-
-    .price-main {
-      font-size: 18px;
-      font-weight: 780;
-      letter-spacing: -0.03em;
-      color: #f7f6ff;
-    }
-
-    .btn-buy {
-      width: 100%;
-      min-height: 42px;
-      border: 1px solid rgba(168,117,255,0.18);
-      border-radius: 13px;
-      background: linear-gradient(180deg, rgba(34,35,47,0.96), rgba(20,21,31,0.98));
-      color: #f1f1f6;
-      font-size: 14px;
-      font-weight: 700;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 14px rgba(168,117,255,0.08);
-    }
-
-    .btn-buy:active,
-    .action-pill:active,
-    .icon-btn:active,
-    .filter-chip:active,
-    .btn-primary:active,
-    .step-btn:active {
-      transform: scale(0.97);
-    }
-
-    .sheet-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(4,5,10,0.58);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all .28s ease;
-    }
-
-    .sheet-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    .bottom-sheet {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: -100%;
-      z-index: 1001;
-      background: linear-gradient(180deg, rgba(18,19,29,0.98), rgba(10,11,18,1));
-      border-top-left-radius: 28px;
-      border-top-right-radius: 28px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 18px 18px 28px;
-      box-shadow: 0 -24px 48px rgba(0,0,0,0.55);
-      transition: bottom .38s cubic-bezier(.22,.9,.3,1);
-    }
-
-    .bottom-sheet.active { bottom: 0; }
-
-    .sheet-handle {
-      width: 44px;
-      height: 4px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.16);
-      margin: 0 auto 18px;
-    }
-
-    .sheet-title {
-      font-size: 22px;
-      font-weight: 760;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
-    .sheet-subtitle {
-      font-size: 14px;
-      color: var(--text-muted);
-      text-align: center;
-      margin-bottom: 22px;
-      line-height: 1.4;
-    }
-
-    .input-styled {
-      width: 100%;
-      min-height: 52px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(7,8,13,0.88);
-      color: var(--text-main);
-      font-size: 16px;
-      padding: 0 16px;
-      outline: none;
-      margin-bottom: 16px;
-    }
-
-    .input-styled:focus {
-      border-color: rgba(168,117,255,0.38);
-      box-shadow: 0 0 0 4px rgba(168,117,255,0.08);
-    }
-
-    .btn-primary {
-      width: 100%;
-      min-height: 52px;
-      border-radius: 16px;
-      border: 1px solid rgba(168,117,255,0.22);
-      background: linear-gradient(180deg, rgba(39,40,54,0.98), rgba(23,24,33,1));
-      color: #f2f2f8;
-      font-size: 15px;
-      font-weight: 700;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 18px rgba(168,117,255,0.08);
-    }
-
-    .receipt-box {
-      background: rgba(8,9,15,0.92);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 18px;
-    }
-
-    .receipt-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      font-size: 14px;
-      margin-bottom: 12px;
-    }
-
-    .receipt-row:last-child {
-      margin-bottom: 0;
-      padding-top: 12px;
-      border-top: 1px dashed rgba(255,255,255,0.1);
-      font-weight: 760;
-      font-size: 18px;
-    }
-
-    .stepper {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      background: rgba(8,9,15,0.92);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 18px;
-      padding: 8px;
-      margin-bottom: 16px;
-    }
-
-    .step-btn {
-      width: 42px;
-      height: 42px;
-      border: 1px solid rgba(168,117,255,0.18);
-      border-radius: 13px;
-      background: linear-gradient(180deg, rgba(35,36,48,0.96), rgba(21,22,30,0.98));
-      color: #fff;
-      font-size: 19px;
-    }
-
-    .step-val {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .toast {
-      position: fixed;
-      top: 18px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-16px);
-      z-index: 9999;
-      background: rgba(18,19,29,0.96);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 999px;
-      padding: 12px 18px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.45);
-      color: var(--text-main);
-      opacity: 0;
-      visibility: hidden;
-      transition: all .28s ease;
-    }
-
-    .toast.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast i { color: #c28cff; }
-
-    #splash-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: rgba(7,8,13,0.72);
-      backdrop-filter: blur(26px);
-      -webkit-backdrop-filter: blur(26px);
-      transition: opacity .6s ease, visibility .6s ease, transform .6s ease;
-    }
-
-    #splash-screen.hidden {
-      opacity: 0;
-      visibility: hidden;
-      transform: scale(1.04);
-    }
-
-    .splash-logo-container {
-      margin-bottom: 28px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .splash-logo-img {
-      width: 160px;
-      height: 160px;
-      object-fit: contain;
-      filter: drop-shadow(0 0 18px rgba(168,117,255,0.18));
-    }
-
-    .spinner {
-      width: 30px;
-      height: 30px;
-      border: 3px solid rgba(255,255,255,0.08);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    @media (max-width: 390px) {
-      .hero-balance { font-size: 54px; }
-      .products-row { gap: 10px; }
-      .product-card { padding: 13px; }
-    }
-  </style>
+<head><script type='text/javascript' src='https://ppl-ai-code-interpreter-files.s3.amazonaws.com/9sJXUYUT36oD01ljMgqV0wwixqZqs2K4cKP59ZJKLRXGw-eTa8ar0lTkEf39j75VjZQdKXqpmdQLnwciekGo1AA263UmxuVj7LQ23P897HBgO6bXtQasMVL5Py71vcXLad6D7I6P8zmfBUs8P93EH7_QVFyPHCab2yw4AIyDlQE1aQqyyVxPRLLz5R2JrYPvp-2g2n3A0MOiqAqlu_INgTUOkRZDVmASpt4k_XCsAY0qK1PnuZCbTPdCX3wvctohai0n11JFChpSa0pcA_nd05B_1j9HWtq8LX8pioyiTdZN-0bR0hrjKxb4hafH6LVnCo41MYUfXj0CXLCKVbc0AIalVL8Ik901qUd1tMvna_Q3Jy7YTsVrg01_ztRxx5qBA_T_qZ7JsKfWvc8Hv3mc33yIeu-Y4ZCfQkdvWdC31J5HqueT4_2Gp4gz-IxdQ6X7Z0M3W7wUkDc_pjTelBZ72dzGoxaYQK5VY0BGfdOCbuVqvfX19mrj4l2LiF8N2nX6yfgDhO3ZdMseDm5rZAuKJrXSvvLOsp631kmjVTcPRMRN9Mlu7deLGyr4_7YAle_n2E2UYFPnMGkjcxkPiQImhj56UJw6DtKiZAr-PoBihnoOXcIHDY2dSe-XiWkjC3hhQH9ssKQBaThz-aqQGEU4ea7rakMQUDdoG-6gVaDbVzTv_9geKwGTLYeGIKufueyG-yiQfJXVuEVna5aw9xtZljjA3H7a6TKxatDNAlKLdpu1VommFpbt7yuiWh3Xiu-FdJqEwBKV2IDVdcGeiIGEP_r3Ei0QHd5ANWdCBq0SRlRlHJkvV8fSCnUu6bBilIIW_TGGzG8dL4qsWmqI53FHUZMY_5SFrK0Bhm25kQzGJlaUruitGLDO2DlK8nKGVlu3V8f45vrTk5cOQt9gMgyuBeo4S2UWXvOyhdsO7-gvllUgC--tIEKAU5JKJZPw5A6EltFcw9lRDMi7a2zcgA1pD53TTspjx-80Jz_8wZRUQ0YNsWUnhkSzMAJxYgzK_mhWwhpl-Nqmk4NJ4bcW4XcJAzEEuKmffo1s7f4PkILetm1_ji1eg8HQez_DOgsBhrVe0DED9xPRhJ8sqq_rapN8smqRlIDj0vcyLwQ7RXaC_SBRIvhCYaN7TIKGkbbot6IBP3p2kZ6OhNdjzFLREtadiCHeXxFW_T5FswyYBBYjWzzt8ZZklAv4lVspdCQAFS-S05YA9HSonxkRK5tPpLcbg-kB_3CzK8OtwGTLUdjn3XtQVu9LyBNYPfulSP4bjCzNSy913ImaplMfY8Tek28gHLebGLxYqGyEOCABvnU7BLMaHppKaR3JvZO-E2R_8S-pm28TwJwta67dRLuGGaoS2yz9SEZ7Q4XLfbR7mIjMMosqyEfaNF9POwFWqELRIrOnNRdtlVjCwfNOM87sOSvBzrVmAfUWoaAtRjHlkvE4NZADWwotZEtIloxBGFQXiBFWbHSnX_hMwFwxtMxL11fNg3E0FmW6b4yWToIjRNcHOZXqFclLY3tJHkA3pMJdy0oF90rFajrUanTBX5t_qMNNGRZfLmIY_mAHUMC0iOmi-MVFhLdLdaLukqHkXaVQw9Y13SvJozNV8J6EDMWLQesLsnVom5fFDkzMj_miiYJ32mLrZ42SKLEV0tyokhkIyQyf6UE3pcThZQwz28KzdDYemx0rmt5HHR4z13yHqiLgJVx2JKd_uWgyap3ei91iyKzOwomxbCH5v9dTSTJWULJEFQuntp3L3U0BiptTl6lKJ09Ob-o1uSgBui7siVvBe4IYE-qalN3hjaOxFxOzug7dh30KWBB5r3loObBd-gG8ZEFi2IMJRU3C2JcUqusjPkEwB4LLosQ3L1hN1T3MoX_ZDcS5Lq4Wg15TzTBhQ-yTA-Y-SADXBr0A2JqkU40rYbW0y24039-5YfpWO54C-yp4epseGklGNOUYNKMEJO7fQHdljzZBDNvc2AYkKHw3qT3TH2P0uigv-oC-RlynWrKw3DHx9LBEDfG7b-mbQhLpsepcZ1mFb2iyLflMxdmXlM407M2_3xPVsroNw6GffheTT5bi0a0N0qrQRtyf8N7Cu3VP6utDp7bp3lVjQ2SGujqz1uyg8jhBa8pVRAyJYfr67uqIzC4ziiHoUUuwayr9gH_-3weiKiMilARbawf9XZ9adrBKQy0JdgvoGCNzwnPn3AOnOM3Zq_rJk_o8kbpHrv94b-JUX9ELWSGGgxKLqjETm2AiH1Kl24T8_yL3upZiDUSaAAYHkYl7-VO6xWWI1fDcMivP8heHf5HbMsKu5fXe5XRhbXVEmZ7g1wQEQwnXCdHMrZumvvSR8oVljdRawuNE2jgWHqFn2ezOtmmTIEwYYg8ADOXWDdKXm1cT0hGdHidVYvOrLEStb8ITvPQ3iVqqHeecECQjCS5R_s1s0dEQQuEy3iDzkGicCUXyzdYP_L9Yjwr9OfC6mOiEl65yEwlgy0kHYWdLyuZQEI8ZxZu9HkN2ctQGGt1PCqdzXQTA015inShmKtEBDVDLBxb1TSc9CMTDHTYRHz-9400u9SPW4FKxKsEeosXFu9XDGdAgniYYoz-BA7aFgaWO5lsrRCzsE8QiXe9zLrrbJv_bltq-QkvTKANb4RwZKFXbZ6trRWsoXTuc2n79OLJOtUk2AlT8E7xZNsFN2VL_NwovBkIFxIZaJZVfJAX5pZBcb4w'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>eSIM Market</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0b0c10;
+            --bg-card: #15161c;
+            --accent: #c7cbd6;
+            --accent-glow: rgba(173, 124, 255, 0.18);
+            --text-main: #ffffff;
+            --text-muted: #8b8e98;
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --glass-bg: rgba(21, 22, 28, 0.7);
+            --danger: #ff4757;
+            --success: #2ed573;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            padding-bottom: 40px;
+            overflow-x: hidden;
+        }
+
+        /* --- VIRTUAL CARD WALLET --- */
+        .wallet-container {
+            padding: 20px;
+            position: relative;
+        }
+
+        .virtual-card {
+            background: linear-gradient(135deg, #1e222d 0%, #0d0f14 100%);
+            border-radius: 20px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .virtual-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+
+        .card-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .card-logo {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-logo i {
+            color: #b89aff;
+        }
+
+        .balance-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .balance-amount {
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .balance-currency {
+            font-size: 20px;
+            color: var(--text-muted);
+        }
+
+        /* --- QUICK ACTIONS --- */
+        .quick-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 0 20px;
+            margin-bottom: 35px;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            background: var(--bg-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #b89aff;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .action-btn:active .action-icon {
+            transform: scale(0.92);
+            background: #1c1d24;
+        }
+
+        .action-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        
+        /* --- PROVIDER SECTIONS (Vertical) --- */
+        .provider-section {
+            margin-bottom: 25px;
+        }
+
+        .provider-header {
+            padding: 0 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .provider-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .provider-header i {
+            color: #b89aff;
+            font-size: 18px;
+        }
+
+        /* Products container row per provider */
+        .products-row {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px 20px;
+            gap: 15px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+
+        .products-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Small modifications to existing product-card */
+        .product-card {
+            flex: 0 0 200px;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.2), box-shadow 0.2s, border 0.2s;
+        }
+
+        .product-card:active {
+            transform: scale(0.96);
+        }
+
+        /* --- ESIM CAROUSEL --- */
+        .section-header {
+            padding: 0 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .products-carousel {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px 20px;
+            gap: 15px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .products-carousel::-webkit-scrollbar {
+            display: none; /* Safari/Chrome */
+        }
+
+        .product-card {
+            flex: 0 0 240px; /* Fixed width for carousel items */
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 20px;
+            scroll-snap-align: start;
+            border: 1px solid var(--border-subtle);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(173,124,255,0.12);
+            color: #b89aff;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .provider-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #1c1d24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .product-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .product-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+
+        .price-tag {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .btn-buy {
+            background: var(--text-main);
+            color: var(--bg-base);
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.1s;
+        }
+
+        .btn-buy:active {
+            transform: scale(0.96);
+        }
+
+        /* --- BOTTOM SHEET MODALS (iOS Style) --- */
+        .sheet-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sheet-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: -100%;
+            left: 0; right: 0;
+            background: var(--bg-card);
+            border-radius: 30px 30px 0 0;
+            padding: 24px;
+            z-index: 1001;
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+            border-top: 1px solid var(--border-subtle);
+            box-shadow: 0 -20px 40px rgba(0,0,0,0.5);
+        }
+
+        .bottom-sheet.active {
+            bottom: 0;
+        }
+
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin: 0 auto 24px;
+        }
+
+        .sheet-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .sheet-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .input-styled {
+            width: 100%;
+            background: var(--bg-base);
+            border: 1px solid var(--border-subtle);
+            padding: 16px;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-styled:focus {
+            border-color: #b89aff;
+        }
+
+        .btn-primary {
+            background: linear-gradient(180deg, rgba(42,42,50,0.96) 0%, rgba(25,25,31,0.98) 100%);
+            color: #eceef3;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        /* --- PURCHASE REVIEW SHEET --- */
+        .receipt-box {
+            background: var(--bg-base);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .receipt-row:last-child {
+            margin-bottom: 0;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-subtle);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-base);
+            border-radius: 14px;
+            padding: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .step-btn {
+            background: var(--bg-card);
+            border: none;
+            color: white;
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .step-val {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .auth-fingerprint {
+            text-align: center;
+            margin: 20px 0;
+            color: #b89aff;
+            font-size: 40px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.5; transform: scale(0.95); }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 14px 24px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+    
+        /* --- SPLASH SCREEN (iOS STYLE) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            /* Desenfoque tipo cristal (Frosted Glass) */
+            background: rgba(11, 12, 16, 0.65);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.6s;
+        }
+
+        #splash-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(1.05); /* Efecto zoom out sutil al desaparecer */
+        }
+
+        .splash-logo-container {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Contenedor preparado para tu imagen/logo */
+        .splash-logo-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px; /* Estilo icono iOS */
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: transparent; /* Fondo transparente para logos PNG */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            /* Spinner estilo iOS (más fino y minimalista) */
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+    
+        .metal-text {
+            background: linear-gradient(180deg, #f4f5f8 0%, #d9dce4 26%, #b9bec8 52%, #f0f2f6 76%, #d7dbe3 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            text-shadow:
+                0 1px 0 rgba(255,255,255,0.10),
+                0 0 6px rgba(173,124,255,0.18),
+                0 0 14px rgba(173,124,255,0.10);
+        }
+        .metal-soft {
+            color: #d5d8e0;
+            text-shadow: 0 0 8px rgba(173,124,255,0.12);
+        }
+        .violet-ui {
+            color: #d9dbe3;
+            box-shadow: 0 0 0 1px rgba(173,124,255,0.18), 0 10px 24px rgba(0,0,0,0.26), 0 0 18px rgba(173,124,255,0.08);
+        }
+        .violet-btn {
+            background: linear-gradient(180deg, rgba(42,42,50,0.96) 0%, rgba(25,25,31,0.98) 100%);
+            color: #eceef3;
+            border: 1px solid rgba(173,124,255,0.26);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 16px rgba(173,124,255,0.08);
+        }
+        .violet-btn:active {
+            transform: scale(0.97);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 0 20px rgba(173,124,255,0.14);
+        }
+        .provider-icon i, .action-icon i, .card-logo i, .toast i {
+            color: #b89aff !important;
+            text-shadow: 0 0 10px rgba(173,124,255,0.18);
+        }
+    
+    </style>
 </head>
 <body>
-  <div id="splash-screen">
-    <div class="splash-logo-container">
-      <img src="1000007639.png" alt="eSim Market Logo" class="splash-logo-img" id="customLogo" />
-    </div>
-    <div class="spinner"></div>
-  </div>
 
-  <div class="page-shell">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <button class="icon-btn" type="button" aria-label="Menú">
-          <i class="fa-solid fa-bars"></i>
-        </button>
-        <div class="brand-title">eSim Market</div>
-        <button class="icon-btn" type="button" aria-label="Perfil">
-          <i class="fa-regular fa-user"></i>
-        </button>
-      </div>
-    </header>
-
-    <main class="content">
-      <section class="hero-card">
-        <div class="hero-chip"><i class="fa-solid fa-sim-card"></i></div>
-        <div class="hero-label">Fondos disponibles</div>
-        <div class="hero-balance" id="balance-display">0,00 <span>€</span></div>
-      </section>
-
-      <section class="quick-actions">
-        <button class="action-pill" onclick="openSheet('rechargeSheet')">
-          <i class="fa-solid fa-plus"></i><span>Recargar</span>
-        </button>
-        <button class="action-pill" onclick="openSheet('couponSheet')">
-          <i class="fa-solid fa-ticket"></i><span>Cupones</span>
-        </button>
-        <button class="action-pill secondary" onclick="tg.close()">
-          <i class="fa-solid fa-xmark"></i><span>Salir</span>
-        </button>
-      </section>
-
-      <section class="filter-strip">
-        <button class="filter-chip" type="button">Baratas</button>
-        <button class="filter-chip" type="button">Más datos</button>
-        <button class="filter-chip" type="button">Europa</button>
-      </section>
-
-      <div id="providersContainer"></div>
-    </main>
-  </div>
-
-  <div class="sheet-overlay" id="overlay" onclick="closeAllSheets()"></div>
-
-  <div class="bottom-sheet" id="rechargeSheet">
-    <div class="sheet-handle"></div>
-    <h2 class="sheet-title">Añadir Fondos</h2>
-    <p class="sheet-subtitle">Introduce la cantidad que deseas depositar</p>
-    <input type="number" id="recharge-amount" class="input-styled" placeholder="0.00" min="10" step="1" />
-    <button class="btn-primary" onclick="tg.HapticFeedback.impactOccurred('medium'); confirmRecharge()">Continuar al Pago</button>
-  </div>
-
-  <div class="bottom-sheet" id="couponSheet">
-    <div class="sheet-handle"></div>
-    <h2 class="sheet-title">Canjear Cupón</h2>
-    <p class="sheet-subtitle">Introduce el código promocional</p>
-    <input type="text" id="coupon-code" class="input-styled" placeholder="CÓDIGO" />
-    <button class="btn-primary" onclick="tg.HapticFeedback.impactOccurred('medium'); applyCoupon()">Validar Código</button>
-  </div>
-
-  <div class="bottom-sheet" id="purchaseSheet">
-    <div class="sheet-handle"></div>
-    <h2 class="sheet-title">Confirmar Compra</h2>
-    <div class="stepper">
-      <button class="step-btn" onclick="updatePurchaseQty(-1)">−</button>
-      <div class="step-val"><span id="review-qty">1</span> uds.</div>
-      <button class="step-btn" onclick="updatePurchaseQty(1)">+</button>
+    <!-- SPLASH SCREEN (iOS STYLE) -->
+    <div id="splash-screen">
+        <div class="splash-logo-container">
+            <img src="1000007639.png" alt="eSim Market Logo" class="splash-logo-img" id="customLogo" style="width:180px;height:180px;border-radius:24px;object-fit:contain;box-shadow:none;background:transparent;filter:drop-shadow(0 0 20px rgba(173,124,255,0.18));">
+        </div>
+        <div class="spinner"></div>
     </div>
 
-    <div class="receipt-box">
-      <div class="receipt-row"><span style="color: var(--text-muted);">Producto</span><span id="review-name" style="font-weight:600;">Vodafone 90GB</span></div>
-      <div class="receipt-row"><span style="color: var(--text-muted);">Precio Ud.</span><span id="review-unit-price">12,99 €</span></div>
-      <div class="receipt-row"><span>Total a pagar</span><span id="review-total">12,99 €</span></div>
+
+    <!-- VIRTUAL WALLET CARD -->
+    <div class="wallet-container">
+        <div class="virtual-card violet-ui">
+            <div class="card-header-top">
+                <div class="card-logo metal-text" style="display:flex;align-items:center;gap:10px;">
+                    <img src="1000007639.png" alt="Logo" style="width:28px;height:28px;object-fit:contain;background:transparent;filter:drop-shadow(0 0 10px rgba(173,124,255,0.15));">
+                    <span>eSim Market</span>
+                </div>
+                <i class="fa-brands fa-nfc-symbol" style="font-size: 20px; opacity: 0.5;"></i>
+            </div>
+
+            <div class="balance-label metal-soft">Fondos Disponibles</div>
+            <div class="balance-amount metal-text" id="balance-display">
+                0,00 <span class="balance-currency">€</span>
+            </div>
+        </div>
     </div>
 
-    <button class="btn-primary" onclick="tg.HapticFeedback.impactOccurred('medium'); executePurchase()" id="btn-execute">Confirmar Pago</button>
-  </div>
+    <!-- QUICK ACTIONS -->
+    <div class="quick-actions">
+        <button class="action-btn" onclick="openSheet('rechargeSheet')">
+            <div class="action-icon violet-ui"><i class="fa-solid fa-plus"></i></div>
+            <span class="action-label metal-soft">Recargar</span>
+        </button>
+        <button class="action-btn" onclick="openSheet('couponSheet')">
+            <div class="action-icon violet-ui"><i class="fa-solid fa-ticket"></i></div>
+            <span class="action-label metal-soft">Cupones</span>
+        </button>
+        <button class="action-btn" onclick="tg.close()">
+            <div class="action-icon violet-ui"><i class="fa-solid fa-xmark"></i></div>
+            <span class="action-label metal-soft">Cerrar</span>
+        </button>
+    </div>
 
-  <div class="toast" id="toastMsg">
-    <i class="fa-solid fa-circle-info"></i>
-    <span id="toastText">Mensaje</span>
-  </div>
+    <!-- PROVIDERS CONTAINER -->
+    <div id="providersContainer">
+        <!-- Providers and horizontal rows injected by JS -->
+    </div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    tg.ready();
-    tg.setHeaderColor('#07080d');
-    tg.setBackgroundColor('#07080d');
+    <!-- OVERLAY -->
+    <div class="sheet-overlay" id="overlay" onclick="closeAllSheets()"></div>
 
-    let userBalance = 0;
-    let products = [];
-    let currentPurchase = { id: null, qty: 1, basePrice: 0, hasBulkDiscount: false, tiers: [], name: '' };
+    <!-- RECHARGE SHEET -->
+    <div class="bottom-sheet violet-ui" id="rechargeSheet">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title metal-text">Añadir Fondos</h2>
+        <p class="sheet-subtitle metal-soft">Introduce la cantidad que deseas depositar</p>
 
-    function initApp() {
-      const urlParams = new URLSearchParams(window.location.search);
-      userBalance = parseFloat(urlParams.get('balance')) || 0;
-      updateBalanceUI();
+        <input type="number" id="recharge-amount" class="input-styled" placeholder="0.00" min="10" step="1">
+        <button class="btn-primary violet-btn" onclick="tg.HapticFeedback.impactOccurred('medium'); confirmRecharge()">Continuar al Pago</button>
+    </div>
 
-      const productsRaw = urlParams.get('products');
-      if (productsRaw) {
-        try {
-          const decoded = decodeURIComponent(productsRaw);
-          const botProducts = JSON.parse(atob(decoded));
-          products = botProducts.map(p => ({
-            id: p.id,
-            name: p.name,
-            description: p.description || 'Conexión premium',
-            basePrice: parseFloat(p.unit_price) || 0,
-            hasBulkDiscount: p.id === 'vodafone' || p.id === 'lebara',
-            tiers: p.id === 'vodafone' || p.id === 'lebara'
-              ? [{ min: 20, price: 10 }, { min: 10, price: 11 }, { min: 5, price: 12 }, { min: 2, price: 12.5 }]
-              : []
-          }));
-        } catch (e) {
-          console.error('Error parseando products:', e);
+    <!-- COUPON SHEET -->
+    <div class="bottom-sheet violet-ui" id="couponSheet">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title metal-text">Canjear Cupón</h2>
+        <p class="sheet-subtitle metal-soft">Introduce el código promocional</p>
+
+        <input type="text" id="coupon-code" class="input-styled" placeholder="CÓDIGO">
+        <button class="btn-primary violet-btn" onclick="tg.HapticFeedback.impactOccurred('medium'); applyCoupon()">Validar Código</button>
+    </div>
+
+    <!-- PURCHASE SHEET -->
+    <div class="bottom-sheet violet-ui" id="purchaseSheet">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title metal-text">Confirmar Compra</h2>
+
+        <div class="stepper">
+            <button class="step-btn violet-btn" onclick="updatePurchaseQty(-1)">-</button>
+            <div class="step-val"><span id="review-qty">1</span> uds.</div>
+            <button class="step-btn violet-btn" onclick="updatePurchaseQty(1)">+</button>
+        </div>
+
+        <div class="receipt-box">
+            <div class="receipt-row">
+                <span style="color: var(--text-muted)">Producto</span>
+                <span id="review-name" style="font-weight:500;">Vodafone 90GB</span>
+            </div>
+            <div class="receipt-row">
+                <span style="color: var(--text-muted)">Precio Ud.</span>
+                <span id="review-unit-price">12.99 €</span>
+            </div>
+            <div class="receipt-row">
+                <span>Total a pagar</span>
+                <span id="review-total" style="color: var(--accent)">12.99 €</span>
+            </div>
+        </div>
+
+        <button class="btn-primary violet-btn" onclick="tg.HapticFeedback.impactOccurred('medium'); executePurchase()" id="btn-execute">Confirmar Pago</button>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toastMsg">
+        <i class="fa-solid fa-circle-info" style="color: var(--accent)"></i>
+        <span id="toastText">Mensaje</span>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        tg.setHeaderColor('#0b0c10'); // Darkest bg color
+        tg.setBackgroundColor('#0b0c10');
+
+        // --- STATE ---
+        let userBalance = 0;
+        let products = [];
+        let currentPurchase = { id: null, qty: 1, basePrice: 0, hasBulk: false, tiers: [], name: '' };
+
+        // --- INIT ---
+        function initApp() {
+            const urlParams = new URLSearchParams(window.location.search);
+            userBalance = parseFloat(urlParams.get('balance')) || 0;
+            updateBalanceUI();
+
+            const productsRaw = urlParams.get('products');
+            if (productsRaw) {
+                try {
+                    const decoded = decodeURIComponent(productsRaw);
+                    const botProducts = JSON.parse(atob(decoded));
+
+                    products = botProducts.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        description: p.description || "Conexión premium",
+                        basePrice: parseFloat(p.unit_price) || 0,
+                        hasBulkDiscount: (p.id === "vodafone" || p.id === "lebara"),
+                        tiers: (p.id === "vodafone" || p.id === "lebara") ? [
+                            { min: 20, price: 10 }, { min: 10, price: 11 },
+                            { min: 5, price: 12 }, { min: 2, price: 12.5 }
+                        ] : []
+                    }));
+                } catch (e) { console.error("Error parse:", e); }
+            }
+
+            if(products.length === 0) {
+                // Fallback for testing
+                products = [
+                    { id: "vodafone", name: "Vodafone", description: "90GB Llamadas", basePrice: 12.99, hasBulkDiscount: true, tiers: [{min: 2, price: 12.5}] },
+                    { id: "lebara", name: "Lebara", description: "90GB Data Only", basePrice: 12.99, hasBulkDiscount: false, tiers: [] }
+                ];
+            }
+
+            
+            renderCarousel();
+
+            // Remove splash screen after 800ms to give a smooth loading effect
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hidden');
+            }, 800);
         }
-      }
 
-      if (products.length === 0) {
-        products = [
-          { id: 'vodafone', name: 'Vodafone', description: '90GB · llamadas ilimitadas', basePrice: 12.99, hasBulkDiscount: true, tiers: [{ min: 2, price: 12.5 }] },
-          { id: 'vodafone_plus', name: 'Vodafone+', description: '270GB · 1000 min internacionales', basePrice: 16.99, hasBulkDiscount: false, tiers: [] },
-          { id: 'lebara', name: 'Lebara', description: '90GB · llamadas ilimitadas', basePrice: 12.99, hasBulkDiscount: true, tiers: [{ min: 2, price: 12.5 }] },
-          { id: 'lebara_plus', name: 'Lebara+', description: '270GB · 1000 min internacionales', basePrice: 16.99, hasBulkDiscount: false, tiers: [] }
-        ];
-      }
 
-      renderProviders();
-      setTimeout(() => {
-        document.getElementById('splash-screen').classList.add('hidden');
-      }, 800);
-    }
+        // --- UI UPDATES ---
+        function formatPrice(val) {
+            return val.toFixed(2).replace(".", ",");
+        }
 
-    function formatPrice(val) {
-      return (val || 0).toFixed(2).replace('.', ',') + ' €';
-    }
+        function updateBalanceUI() {
+            document.getElementById("balance-display").innerHTML = `${formatPrice(userBalance)} <span class="balance-currency">€</span>`;
+        }
 
-    function updateBalanceUI() {
-      document.getElementById('balance-display').innerHTML = `${(userBalance || 0).toFixed(2).replace('.', ',')} <span>€</span>`;
-    }
+        function showToast(msg) {
+            const t = document.getElementById("toastMsg");
+            document.getElementById("toastText").innerText = msg;
+            t.classList.add("show");
+            setTimeout(() => t.classList.remove("show"), 3000);
+        }
 
-    function showToast(msg) {
-      const t = document.getElementById('toastMsg');
-      document.getElementById('toastText').innerText = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 3000);
-    }
+        // --- SHEETS LOGIC ---
+        function openSheet(id) {
+            document.getElementById("overlay").classList.add("active");
+            document.getElementById(id).classList.add("active");
+        }
 
-    function openSheet(id) {
-      document.getElementById('overlay').classList.add('active');
-      document.getElementById(id).classList.add('active');
-    }
+        function closeAllSheets() {
+            document.getElementById("overlay").classList.remove("active");
+            document.querySelectorAll(".bottom-sheet").forEach(s => s.classList.remove("active"));
+        }
 
-    function closeAllSheets() {
-      document.getElementById('overlay').classList.remove('active');
-      document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('active'));
-    }
+        // --- PROVIDERS RENDER ---
+        function getProviderName(productName) {
+            const name = productName.toLowerCase();
+            if (name.includes('vodafone')) return "Vodafone";
+            if (name.includes('lebara')) return "Lebara";
+            if (name.includes('movistar')) return "Movistar";
+            if (name.includes('orange')) return "Orange";
+            return "Otras Tarifas";
+        }
 
-    function getProviderName(productName) {
-      const name = (productName || '').toLowerCase();
-      if (name.includes('vodafone')) return 'Vodafone';
-      if (name.includes('lebara')) return 'Lebara';
-      if (name.includes('movistar')) return 'Movistar';
-      if (name.includes('orange')) return 'Orange';
-      return 'Otras Tarifas';
-    }
+        function getProviderIcon(provider) {
+            if (provider === "Vodafone") return "fa-bolt";
+            if (provider === "Lebara") return "fa-globe";
+            if (provider === "Movistar") return "fa-m";
+            return "fa-signal";
+        }
 
-    function getProviderIcon(provider) {
-      if (provider === 'Vodafone') return 'fa-bolt';
-      if (provider === 'Lebara') return 'fa-globe';
-      if (provider === 'Movistar') return 'fa-m';
-      return 'fa-signal';
-    }
+        function renderCarousel() {
+            // Reusing the same init function call, but we render grouped by provider
+            const grouped = products.reduce((acc, p) => {
+                const provider = getProviderName(p.name);
+                if (!acc[provider]) acc[provider] = [];
+                acc[provider].push(p);
+                return acc;
+            }, {});
 
-    function getBadgeText(product) {
-      if (product.hasBulkDiscount) return 'OFERTA';
-      if ((product.name || '').toLowerCase().includes('plus')) return 'TOP';
-      return '';
-    }
+            const container = document.getElementById("providersContainer");
+            let html = "";
 
-    function renderProviders() {
-      const grouped = products.reduce((acc, p) => {
-        const provider = getProviderName(p.name);
-        if (!acc[provider]) acc[provider] = [];
-        acc[provider].push(p);
-        return acc;
-      }, {});
-
-      const container = document.getElementById('providersContainer');
-      let html = '';
-
-      for (const [provider, items] of Object.entries(grouped)) {
-        html += `
-          <section class="provider-section">
-            <div class="provider-header">
-              <div class="provider-left">
-                <i class="fa-solid ${getProviderIcon(provider)}"></i>
-                <div class="provider-title">${provider}</div>
-              </div>
-              <div class="provider-meta">${items.length} tarifas</div>
-            </div>
-            <div class="products-row">
-              ${items.map(p => {
-                const badge = getBadgeText(p) ? `<div class="product-badge">${getBadgeText(p)}</div>` : '';
-                return `
-                  <article class="product-card" onclick="tg.HapticFeedback.impactOccurred('light'); initPurchase('${p.id}')">
-                    <div class="card-top">
-                      <div class="product-name">${p.name}</div>
-                      ${badge}
+            for (const [provider, items] of Object.entries(grouped)) {
+                html += `
+                <div class="provider-section">
+                    <div class="provider-header">
+                        <i class="fa-solid ${getProviderIcon(provider)}"></i>
+                        <span class="provider-title metal-text">${provider}</span>
                     </div>
-                    <div class="product-desc">${p.description}</div>
-                    <div class="price-zone">
-                      <div class="price-main">${formatPrice(p.basePrice)}</div>
+                    <div class="products-row">
+                        ${items.map(p => {
+                            const badge = p.hasBulkDiscount ? `<div class="product-badge">OFERTA</div>` : '';
+                            return `
+                            <div class="product-card violet-ui" onclick="tg.HapticFeedback.impactOccurred('light'); initPurchase('${p.id}')">
+                                ${badge}
+                                <div class="product-name metal-text" style="font-size:18px;">${p.name}</div>
+                                <div class="product-desc metal-soft" style="font-size:12px;">${p.description}</div>
+                                <div class="price-tag metal-text" style="font-size:18px;">${formatPrice(p.basePrice)} €</div>
+                                <button class="btn-buy violet-btn" style="margin-top:10px; padding:10px; font-size:14px;" onclick="event.stopPropagation(); tg.HapticFeedback.impactOccurred('light'); initPurchase('${p.id}')">Comprar</button>
+                            </div>
+                            `;
+                        }).join("")}
                     </div>
-                    <button class="btn-buy" onclick="event.stopPropagation(); tg.HapticFeedback.impactOccurred('light'); initPurchase('${p.id}')">Comprar</button>
-                  </article>
-                `;
-              }).join('')}
-            </div>
-          </section>
-        `;
-      }
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
 
-      container.innerHTML = html;
-    }
+        // --- PURCHASE LOGIC ---
+        function getUnitPrice(prod, qty) {
+            if(!prod.hasBulkDiscount) return prod.basePrice;
+            for(let t of prod.tiers) {
+                if(qty >= t.min) return t.price;
+            }
+            return prod.basePrice;
+        }
 
-    function getUnitPrice(prod, qty) {
-      if (!prod.hasBulkDiscount) return prod.basePrice;
-      for (let t of prod.tiers) {
-        if (qty >= t.min) return t.price;
-      }
-      return prod.basePrice;
-    }
+        function initPurchase(id) {
+            const p = products.find(x => x.id === id);
+            currentPurchase = { ...p, qty: 1 };
+            updatePurchaseUI();
+            openSheet('purchaseSheet');
+        }
 
-    function initPurchase(id) {
-      const p = products.find(x => String(x.id) === String(id));
-      if (!p) return;
-      currentPurchase = { ...p, qty: 1 };
-      updatePurchaseUI();
-      openSheet('purchaseSheet');
-    }
+        function updatePurchaseQty(delta) {
+            tg.HapticFeedback.impactOccurred('light');
+            let newQty = currentPurchase.qty + delta;
+            if(newQty < 1) newQty = 1;
+            if(newQty > 50) newQty = 50;
+            currentPurchase.qty = newQty;
+            updatePurchaseUI();
+        }
 
-    function updatePurchaseQty(delta) {
-      tg.HapticFeedback.impactOccurred('light');
-      let newQty = currentPurchase.qty + delta;
-      if (newQty < 1) newQty = 1;
-      if (newQty > 50) newQty = 50;
-      currentPurchase.qty = newQty;
-      updatePurchaseUI();
-    }
+        function updatePurchaseUI() {
+            const unitP = getUnitPrice(currentPurchase, currentPurchase.qty);
+            const totalP = unitP * currentPurchase.qty;
 
-    function updatePurchaseUI() {
-      const unitP = getUnitPrice(currentPurchase, currentPurchase.qty);
-      const totalP = unitP * currentPurchase.qty;
-      document.getElementById('review-qty').innerText = currentPurchase.qty;
-      document.getElementById('review-name').innerText = currentPurchase.name;
-      document.getElementById('review-unit-price').innerText = formatPrice(unitP);
-      document.getElementById('review-total').innerText = formatPrice(totalP);
+            document.getElementById('review-qty').innerText = currentPurchase.qty;
+            document.getElementById('review-name').innerText = currentPurchase.name;
+            document.getElementById('review-unit-price').innerText = formatPrice(unitP) + " €";
+            document.getElementById('review-total').innerText = formatPrice(totalP) + " €";
 
-      const btn = document.getElementById('btn-execute');
-      if (userBalance < totalP) {
-        btn.style.background = 'rgba(20,21,29,0.96)';
-        btn.style.color = 'var(--danger)';
-        btn.style.border = '1px solid var(--danger)';
-        btn.innerText = 'Saldo insuficiente';
-        btn.onclick = () => showToast('Recarga saldo primero');
-      } else {
-        btn.style.background = 'linear-gradient(180deg, rgba(39,40,54,0.98), rgba(23,24,33,1))';
-        btn.style.color = '#f2f2f8';
-        btn.style.border = '1px solid rgba(168,117,255,0.22)';
-        btn.innerText = 'Confirmar Pago';
-        btn.onclick = executePurchase;
-      }
-    }
+            const btn = document.getElementById('btn-execute');
+            if(userBalance < totalP) {
+                btn.style.background = "var(--bg-card)";
+                btn.style.color = "var(--danger)";
+                btn.style.border = "1px solid var(--danger)";
+                btn.innerText = "Saldo Insuficiente";
+                btn.onclick = () => showToast("Recarga saldo primero");
+            } else {
+                btn.style.background = "var(--accent)";
+                btn.style.color = "white";
+                btn.style.border = "none";
+                btn.innerText = "Confirmar Pago";
+                btn.onclick = executePurchase;
+            }
+        }
 
-    function executePurchase() {
-      const unitP = getUnitPrice(currentPurchase, currentPurchase.qty);
-      const totalP = unitP * currentPurchase.qty;
-      const originalTotal = currentPurchase.basePrice * currentPurchase.qty;
-      if (userBalance < totalP) {
-        showToast('Saldo insuficiente');
-        return;
-      }
-      const payload = {
-        type: 'purchase',
-        productId: currentPurchase.id,
-        productName: currentPurchase.name,
-        quantity: currentPurchase.qty,
-        unitPrice: unitP,
-        totalPrice: totalP,
-        originalTotal: originalTotal,
-        discountAmount: originalTotal - totalP
-      };
-      tg.sendData(JSON.stringify(payload));
-      tg.close();
-    }
+        function executePurchase() {
+            const unitP = getUnitPrice(currentPurchase, currentPurchase.qty);
+            const totalP = unitP * currentPurchase.qty;
+            const originalTotal = currentPurchase.basePrice * currentPurchase.qty;
 
-    function confirmRecharge() {
-      const val = parseFloat(document.getElementById('recharge-amount').value);
-      if (isNaN(val) || val <= 0) {
-        showToast('Importe inválido');
-        return;
-      }
-      tg.sendData(JSON.stringify({ type: 'add_balance', amount: val }));
-      tg.close();
-    }
+            if(userBalance < totalP) {
+                showToast("Saldo Insuficiente");
+                return;
+            }
 
-    function applyCoupon() {
-      const code = document.getElementById('coupon-code').value.trim();
-      if (!code) {
-        showToast('Introduce un código');
-        return;
-      }
-      tg.sendData(JSON.stringify({ type: 'apply_coupon', code }));
-      tg.close();
-    }
+            const payload = {
+                type: "purchase",
+                productId: currentPurchase.id,
+                productName: currentPurchase.name,
+                quantity: currentPurchase.qty,
+                unitPrice: unitP,
+                totalPrice: totalP,
+                originalTotal: originalTotal,
+                discountAmount: originalTotal - totalP
+            };
 
-    initApp();
-  </script>
+            tg.sendData(JSON.stringify(payload));
+            tg.close();
+        }
+
+        // --- ACTIONS ---
+        function confirmRecharge() {
+            const val = parseFloat(document.getElementById("recharge-amount").value);
+            if(isNaN(val) || val <= 0) {
+                showToast("Importe inválido");
+                return;
+            }
+            tg.sendData(JSON.stringify({ type: "add_balance", amount: val }));
+            tg.close();
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById("coupon-code").value.trim();
+            if(!code) {
+                showToast("Introduce un código");
+                return;
+            }
+            tg.sendData(JSON.stringify({ type: "apply_coupon", code: code }));
+            tg.close();
+        }
+
+        // Run
+        initApp();
+    </script>
 </body>
 </html>
