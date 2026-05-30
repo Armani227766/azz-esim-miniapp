@@ -20,7 +20,6 @@
     .price{font-size:22px;font-weight:800;margin:10px 0}
     .buy{width:100%;padding:10px 12px;border:0;border-radius:10px;background:var(--green);color:#04110a;font-weight:800;cursor:pointer}
     .hidden{display:none}
-    .bar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:end}
     input,select{background:#0f172a;color:var(--text);border:1px solid #334155;border-radius:10px;padding:10px 12px}
     .small{font-size:13px}
   </style>
@@ -71,17 +70,15 @@
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    const tg = window.Telegram?.WebApp;
+    if (tg) tg.expand();
 
     function getParams() {
-      const params = new URLSearchParams(window.location.search);
-      return params;
+      return new URLSearchParams(window.location.search);
     }
 
     function decodeProducts() {
-      const params = getParams();
-      const raw = params.get('products');
+      const raw = getParams().get('products');
       if (!raw) return [];
       try {
         const json = atob(decodeURIComponent(raw));
@@ -92,9 +89,19 @@
       }
     }
 
+    function normProduct(p) {
+      return {
+        id: p.id ?? p.productId ?? p.product_id ?? '',
+        name: p.name ?? p.productName ?? p.product_name ?? 'Sin nombre',
+        description: p.description ?? p.desc ?? '',
+        unit_price: Number(p.unit_price ?? p.unitPrice ?? p.price ?? 0),
+        type: String(p.type ?? p.productType ?? p.typeProduct ?? 'esim').toLowerCase()
+      };
+    }
+
     const params = getParams();
     const balance = parseFloat(params.get('balance') || '0');
-    const products = decodeProducts();
+    const products = decodeProducts().map(normProduct);
     document.getElementById('balanceValue').textContent = balance.toFixed(2) + ' €';
 
     const esimGrid = document.getElementById('esimGrid');
@@ -120,7 +127,7 @@
       badge.textContent = p.type === 'physical' ? 'SIM Física' : 'eSIM';
       const title = document.createElement('div');
       title.style.fontWeight = '800';
-      title.textContent = p.name || 'Sin nombre';
+      title.textContent = p.name;
       const desc = document.createElement('div');
       desc.className = 'muted small';
       desc.style.marginTop = '6px';
@@ -133,7 +140,7 @@
       buy.textContent = 'Comprar';
       buy.onclick = () => {
         selected = p;
-        payName.textContent = p.name || '-';
+        payName.textContent = p.name;
         payTotal.textContent = Number(p.unit_price || 0).toFixed(2) + ' €';
         qtyInput.value = 1;
         checkoutPanel.style.display = 'block';
@@ -157,9 +164,8 @@
         return;
       }
       products.forEach(p => {
-        const type = (p.type || 'esim').toLowerCase();
         const card = renderCard(p);
-        if (type === 'physical') physicalGrid.appendChild(card);
+        if (p.type === 'physical') physicalGrid.appendChild(card);
         else esimGrid.appendChild(card);
       });
       if (!esimGrid.children.length) esimGrid.innerHTML = '<div class="muted">No hay tarifas eSIM.</div>';
@@ -184,9 +190,9 @@
         quantity: q,
         totalPrice: total,
         discountAmount: 0,
-        typeProduct: (selected.type || 'esim').toLowerCase()
+        typeProduct: selected.type
       };
-      tg.sendData(JSON.stringify(payload));
+      if (tg) tg.sendData(JSON.stringify(payload));
       msg.textContent = 'Enviando pedido...';
     });
 
