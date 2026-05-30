@@ -11,7 +11,7 @@
     .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
     .panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px}
     .muted{color:var(--muted)}
-    .tabs{display:flex;gap:10px;margin:16px 0}
+    .tabs{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}
     .tab{padding:10px 14px;border:0;border-radius:12px;background:#243041;color:#fff;cursor:pointer;font-weight:700}
     .tab.active{background:var(--blue)}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
@@ -22,6 +22,7 @@
     .hidden{display:none}
     .bar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:end}
     input,select{background:#0f172a;color:var(--text);border:1px solid #334155;border-radius:10px;padding:10px 12px}
+    .small{font-size:13px}
   </style>
 </head>
 <body>
@@ -31,6 +32,7 @@
         <h1 style="margin:0">eSim Market</h1>
         <div class="muted">Selecciona tu producto</div>
       </div>
+      <div class="panel small"><div class="muted">Saldo</div><div id="balanceValue">0.00 €</div></div>
     </div>
 
     <div class="tabs">
@@ -50,13 +52,13 @@
       </section>
     </div>
 
-    <div class="panel" style="margin-top:16px" id="checkoutPanel" class="hidden">
+    <div class="panel" style="margin-top:16px; display:none" id="checkoutPanel">
       <h2 style="margin:0 0 12px">Confirmar Compra</h2>
       <div class="grid" style="grid-template-columns:1fr 1fr 1fr 1fr">
         <div><div class="muted">Producto</div><div id="payName">-</div></div>
         <div>
           <div class="muted">Cantidad</div>
-          <input id="qty" type="number" min="1" value="1" style="width:60px; padding:4px">
+          <input id="qty" type="number" min="1" value="1" style="width:80px; padding:8px">
         </div>
         <div><div class="muted">Total a pagar</div><div id="payTotal">0.00 €</div></div>
         <div style="display:flex;align-items:end">
@@ -72,93 +74,123 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // AQUÍ PONES LOS PRODUCTOS EXACTOS QUE TIENES EN TU BASE DE DATOS DE PYTHON
-    // El id de aquí debe coincidir con el product_id de tu db.py
-    const products = [
-      {id:'esim-1', name:'Europa 10GB', description:'Válido 7 días', price:9.99, type:'esim'},
-      {id:'esim-2', name:'Mundo 20GB', description:'Válido 30 días', price:19.99, type:'esim'},
-      {id:'phy-1', name:'SIM España 5GB', description:'Envío 24/48h', price:7.50, type:'physical'},
-      {id:'phy-2', name:'SIM EU 15GB', description:'Envío 24/48h', price:14.90, type:'physical'}
-    ];
-
-    let selectedProduct = null;
-
-    function eur(v){ return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR'}).format(v); }
-
-    function switchTab(tabId) {
-      document.getElementById('esimSection').classList.add('hidden');
-      document.getElementById('physicalSection').classList.add('hidden');
-      document.getElementById(tabId).classList.remove('hidden');
-
-      document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-      document.querySelector(`[data-target="${tabId}"]`).classList.add('active');
+    function getParams() {
+      const params = new URLSearchParams(window.location.search);
+      return params;
     }
 
-    function choose(product) {
-      selectedProduct = product;
-      document.getElementById('checkoutPanel').classList.remove('hidden');
-      document.getElementById('payName').textContent = product.name;
-      document.getElementById('qty').value = 1;
-      updateTotal();
-
-      document.getElementById('msg').textContent = `Seleccionado: ${product.name} (${product.type === 'esim' ? 'eSIM' : 'SIM física'})`;
+    function decodeProducts() {
+      const params = getParams();
+      const raw = params.get('products');
+      if (!raw) return [];
+      try {
+        const json = atob(decodeURIComponent(raw));
+        const arr = JSON.parse(json);
+        return Array.isArray(arr) ? arr : [];
+      } catch (e) {
+        return [];
+      }
     }
 
-    function updateTotal() {
-      if(!selectedProduct) return;
-      const qty = parseInt(document.getElementById('qty').value) || 1;
-      document.getElementById('payTotal').textContent = eur(selectedProduct.price * qty);
+    const params = getParams();
+    const balance = parseFloat(params.get('balance') || '0');
+    const products = decodeProducts();
+    document.getElementById('balanceValue').textContent = balance.toFixed(2) + ' €';
+
+    const esimGrid = document.getElementById('esimGrid');
+    const physicalGrid = document.getElementById('physicalGrid');
+    const checkoutPanel = document.getElementById('checkoutPanel');
+    const payName = document.getElementById('payName');
+    const payTotal = document.getElementById('payTotal');
+    const qtyInput = document.getElementById('qty');
+    const msg = document.getElementById('msg');
+    let selected = null;
+
+    function switchTab(id) {
+      document.getElementById('esimSection').classList.toggle('hidden', id !== 'esimSection');
+      document.getElementById('physicalSection').classList.toggle('hidden', id !== 'physicalSection');
+      document.querySelectorAll('.tab').forEach(btn => btn.classList.toggle('active', btn.dataset.target === id));
     }
 
-    document.getElementById('qty').addEventListener('input', updateTotal);
-
-    function createCard(product) {
-      const el = document.createElement('div');
-      el.className = 'card';
-      el.innerHTML = `
-        <div class="badge">${product.type === 'esim' ? '📱 eSIM' : '🧾 FÍSICA'}</div>
-        <h3 style="margin:0 0 6px">${product.name}</h3>
-        <div class="muted">${product.description}</div>
-        <div class="price">${eur(product.price)}</div>
-        <button class="buy">Elegir</button>
-      `;
-      el.querySelector('.buy').addEventListener('click', () => choose(product));
-      return el;
-    }
-
-    function render() {
-      const eGrid = document.getElementById('esimGrid');
-      const pGrid = document.getElementById('physicalGrid');
-
-      products.forEach(p => {
-        if(p.type === 'esim') eGrid.appendChild(createCard(p));
-        else pGrid.appendChild(createCard(p));
-      });
-    }
-
-    document.getElementById('confirmBuy').addEventListener('click', () => {
-      if(!selectedProduct) return;
-
-      const qty = parseInt(document.getElementById('qty').value) || 1;
-      const total = +(selectedProduct.price * qty).toFixed(2);
-
-      // EL PAYLOAD EXACTO QUE TU BOT.PY AHORA ESPERA
-      const payload = {
-        type: 'purchase',
-        productId: selectedProduct.id,
-        productName: selectedProduct.name,
-        quantity: qty,
-        unitPrice: selectedProduct.price,
-        totalPrice: total,
-        typeProduct: selectedProduct.type
+    function renderCard(p) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const badge = document.createElement('div');
+      badge.className = 'badge';
+      badge.textContent = p.type === 'physical' ? 'SIM Física' : 'eSIM';
+      const title = document.createElement('div');
+      title.style.fontWeight = '800';
+      title.textContent = p.name || 'Sin nombre';
+      const desc = document.createElement('div');
+      desc.className = 'muted small';
+      desc.style.marginTop = '6px';
+      desc.textContent = p.description || '';
+      const price = document.createElement('div');
+      price.className = 'price';
+      price.textContent = Number(p.unit_price || 0).toFixed(2) + ' €';
+      const buy = document.createElement('button');
+      buy.className = 'buy';
+      buy.textContent = 'Comprar';
+      buy.onclick = () => {
+        selected = p;
+        payName.textContent = p.name || '-';
+        payTotal.textContent = Number(p.unit_price || 0).toFixed(2) + ' €';
+        qtyInput.value = 1;
+        checkoutPanel.style.display = 'block';
+        msg.textContent = '';
+        checkoutPanel.scrollIntoView({behavior:'smooth', block:'start'});
       };
+      card.appendChild(badge);
+      card.appendChild(title);
+      card.appendChild(desc);
+      card.appendChild(price);
+      card.appendChild(buy);
+      return card;
+    }
 
-      document.getElementById('msg').textContent = "Procesando...";
-      tg.sendData(JSON.stringify(payload));
-      tg.close();
+    function renderProducts() {
+      esimGrid.innerHTML = '';
+      physicalGrid.innerHTML = '';
+      if (!products.length) {
+        esimGrid.innerHTML = '<div class="muted">No hay tarifas disponibles.</div>';
+        physicalGrid.innerHTML = '<div class="muted">No hay tarifas disponibles.</div>';
+        return;
+      }
+      products.forEach(p => {
+        const type = (p.type || 'esim').toLowerCase();
+        const card = renderCard(p);
+        if (type === 'physical') physicalGrid.appendChild(card);
+        else esimGrid.appendChild(card);
+      });
+      if (!esimGrid.children.length) esimGrid.innerHTML = '<div class="muted">No hay tarifas eSIM.</div>';
+      if (!physicalGrid.children.length) physicalGrid.innerHTML = '<div class="muted">No hay tarifas físicas.</div>';
+    }
+
+    qtyInput.addEventListener('input', () => {
+      if (!selected) return;
+      const q = Math.max(1, parseInt(qtyInput.value || '1', 10));
+      payTotal.textContent = (Number(selected.unit_price || 0) * q).toFixed(2) + ' €';
     });
 
-    render();
+    document.getElementById('confirmBuy').addEventListener('click', () => {
+      if (!selected) return;
+      const q = Math.max(1, parseInt(qtyInput.value || '1', 10));
+      const total = Number(selected.unit_price || 0) * q;
+      const payload = {
+        type: 'purchase',
+        productId: selected.id,
+        productName: selected.name,
+        unitPrice: Number(selected.unit_price || 0),
+        quantity: q,
+        totalPrice: total,
+        discountAmount: 0,
+        typeProduct: (selected.type || 'esim').toLowerCase()
+      };
+      tg.sendData(JSON.stringify(payload));
+      msg.textContent = 'Enviando pedido...';
+    });
+
+    renderProducts();
   </script>
 </body>
 </html>
