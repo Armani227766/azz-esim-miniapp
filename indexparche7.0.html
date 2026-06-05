@@ -5,33 +5,511 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>eSim Market</title>
   <style>
-    :root{--bg:#0b1220;--panel:#111827;--line:#243041;--text:#e5e7eb;--muted:#94a3b8;--blue:#2563eb;--green:#22c55e}
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1100px;margin:0 auto;padding:16px}
-    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-    .panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px}
-    .muted{color:var(--muted)}
-    .tabs{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}
-    .tab{padding:10px 14px;border:0;border-radius:12px;background:#243041;color:#fff;cursor:pointer;font-weight:700}
-    .tab.active{background:var(--blue)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-    .card{background:#0f172a;border:1px solid var(--line);border-radius:16px;padding:14px}
-    .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#334155;font-size:12px;margin-bottom:10px}
-    .price{font-size:22px;font-weight:800;margin:10px 0}
-    .buy{width:100%;padding:10px 12px;border:0;border-radius:10px;background:var(--green);color:#04110a;font-weight:800;cursor:pointer}
+    :root{
+      --bg:#070A14;
+      --panel:#0f172a;
+      --panel2:#0b1220;
+      --line:rgba(148,163,184,.18);
+      --text:#e5e7eb;
+      --muted:#94a3b8;
+      --blue:#7c3aed;
+      --blue2:#a78bfa;
+      --green:#22c55e;
+      --purple:#8b5cf6;
+      --danger:#fb7185;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,sans-serif;
+      background:
+        radial-gradient(1200px 700px at 50% -10%, rgba(124,58,237,.35), transparent 55%),
+        radial-gradient(900px 600px at 100% 0%, rgba(34,197,94,.14), transparent 50%),
+        radial-gradient(800px 500px at 0% 40%, rgba(59,130,246,.12), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    /* subtle dotted tech background */
+    .bgGrid{
+      position:fixed; inset:-20px;
+      background:
+        radial-gradient(circle at 50% 25%, rgba(167,139,250,.12), transparent 55%),
+        radial-gradient(circle at 25% 65%, rgba(34,197,94,.08), transparent 60%),
+        linear-gradient(to right, rgba(124,58,237,.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(124,58,237,.08) 1px, transparent 1px);
+      background-size: auto, auto, 64px 64px, 64px 64px;
+      opacity:.25;
+      pointer-events:none;
+      filter: blur(.2px);
+    }
+
+    .wrap{max-width:1100px;margin:0 auto;padding:18px 16px 40px; position:relative; z-index:1}
+
+    /* Top header */
+    .top{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .brand{
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .brand h1{
+      margin:0;
+      font-size:22px;
+      letter-spacing:.3px;
+    }
+    .brand .muted{color:var(--muted); font-size:13px}
+
+    /* Balance hero */
+    .hero{
+      margin-top:10px;
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+      border:1px solid rgba(167,139,250,.25);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px 18px 14px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(700px 180px at 50% 0%, rgba(124,58,237,.35), transparent 60%),
+        radial-gradient(420px 220px at 50% 60%, rgba(59,130,246,.10), transparent 70%);
+      pointer-events:none;
+    }
+    .heroInner{position:relative; z-index:1}
+
+    .heroTop{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .heroIcon{
+      width:48px;height:48px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;
+      background: rgba(124,58,237,.18);
+      border:1px solid rgba(167,139,250,.28);
+      box-shadow: 0 10px 30px rgba(124,58,237,.12);
+    }
+    .heroLabel{
+      color:rgba(229,231,235,.92);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size:12px;
+      margin-top:4px;
+    }
+    .balanceValue{
+      font-size:76px;
+      font-weight:900;
+      line-height:1;
+      background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,.85) 70%, rgba(167,139,250,.9) 100%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      margin:8px 0 4px;
+      text-shadow: 0 24px 80px rgba(124,58,237,.18);
+    }
+
+    .heroActions{
+      display:flex; gap:10px; justify-content:center; align-items:center;
+      padding-top:10px;
+      position:relative;
+    }
+
+    .heroRing{
+      margin-top:6px;
+      height:14px;
+      width:100%;
+      display:flex;
+      justify-content:center;
+      position:relative;
+      pointer-events:none;
+    }
+    .heroRing:after{
+      content:"";
+      position:absolute; bottom:-9px;
+      width:min(860px, 100%);
+      height:110px;
+      border-radius:50%;
+      border:1px solid rgba(167,139,250,.26);
+      background: radial-gradient(closest-side, rgba(124,58,237,.12), transparent 70%);
+      filter: blur(.1px);
+    }
+
+    .actionBtn{
+      border:1px solid rgba(167,139,250,.30);
+      background: rgba(17,24,39,.55);
+      color:#e9e7ff;
+      border-radius:16px;
+      padding:10px 16px;
+      font-weight:800;
+      cursor:pointer;
+      display:flex; flex-direction:column; gap:4px; align-items:center;
+      min-width:120px;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      position:relative; z-index:1;
+    }
+    .actionBtn:hover{
+      transform: translateY(-2px);
+      background: rgba(17,24,39,.75);
+      border-color: rgba(167,139,250,.45);
+    }
+    .actionBtn:active{transform: translateY(0px) scale(.99)}
+    .actionBtn .plusIcon{
+      width:28px;height:28px;border-radius:10px;
+      background: rgba(124,58,237,.18);
+      border:1px solid rgba(167,139,250,.25);
+      display:flex;align-items:center;justify-content:center;
+      font-size:16px;
+    }
+    .actionBtn.smallText{font-size:12px; font-weight:700; color:rgba(229,231,235,.9)}
+
+    /* Tabs */
+    .tabs{
+      display:flex;gap:10px;margin:16px 0 12px; flex-wrap:wrap;
+    }
+    .tab{
+      padding:11px 14px;
+      border-radius:16px;
+      background: rgba(15,23,42,.65);
+      border:1px solid rgba(148,163,184,.18);
+      color:#fff;
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.2px;
+      display:flex; align-items:center; gap:10px;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .tab:hover{transform: translateY(-1px); border-color: rgba(167,139,250,.30)}
+    .tab.active{
+      background: linear-gradient(180deg, rgba(124,58,237,.35), rgba(124,58,237,.15));
+      border-color: rgba(167,139,250,.55);
+      box-shadow: 0 18px 50px rgba(124,58,237,.12);
+    }
+
+    /* Panels */
+    .panel{
+      background: rgba(15,23,42,.55);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow: 0 12px 44px rgba(0,0,0,.22);
+      backdrop-filter: blur(8px);
+    }
+
+    .sectionTitle{
+      margin:0 0 10px;
+      font-size:18px;
+      font-weight:1000;
+      letter-spacing:.2px;
+    }
     .hidden{display:none}
-    input,select{background:#0f172a;color:var(--text);border:1px solid #334155;border-radius:10px;padding:10px 12px}
+
+    /* Grid */
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:14px;
+    }
+
+    .card{
+      background: rgba(2,6,23,.40);
+      border:1px solid rgba(148,163,184,.18);
+      border-radius:18px;
+      padding:14px;
+      position:relative;
+      overflow:hidden;
+      min-height:168px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .card:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(420px 120px at 40% 0%, rgba(124,58,237,.18), transparent 60%),
+        radial-gradient(260px 120px at 90% 40%, rgba(34,197,94,.10), transparent 60%);
+      opacity:.75;
+      pointer-events:none;
+    }
+    .card > *{position:relative; z-index:1}
+
+    .badge{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(148,163,184,.15);
+      border:1px solid rgba(148,163,184,.22);
+      font-size:12px;
+      font-weight:900;
+      color: rgba(226,232,240,.95);
+      width:fit-content;
+    }
+    .badge.physical{
+      background: rgba(167,139,250,.14);
+      border-color: rgba(167,139,250,.26);
+    }
+
+    .title{
+      font-weight:1000;
+      font-size:15px;
+      margin-top:2px;
+      line-height:1.2;
+    }
+    .muted{color:var(--muted)}
     .small{font-size:13px}
+
+    .price{
+      font-size:24px;
+      font-weight:1000;
+      margin-top:auto;
+      letter-spacing:.2px;
+    }
+
+    .buy{
+      width:100%;
+      padding:12px 12px;
+      border:0;
+      border-radius:14px;
+      background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(34,197,94,.78));
+      color:#04110a;
+      font-weight:1000;
+      cursor:pointer;
+      margin-top:8px;
+      transition: transform .12s ease, filter .12s ease;
+    }
+    .buy:hover{transform: translateY(-1px); filter: brightness(1.02)}
+    .buy:active{transform: translateY(0px) scale(.99)}
+    .buy.secondary{
+      background: rgba(124,58,237,.20);
+      color:#e9e7ff;
+      border:1px solid rgba(167,139,250,.35);
+    }
+
+    /* Checkout */
+    #checkoutPanel.panel{
+      margin-top:16px;
+      display:none;
+    }
+
+    .checkoutGrid{
+      display:grid;
+      grid-template-columns: 1fr 140px 1fr 180px;
+      gap:14px;
+      align-items:end;
+    }
+    @media (max-width: 860px){
+      .balanceValue{font-size:56px}
+      .checkoutGrid{grid-template-columns: 1fr 1fr; align-items:start}
+      .checkoutGrid .payBtnWrap{grid-column: span 2}
+    }
+
+    .label{color:var(--muted); font-size:13px; margin-bottom:6px}
+    .valueBox{font-weight:1000; font-size:15px}
+    input,select{
+      background: rgba(2,6,23,.45);
+      color:var(--text);
+      border:1px solid rgba(148,163,184,.28);
+      border-radius:14px;
+      padding:10px 12px;
+      width:100%;
+      outline:none;
+    }
+    input[type="number"]{width:120px}
+
+    .msg{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      min-height:18px;
+    }
+
+    /* Providers & reviews (below catalog) */
+    .row2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+    @media (max-width: 860px){
+      .row2{grid-template-columns:1fr}
+    }
+
+    .providers{
+      padding:14px;
+    }
+    .providerHead{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;
+    }
+    .linkBtn{
+      background: transparent;
+      border: 1px solid rgba(167,139,250,.28);
+      color: rgba(226,232,240,.95);
+      padding:8px 12px;
+      border-radius:14px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .linkBtn:hover{border-color: rgba(167,139,250,.45)}
+    .providerGrid{
+      display:flex; flex-wrap:wrap; gap:12px;
+      align-items:center;
+    }
+    .providerLogo{
+      width:76px; height:76px;
+      border-radius:22px;
+      display:flex; align-items:center; justify-content:center;
+      border:1px solid rgba(148,163,184,.18);
+      background: rgba(2,6,23,.35);
+      font-weight:1000;
+      letter-spacing:.2px;
+      position:relative;
+      overflow:hidden;
+    }
+    .providerLogo:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background: radial-gradient(120px 60px at 30% 20%, rgba(124,58,237,.22), transparent 60%);
+      opacity:.9; pointer-events:none;
+    }
+    .providerLogo span{position:relative; z-index:1; font-size:14px; text-align:center}
+    .reviewGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:12px;
+      padding:14px;
+    }
+    @media (max-width: 980px){
+      .reviewGrid{grid-template-columns: 1fr; }
+    }
+
+    .review{
+      background: rgba(2,6,23,.35);
+      border:1px solid rgba(148,163,184,.18);
+      border-radius:18px;
+      padding:14px;
+      display:flex; flex-direction:column; gap:10px;
+      min-height:140px;
+    }
+    .avatar{
+      width:44px;height:44px;border-radius:16px;
+      background: linear-gradient(180deg, rgba(167,139,250,.30), rgba(34,197,94,.12));
+      border:1px solid rgba(167,139,250,.30);
+      display:flex; align-items:center; justify-content:center;
+      font-weight:1000;
+    }
+    .stars{color: rgba(167,139,250,.95); font-weight:1000; letter-spacing:2px; font-size:12px}
+    .reviewText{font-size:13px; color:rgba(226,232,240,.92); line-height:1.35}
+    .verified{
+      display:flex; align-items:center; gap:8px;
+      color: rgba(226,232,240,.95);
+      font-size:12px;
+      margin-top:auto;
+    }
+    .check{
+      width:18px;height:18px;border-radius:8px;
+      background: rgba(34,197,94,.18);
+      border:1px solid rgba(34,197,94,.35);
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px;
+    }
+
+    /* Bottom features */
+    .features{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .features{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 560px){
+      .features{grid-template-columns:1fr}
+    }
+    .feature{
+      background: rgba(15,23,42,.45);
+      border:1px solid rgba(148,163,184,.18);
+      border-radius:18px;
+      padding:14px;
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .featureIcon{
+      width:40px; height:40px; border-radius:16px;
+      background: rgba(124,58,237,.18);
+      border:1px solid rgba(167,139,250,.28);
+      display:flex; align-items:center; justify-content:center;
+      font-size:16px;
+      flex:0 0 auto;
+    }
+    .featureTitle{font-weight:1000; font-size:13px; margin:0}
+    .featureDesc{margin:4px 0 0; color:var(--muted); font-size:12.5px; line-height:1.3}
   </style>
 </head>
+
 <body>
+  <div class="bgGrid"></div>
+
   <div class="wrap">
+
     <div class="top">
-      <div>
-        <h1 style="margin:0">eSim Market</h1>
+      <div class="brand">
+        <h1>eSim Market</h1>
         <div class="muted">Selecciona tu producto</div>
       </div>
-      <div class="panel small"><div class="muted">Saldo</div><div id="balanceValue">0.00 €</div></div>
+
+      <!-- small balance info for mobile fallback -->
+      <div class="panel" style="padding:12px 14px; border-radius:18px; min-width:180px;">
+        <div class="muted" style="font-size:12px; margin-bottom:6px;">Saldo</div>
+        <div id="balanceValue" style="font-weight:1000; font-size:18px;">0.00 €</div>
+      </div>
+    </div>
+
+    <!-- HERO (rediseñado como tu imagen) -->
+    <div class="hero">
+      <div class="heroInner">
+        <div class="heroTop">
+          <div style="flex:1; min-width:260px;">
+            <div class="heroLabel">FONDOS DISPONIBLES</div>
+            <div class="balanceValue" id="balanceValueHero">0.00 €</div>
+            <div class="muted" style="font-size:13px; margin-top:-6px;">
+              Listo para recargar eSIMs o comprar SIMs físicas.
+            </div>
+          </div>
+
+          <div class="heroIcon" title="eSIM e Market">
+            <!-- simple SIM icon -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M8 7h8a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3Z" stroke="rgba(167,139,250,.95)" stroke-width="2"/>
+              <path d="M8 10h2M8 14h2M14 10h2M14 14h2" stroke="rgba(167,139,250,.95)" stroke-width="2" stroke-linecap="round"/>
+              <path d="M10 7l-1-2h6l-1 2" stroke="rgba(167,139,250,.95)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="heroRing"></div>
+
+        <div class="heroActions" aria-label="Acciones">
+          <button class="actionBtn" id="btnRecharge" type="button">
+            <div class="plusIcon">+</div>
+            <div class="smallText">Recargar</div>
+          </button>
+          <button class="actionBtn" id="btnCoupons" type="button">
+            <div class="plusIcon">%</div>
+            <div class="smallText">Cupones</div>
+          </button>
+          <button class="actionBtn" id="btnClose" type="button">
+            <div class="plusIcon">✕</div>
+            <div class="smallText">Cerrar</div>
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="tabs">
@@ -41,35 +519,163 @@
 
     <div class="panel">
       <section id="esimSection">
-        <h2 style="margin:0 0 10px">Catálogo de eSIMs</h2>
+        <h2 class="sectionTitle">Catálogo de eSIMs</h2>
         <div id="esimGrid" class="grid"></div>
       </section>
 
       <section id="physicalSection" class="hidden">
-        <h2 style="margin:0 0 10px">Catálogo de SIMs Físicas</h2>
+        <h2 class="sectionTitle">Catálogo de SIMs Físicas</h2>
         <div id="physicalGrid" class="grid"></div>
       </section>
     </div>
 
-    <div class="panel" style="margin-top:16px; display:none" id="checkoutPanel">
-      <h2 style="margin:0 0 12px">Confirmar Compra</h2>
-      <div class="grid" style="grid-template-columns:1fr 1fr 1fr 1fr">
-        <div><div class="muted">Producto</div><div id="payName">-</div></div>
+    <!-- Checkout rediseñado (MISMO IDS para no romper JS) -->
+    <div class="panel" style="display:none" id="checkoutPanel">
+      <h2 class="sectionTitle" style="margin-bottom:6px;">Confirmar Compra</h2>
+
+      <div class="checkoutGrid">
         <div>
-          <div class="muted">Cantidad</div>
-          <input id="qty" type="number" min="1" value="1" style="width:80px; padding:8px">
+          <div class="label">Producto</div>
+          <div id="payName" class="valueBox">-</div>
         </div>
-        <div><div class="muted">Total a pagar</div><div id="payTotal">0.00 €</div></div>
-        <div style="display:flex;align-items:end">
-          <button id="confirmBuy" class="buy" style="background:var(--blue);color:white">Pagar</button>
+
+        <div>
+          <div class="label">Cantidad</div>
+          <input id="qty" type="number" min="1" value="1" />
+        </div>
+
+        <div>
+          <div class="label">Total a pagar</div>
+          <div id="payTotal" class="valueBox">0.00 €</div>
+        </div>
+
+        <div class="payBtnWrap" style="display:flex; justify-content:flex-end;">
+          <button id="confirmBuy" class="buy" style="background: linear-gradient(180deg, rgba(37,99,235,.95), rgba(124,58,237,.85)); color:white; border:0; width:100%; max-width:180px;">
+            Pagar
+          </button>
         </div>
       </div>
-      <div id="msg" class="muted" style="margin-top:10px"></div>
+
+      <div id="msg" class="msg"></div>
     </div>
+
+    <!-- Bloque extra estilo imagen: proveedores / reseñas / features -->
+    <div class="row2">
+      <div class="panel providers">
+        <div class="providerHead">
+          <div>
+            <div style="font-weight:1000;">Proveedores populares</div>
+            <div class="muted" style="font-size:13px; margin-top:4px;">Elige tu tarifa favorita</div>
+          </div>
+          <button class="linkBtn" id="btnViewAllProviders" type="button">Ver todos ➜</button>
+        </div>
+
+        <div class="providerGrid">
+          <div class="providerLogo" title="Vodafone">
+            <span style="color:#fff; font-size:28px; font-weight:1000;">0</span>
+          </div>
+          <div class="providerLogo" title="Lebara" style="background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.22);">
+            <span>Lebara</span>
+          </div>
+          <div class="providerLogo" title="Lyca Mobile" style="background: rgba(99,102,241,.12); border-color: rgba(99,102,241,.22);">
+            <span>Lyca</span>
+          </div>
+          <div class="providerLogo" title="Orange" style="background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.22);">
+            <span>Orange</span>
+          </div>
+          <div class="providerLogo" title="Three" style="background: rgba(147,51,234,.12); border-color: rgba(147,51,234,.22);">
+            <span>Three</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="padding:0; overflow:hidden;">
+        <div style="padding:14px 14px 10px;">
+          <div style="font-weight:1000; margin-bottom:4px;">Reseñas de clientes</div>
+          <div class="muted" style="font-size:13px;">Opiniones recientes</div>
+          <div style="display:flex; justify-content:flex-end; margin-top:-28px;">
+            <button class="linkBtn" id="btnViewAllReviews" type="button">Ver todas ➜</button>
+          </div>
+        </div>
+
+        <div class="reviewGrid" style="padding-top:6px;">
+          <div class="review">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="avatar">C</div>
+              <div>
+                <div style="font-weight:1000;">Carlos M.</div>
+                <div class="stars">★★★★★</div>
+              </div>
+            </div>
+            <div class="reviewText">Activación súper rápida y todo funciona perfecto. Excelente para viajar.</div>
+            <div class="verified"><div class="check">✓</div> Compra verificada</div>
+          </div>
+
+          <div class="review">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="avatar">L</div>
+              <div>
+                <div style="font-weight:1000;">Laura G.</div>
+                <div class="stars">★★★★★</div>
+              </div>
+            </div>
+            <div class="reviewText">Muy buena atención al cliente y la eSIM llegó al momento. Totalmente recomendable.</div>
+            <div class="verified"><div class="check">✓</div> Compra verificada</div>
+          </div>
+
+          <div class="review">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="avatar">J</div>
+              <div>
+                <div style="font-weight:1000;">Javier T.</div>
+                <div class="stars">★★★★★</div>
+              </div>
+            </div>
+            <div class="reviewText">Precios justos y servicio confiable. Ya he comprado varias veces sin problemas.</div>
+            <div class="verified"><div class="check">✓</div> Compra verificada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="featureIcon">⚡</div>
+        <div>
+          <p class="featureTitle">Entrega inmediata</p>
+          <p class="featureDesc">Recibí tu eSIM al momento.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="featureIcon">🛡️</div>
+        <div>
+          <p class="featureTitle">Seguro y confiable</p>
+          <p class="featureDesc">Tus datos siempre protegidos.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="featureIcon">🎧</div>
+        <div>
+          <p class="featureTitle">Soporte 24/7</p>
+          <p class="featureDesc">Estamos para ayudarte.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="featureIcon">🔒</div>
+        <div>
+          <p class="featureTitle">Pago seguro</p>
+          <p class="featureDesc">Compra con total seguridad.</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 
+  <!-- Bot Telegram -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <script>
+    // ======= Conexión Telegram (NO modificado en lógica esencial) =======
     const tg = window.Telegram?.WebApp;
     if (tg) tg.expand();
 
@@ -99,10 +705,53 @@
       };
     }
 
+    // ======= UI helper: respuestas sin tocar payload/flujo =======
+    function toastMsg(text){
+      const el = document.getElementById('msg');
+      if (!el) return;
+      el.textContent = text;
+      // no forzamos scroll siempre (solo si checkout está visible)
+      el.style.color = 'rgba(148,163,184,1)';
+    }
+
+    function showHeroToast(text){
+      // usando msg del checkout si está visible, si no, usamos alert suave
+      const checkoutPanel = document.getElementById('checkoutPanel');
+      if (checkoutPanel && checkoutPanel.style.display !== 'none') {
+        toastMsg(text);
+      } else {
+        alert(text);
+      }
+    }
+
+    // Botones del hero
+    document.getElementById('btnRecharge')?.addEventListener('click', () => {
+      showHeroToast('🔁 Recarga: usa tu saldo disponible o vuelve al proceso de compra.');
+    });
+    document.getElementById('btnCoupons')?.addEventListener('click', () => {
+      showHeroToast('🎟️ Cupones: por el momento no hay cupones configurados en esta vista.');
+    });
+    document.getElementById('btnClose')?.addEventListener('click', () => {
+      if (tg && tg.close) tg.close();
+      else showHeroToast('Cerrando... (si no está en Telegram, no se puede cerrar la WebApp automáticamente).');
+    });
+
+    document.getElementById('btnViewAllProviders')?.addEventListener('click', () => {
+      showHeroToast('Mostrando todos los proveedores (demo visual).');
+    });
+    document.getElementById('btnViewAllReviews')?.addEventListener('click', () => {
+      showHeroToast('Mostrando todas las reseñas (demo visual).');
+    });
+
+    // ======= Render / lógica original =======
     const params = getParams();
     const balance = parseFloat(params.get('balance') || '0');
     const products = decodeProducts().map(normProduct);
+
+    // Mantiene balanceValue usado por código original + agrega heroValue
     document.getElementById('balanceValue').textContent = balance.toFixed(2) + ' €';
+    const heroVal = document.getElementById('balanceValueHero');
+    if (heroVal) heroVal.textContent = balance.toFixed(2) + ' €';
 
     const esimGrid = document.getElementById('esimGrid');
     const physicalGrid = document.getElementById('physicalGrid');
@@ -117,27 +766,37 @@
       document.getElementById('esimSection').classList.toggle('hidden', id !== 'esimSection');
       document.getElementById('physicalSection').classList.toggle('hidden', id !== 'physicalSection');
       document.querySelectorAll('.tab').forEach(btn => btn.classList.toggle('active', btn.dataset.target === id));
+
+      // respuesta al apretar tab
+      showHeroToast(id === 'esimSection' ? '📱 Mostrando eSIM Digital' : '🧾 Mostrando SIM Física');
     }
 
     function renderCard(p) {
       const card = document.createElement('div');
       card.className = 'card';
+
       const badge = document.createElement('div');
-      badge.className = 'badge';
+      badge.className = 'badge' + (p.type === 'physical' ? ' physical' : '');
       badge.textContent = p.type === 'physical' ? 'SIM Física' : 'eSIM';
+
       const title = document.createElement('div');
-      title.style.fontWeight = '800';
+      title.className = 'title';
       title.textContent = p.name;
+
       const desc = document.createElement('div');
       desc.className = 'muted small';
-      desc.style.marginTop = '6px';
+      desc.style.marginTop = '2px';
       desc.textContent = p.description || '';
+
       const price = document.createElement('div');
       price.className = 'price';
       price.textContent = Number(p.unit_price || 0).toFixed(2) + ' €';
+
       const buy = document.createElement('button');
       buy.className = 'buy';
       buy.textContent = 'Comprar';
+
+      // respuesta al apretar Comprar (sin romper función conectada al bot)
       buy.onclick = () => {
         selected = p;
         payName.textContent = p.name;
@@ -145,8 +804,11 @@
         qtyInput.value = 1;
         checkoutPanel.style.display = 'block';
         msg.textContent = '';
+        msg.style.color = 'rgba(148,163,184,1)';
+        showHeroToast('🛒 Producto seleccionado. Revisa cantidad y pulsa Pagar.');
         checkoutPanel.scrollIntoView({behavior:'smooth', block:'start'});
       };
+
       card.appendChild(badge);
       card.appendChild(title);
       card.appendChild(desc);
@@ -158,16 +820,19 @@
     function renderProducts() {
       esimGrid.innerHTML = '';
       physicalGrid.innerHTML = '';
+
       if (!products.length) {
         esimGrid.innerHTML = '<div class="muted">No hay tarifas disponibles.</div>';
         physicalGrid.innerHTML = '<div class="muted">No hay tarifas disponibles.</div>';
         return;
       }
+
       products.forEach(p => {
         const card = renderCard(p);
         if (p.type === 'physical') physicalGrid.appendChild(card);
         else esimGrid.appendChild(card);
       });
+
       if (!esimGrid.children.length) esimGrid.innerHTML = '<div class="muted">No hay tarifas eSIM.</div>';
       if (!physicalGrid.children.length) physicalGrid.innerHTML = '<div class="muted">No hay tarifas físicas.</div>';
     }
@@ -176,12 +841,16 @@
       if (!selected) return;
       const q = Math.max(1, parseInt(qtyInput.value || '1', 10));
       payTotal.textContent = (Number(selected.unit_price || 0) * q).toFixed(2) + ' €';
+      msg.textContent = `✅ Cantidad: ${q} (total actualizado)`;
+      msg.style.color = 'rgba(167,139,250,.95)';
     });
 
     document.getElementById('confirmBuy').addEventListener('click', () => {
       if (!selected) return;
+
       const q = Math.max(1, parseInt(qtyInput.value || '1', 10));
       const total = Number(selected.unit_price || 0) * q;
+
       const payload = {
         type: 'purchase',
         productId: selected.id,
@@ -192,8 +861,13 @@
         discountAmount: 0,
         typeProduct: selected.type
       };
+
+      // NO modificamos el envío al bot: mantiene estructura y tg.sendData
       if (tg) tg.sendData(JSON.stringify(payload));
+
       msg.textContent = 'Enviando pedido...';
+      msg.style.color = 'rgba(148,163,184,1)';
+      showHeroToast('📨 Pedido enviado al bot. Espera la confirmación.');
     });
 
     renderProducts();
