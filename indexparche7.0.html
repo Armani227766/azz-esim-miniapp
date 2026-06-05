@@ -1,9 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>eSim Market</title>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
   <style>
     :root{
       --bg:#070A14;
@@ -12,29 +15,32 @@
       --line:rgba(148,163,184,.18);
       --text:#e5e7eb;
       --muted:#94a3b8;
-      --blue:#7c3aed;
-      --blue2:#a78bfa;
+
+      --violet:#7c3aed;
+      --violet2:#a78bfa;
       --green:#22c55e;
-      --purple:#8b5cf6;
       --danger:#fb7185;
+
       --radius:22px;
       --shadow: 0 18px 60px rgba(0,0,0,.35);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
-      font-family:system-ui,-apple-system,sans-serif;
+      font-family: system-ui,-apple-system,sans-serif;
+      color:var(--text);
       background:
         radial-gradient(1200px 700px at 50% -10%, rgba(124,58,237,.35), transparent 55%),
         radial-gradient(900px 600px at 100% 0%, rgba(34,197,94,.14), transparent 50%),
         radial-gradient(800px 500px at 0% 40%, rgba(59,130,246,.12), transparent 55%),
         var(--bg);
-      color:var(--text);
       overflow-x:hidden;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
-    /* subtle background grid */
     .bgGrid{
       position:fixed; inset:-30px;
       background:
@@ -42,7 +48,7 @@
         radial-gradient(circle at 25% 65%, rgba(34,197,94,.08), transparent 60%),
         linear-gradient(to right, rgba(124,58,237,.08) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(124,58,237,.08) 1px, transparent 1px);
-      background-size: auto, auto, 64px 64px, 64px 64px;
+      background-size:auto,auto,64px 64px,64px 64px;
       opacity:.25;
       pointer-events:none;
       filter: blur(.2px);
@@ -53,94 +59,92 @@
       position:relative; z-index:1;
       max-width:1100px;
       margin:0 auto;
-      padding:16px 14px 40px;
+      padding:16px 14px 38px;
     }
 
-    /* Splash */
-    #splashScreen{
+    /* -------- Splash Screen (premium) -------- */
+    #splash{
       position:fixed; inset:0;
-      background:
-        radial-gradient(900px 500px at 50% -20%, rgba(124,58,237,.30), transparent 60%),
-        radial-gradient(700px 450px at 20% 70%, rgba(34,197,94,.10), transparent 60%),
-        var(--bg);
+      background: rgba(11,12,16,.62);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      z-index:9999;
       display:flex;
       align-items:center;
       justify-content:center;
-      z-index:999;
-      transition:opacity .35s ease, transform .45s ease;
+      transition: opacity .35s ease, transform .5s ease, visibility .35s ease;
     }
-    #splashCard{
+    #splash.hidden{
+      opacity:0;
+      transform: scale(1.03);
+      visibility:hidden;
+    }
+    .splashCard{
       width:min(420px, 92vw);
       border-radius:26px;
-      border:1px solid rgba(167,139,250,.25);
-      background: rgba(15,23,42,.50);
-      backdrop-filter: blur(10px);
+      border:1px solid rgba(167,139,250,.28);
+      background: rgba(15,23,42,.48);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       box-shadow: var(--shadow);
-      padding:22px 18px;
+      padding:22px 18px 18px;
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:12px;
+      gap:14px;
     }
     .splashIcon{
-      width:64px;height:64px;border-radius:22px;
+      width:96px; height:96px;
+      border-radius:28px;
       background: rgba(124,58,237,.18);
       border:1px solid rgba(167,139,250,.35);
-      display:flex;align-items:center;justify-content:center;
-      position:relative;
-      overflow:hidden;
+      display:flex; align-items:center; justify-content:center;
+      position:relative; overflow:hidden;
     }
     .splashIcon:before{
       content:"";
       position:absolute; inset:-1px;
-      background: radial-gradient(40px 30px at 30% 20%, rgba(167,139,250,.40), transparent 60%);
-      opacity:.9;
+      background: radial-gradient(40px 30px at 30% 20%, rgba(167,139,250,.45), transparent 60%);
+      opacity:.95;
       pointer-events:none;
     }
-    .splashDots{
-      display:flex; gap:8px; margin-top:6px;
-    }
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background: rgba(167,139,250,.8);
-      animation: pulse 1s infinite ease-in-out;
-      opacity:.65;
-    }
-    .dot:nth-child(2){animation-delay:.12s}
-    .dot:nth-child(3){animation-delay:.24s}
-    @keyframes pulse{
-      0%,100%{transform:translateY(0); opacity:.55}
-      50%{transform:translateY(-6px); opacity:1}
-    }
-    #splashText{
-      font-weight:900;
-      letter-spacing:.08em;
+    .splashText{
+      text-align:center;
+      font-weight:1000;
+      letter-spacing:.12em;
       text-transform:uppercase;
-      color:rgba(226,232,240,.85);
       font-size:12px;
+      color:rgba(226,232,240,.85);
     }
-    #splashDesc{
-      color:var(--muted);
-      font-size:13px;
+    .splashSpinner{
+      width:34px; height:34px;
+      border-radius:999px;
+      border:3px solid rgba(255,255,255,.10);
+      border-top-color:#fff;
+      animation: spin .9s ease-in-out infinite;
     }
-    #splashScreen.hide{
-      opacity:0;
-      transform: translateY(-6px) scale(.99);
-      pointer-events:none;
-    }
+    @keyframes spin{ to{ transform: rotate(360deg);} }
 
-    /* Main hero */
+    /* -------- Top + Hero -------- */
     .topBrand{
       display:flex;
+      align-items:flex-start;
       justify-content:space-between;
-      align-items:center;
       gap:12px;
       flex-wrap:wrap;
       margin-bottom:12px;
-      padding:2px 2px;
+      padding:2px 2px 0;
     }
-    .brand h1{margin:0; font-size:22px; letter-spacing:.2px}
-    .brand .muted{color:var(--muted); font-size:13px; margin-top:6px}
+    .brand h1{
+      margin:0;
+      font-size:22px;
+      letter-spacing:.2px;
+    }
+    .brand .muted{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:6px;
+    }
 
     .balanceMini{
       background: rgba(15,23,42,.45);
@@ -149,18 +153,25 @@
       padding:12px 14px;
       min-width:190px;
     }
-    .balanceMini .label{color:var(--muted); font-size:12px; margin-bottom:6px}
-    .balanceMini #balanceValue{font-weight:1000; font-size:18px}
+    .balanceMini .label{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+    #balanceValue{ font-weight:1000; font-size:18px; }
 
     .hero{
       margin-top:10px;
-      border-radius:var(--radius);
+      border-radius:24px;
       border:1px solid rgba(167,139,250,.25);
       background: rgba(17,24,39,.55);
       box-shadow: var(--shadow);
       overflow:hidden;
       position:relative;
-      padding:22px 16px 14px;
+      padding:26px 16px 14px;
     }
     .hero:before{
       content:"";
@@ -171,42 +182,42 @@
       pointer-events:none;
       opacity:.95;
     }
-    .heroInner{position:relative; z-index:1}
-    .heroHeader{
-      display:flex; flex-direction:column; align-items:center;
-      gap:6px;
-      padding:2px 0 0;
-    }
+    .heroInner{ position:relative; z-index:1; }
+
     .heroLabel{
-      letter-spacing:.18em;
+      text-align:center;
+      letter-spacing:.22em;
       text-transform:uppercase;
       font-size:12px;
-      color:rgba(226,232,240,.85);
-      font-weight:900;
+      font-weight:1000;
+      color:rgba(226,232,240,.86);
+      margin-bottom:4px;
     }
     .heroBalance{
-      font-size:86px;
-      line-height:1;
-      font-weight:1000;
-      margin:2px 0 0;
       text-align:center;
+      font-size:86px;
+      font-weight:1000;
+      line-height:1;
+      margin:4px 0 0;
       background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,.9) 55%, rgba(167,139,250,.95) 100%);
       -webkit-background-clip:text;
       background-clip:text;
       color:transparent;
       text-shadow: 0 24px 80px rgba(124,58,237,.18);
     }
+
     .heroRing{
-      margin-top:16px;
-      position:relative;
+      margin-top:14px;
       height:44px;
+      position:relative;
       display:flex;
-      align-items:flex-start;
       justify-content:center;
+      align-items:flex-start;
     }
     .heroRing:after{
       content:"";
-      position:absolute; top:-6px;
+      position:absolute;
+      top:-6px;
       width:min(860px, 100%);
       height:125px;
       border-radius:50%;
@@ -215,6 +226,7 @@
       filter: blur(.1px);
       pointer-events:none;
     }
+
     .heroActions{
       display:grid;
       grid-template-columns:1fr 1fr 1fr;
@@ -228,18 +240,23 @@
       border:1px solid rgba(167,139,250,.25);
       background: rgba(17,24,39,.55);
       border-radius:18px;
-      padding:10px 10px;
+      padding:12px 10px;
       cursor:pointer;
-      color:rgba(226,232,240,.95);
-      display:flex; flex-direction:column; align-items:center;
+      user-select:none;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
       gap:6px;
       transition: transform .14s ease, background .14s ease, border-color .14s ease;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      min-height:66px;
+      min-height:70px;
     }
-    .actionBtn:hover{transform: translateY(-2px); border-color: rgba(167,139,250,.45); background: rgba(17,24,39,.75)}
-    .actionBtn:active{transform: translateY(0px) scale(.99)}
+    .actionBtn:hover{
+      transform: translateY(-2px);
+      border-color: rgba(167,139,250,.48);
+      background: rgba(17,24,39,.75);
+    }
+    .actionBtn:active{ transform: translateY(0px) scale(.99); }
+
     .actionIcon{
       width:30px;height:30px;border-radius:12px;
       display:flex;align-items:center;justify-content:center;
@@ -247,27 +264,20 @@
       border:1px solid rgba(167,139,250,.25);
       font-weight:1000;
       box-shadow: 0 10px 30px rgba(124,58,237,.08);
+      color: rgba(209,185,255,.95);
     }
     .actionText{
       font-size:12px;
-      font-weight:900;
+      font-weight:1000;
       color:rgba(226,232,240,.92);
       letter-spacing:.02em;
     }
 
-    .panel{
-      margin-top:14px;
-      background: rgba(15,23,42,.55);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:16px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 12px 44px rgba(0,0,0,.22);
-    }
-
-    /* Tabs */
+    /* -------- Tabs -------- */
     .tabs{
-      display:flex; gap:10px; margin:16px 0 0;
+      display:flex;
+      gap:10px;
+      margin:16px 0 10px;
       flex-wrap:wrap;
       justify-content:center;
     }
@@ -285,15 +295,24 @@
       user-select:none;
       -webkit-tap-highlight-color: transparent;
     }
-    .tab:hover{transform: translateY(-1px); border-color: rgba(167,139,250,.30)}
     .tab.active{
       background: linear-gradient(180deg, rgba(124,58,237,.35), rgba(124,58,237,.15));
       border-color: rgba(167,139,250,.55);
       box-shadow: 0 18px 50px rgba(124,58,237,.12);
     }
-    .hidden{display:none}
+    .hidden{ display:none !important; }
 
-    /* Catalog */
+    /* -------- Panels / catalog -------- */
+    .panel{
+      background: rgba(15,23,42,.55);
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 12px 44px rgba(0,0,0,.22);
+      margin-top:12px;
+    }
     .sectionTitle{
       margin:0 0 10px;
       font-size:18px;
@@ -304,7 +323,7 @@
 
     .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
       gap:14px;
     }
     .card{
@@ -327,7 +346,8 @@
       opacity:.9;
       pointer-events:none;
     }
-    .card > *{position:relative; z-index:1}
+    .card > *{ position:relative; z-index:1; }
+
     .badge{
       display:inline-block;
       padding:6px 10px;
@@ -335,7 +355,7 @@
       background: rgba(148,163,184,.15);
       border:1px solid rgba(148,163,184,.22);
       font-size:12px;
-      font-weight:900;
+      font-weight:1000;
       color: rgba(226,232,240,.95);
       width:fit-content;
       letter-spacing:.01em;
@@ -344,13 +364,14 @@
       background: rgba(167,139,250,.14);
       border-color: rgba(167,139,250,.26);
     }
+
     .title{
       font-weight:1000;
       font-size:15px;
       line-height:1.2;
     }
-    .muted{color:var(--muted)}
-    .small{font-size:13px}
+    .muted{ color:var(--muted); }
+    .small{ font-size:13px; }
     .price{
       font-size:26px;
       font-weight:1000;
@@ -369,59 +390,65 @@
       margin-top:8px;
       transition: transform .12s ease, filter .12s ease;
     }
-    .buy:active{transform: translateY(0px) scale(.99)}
-    .buy:hover{transform: translateY(-1px); filter: brightness(1.02)}
+    .buy:active{ transform: translateY(0px) scale(.99); }
 
-    /* Bottom sheet */
+    /* -------- Bottom sheets -------- */
     .sheetOverlay{
       position:fixed; inset:0;
       background: rgba(0,0,0,.45);
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
       display:none;
       z-index:500;
       padding:12px;
     }
-    .sheetOverlay.show{display:block}
+    .sheetOverlay.show{ display:block; }
+
     .sheet{
       position:absolute;
       left:0; right:0; bottom:0;
       margin:0 auto;
       max-width:1100px;
       border-radius:24px 24px 0 0;
-      background: rgba(15,23,42,.92);
+      background: rgba(15,23,42,.94);
       border:1px solid rgba(167,139,250,.20);
-      box-shadow: 0 -18px 70px rgba(0,0,0,.50);
+      box-shadow: 0 -18px 70px rgba(0,0,0,.55);
+
       transform: translateY(100%);
       transition: transform .22s ease;
       overflow:hidden;
     }
-    .sheetOverlay.show .sheet{transform: translateY(0)}
+    .sheetOverlay.show .sheet{ transform: translateY(0); }
+
     .sheetHandle{
       height:10px;
       display:flex; align-items:center; justify-content:center;
-      margin-top:8px;
-      margin-bottom:6px;
+      margin-top:8px; margin-bottom:8px;
     }
     .sheetHandle:before{
       content:"";
-      width:54px;height:5px;border-radius:999px;
+      width:54px; height:5px;
+      border-radius:999px;
       background: rgba(148,163,184,.35);
     }
-    .sheetContent{padding:12px 16px 16px}
+
+    .sheetContent{ padding:12px 16px 16px; }
     .sheetTitle{
       font-weight:1000;
       letter-spacing:.2px;
       margin:6px 0 4px;
       font-size:16px;
+      text-align:left;
     }
     .sheetSub{
       color:var(--muted);
       font-size:13px;
       margin-bottom:12px;
+      text-align:left;
     }
     .sheetGrid{
       display:grid;
-      grid-template-columns: 1fr 110px;
+      grid-template-columns: 1fr 120px;
       gap:12px;
       align-items:end;
     }
@@ -429,34 +456,32 @@
       color:var(--muted);
       font-size:12px;
       margin-bottom:6px;
-      font-weight:900;
+      font-weight:1000;
       letter-spacing:.03em;
       text-transform:uppercase;
     }
+
     input,select{
       background: rgba(2,6,23,.40);
       color:var(--text);
       border:1px solid rgba(148,163,184,.28);
       border-radius:14px;
-      padding:10px 12px;
+      padding:12px 12px;
       outline:none;
       width:100%;
+      font-size:14px;
     }
-    input[type="number"]{width:120px}
-    .sheetTotal{
+    input[type="number"]{ width:120px; }
+
+    .sheetTotalRow{
       display:flex; justify-content:space-between; align-items:flex-end;
       margin:14px 0 12px;
       gap:12px;
     }
-    .sheetTotal .left .label{margin:0 0 6px}
-    .sheetTotal .right{
-      font-size:24px;
-      font-weight:1000;
-      letter-spacing:.2px;
-    }
+    #payTotal{ font-size:24px; font-weight:1000; letter-spacing:.2px; }
+
     .sheetButtons{
-      display:flex; gap:10px;
-      margin-top:12px;
+      display:flex; gap:10px; margin-top:10px;
     }
     .sheetBtn{
       flex:1;
@@ -464,7 +489,7 @@
       border-radius:16px;
       border:1px solid rgba(148,163,184,.22);
       background: rgba(2,6,23,.25);
-      color:rgba(226,232,240,.95);
+      color: rgba(226,232,240,.95);
       font-weight:1000;
       cursor:pointer;
     }
@@ -473,114 +498,45 @@
       background: linear-gradient(180deg, rgba(124,58,237,.95), rgba(124,58,237,.72));
       color:white;
     }
+
     .msg{
       margin-top:10px;
       color:var(--muted);
       font-size:13px;
       min-height:18px;
     }
-    /* Orders/providers/reviews placeholders minimal */
-    .belowGrid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap:14px;
-    }
-    @media (max-width: 900px){
-      .belowGrid{grid-template-columns:1fr}
-      .heroBalance{font-size:64px}
-      .heroActions{padding:0 10px}
-    }
-    .providerTitleRow{
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      margin-bottom:10px;
-    }
-    .linkBtn{
-      background: transparent;
-      border:1px solid rgba(167,139,250,.28);
-      color: rgba(226,232,240,.95);
-      padding:8px 12px;
-      border-radius:14px;
-      font-weight:1000;
-      cursor:pointer;
-      white-space:nowrap;
-    }
-    .linkBtn:active{transform:scale(.99)}
-    .providerLogos{display:flex; gap:12px; flex-wrap:wrap; align-items:center}
-    .providerLogo{
-      width:84px; height:84px;
-      border-radius:26px;
-      display:flex; align-items:center; justify-content:center;
-      background: rgba(2,6,23,.35);
-      border:1px solid rgba(148,163,184,.18);
-      position:relative; overflow:hidden;
-    }
-    .providerLogo:before{
-      content:"";
-      position:absolute; inset:-1px;
-      background: radial-gradient(120px 60px at 30% 20%, rgba(124,58,237,.22), transparent 60%);
-      opacity:.9; pointer-events:none;
-    }
-    .providerLogo span{position:relative; z-index:1; font-weight:1000}
-    .reviewGrid{
-      display:grid; grid-template-columns: 1fr; gap:12px;
-    }
-    .review{
-      background: rgba(2,6,23,.30);
-      border:1px solid rgba(148,163,184,.18);
-      border-radius:18px;
-      padding:14px;
-    }
-    .reviewHeader{display:flex; align-items:center; gap:10px}
-    .avatar{
-      width:44px;height:44px;border-radius:16px;
-      background: linear-gradient(180deg, rgba(167,139,250,.30), rgba(34,197,94,.12));
-      border:1px solid rgba(167,139,250,.30);
-      display:flex; align-items:center; justify-content:center;
-      font-weight:1000;
-    }
-    .stars{color:rgba(167,139,250,.95); font-weight:1000; font-size:12px; letter-spacing:2px; margin-top:2px}
-    .reviewText{color:rgba(226,232,240,.92); font-size:13px; line-height:1.35; margin-top:10px}
-    .verified{display:flex; align-items:center; gap:8px; margin-top:12px; color:rgba(226,232,240,.95); font-size:12px}
-    .check{
-      width:18px;height:18px;border-radius:8px;
-      background: rgba(34,197,94,.18);
-      border:1px solid rgba(34,197,94,.35);
-      display:flex; align-items:center; justify-content:center;
-      font-size:12px;
-      font-weight:1000;
-    }
 
-    .features{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap:14px;
+    /* Toast */
+    .toast{
+      position:fixed;
+      top:20px; left:50%;
+      transform: translateX(-50%) translateY(-18px);
+      background: rgba(15,23,42,.95);
+      border:1px solid rgba(167,139,250,.25);
+      border-radius:999px;
+      padding:10px 14px;
+      box-shadow: 0 14px 50px rgba(0,0,0,.45);
+      z-index:999;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      opacity:0; visibility:hidden;
+      transition: opacity .22s ease, transform .22s ease, visibility .22s ease;
     }
-    @media (max-width: 900px){ .features{grid-template-columns: 1fr 1fr} }
-    @media (max-width: 560px){ .features{grid-template-columns: 1fr} }
-    .feature{
-      background: rgba(15,23,42,.45);
-      border:1px solid rgba(148,163,184,.18);
-      border-radius:18px;
-      padding:14px;
-      display:flex; gap:10px; align-items:flex-start;
+    .toast.show{
+      opacity:1; visibility:visible;
+      transform: translateX(-50%) translateY(0px);
     }
-    .featureIcon{
-      width:40px;height:40px;border-radius:16px;
-      background: rgba(124,58,237,.18);
-      border:1px solid rgba(167,139,250,.28);
-      display:flex; align-items:center; justify-content:center;
-      flex:0 0 auto;
-      font-size:16px;
-    }
-    .featureTitle{font-weight:1000; font-size:13px; margin:0}
-    .featureDesc{margin:4px 0 0; color:var(--muted); font-size:12.5px; line-height:1.3}
+    .toast i{ color: rgba(167,139,250,.95); }
+    .toast span{ font-size:13px; font-weight:900; color: rgba(226,232,240,.95); }
 
-    /* keep it mobile */
-    @media (max-width: 420px){
-      .heroActions{grid-template-columns:1fr 1fr 1fr}
-      .heroLabel{font-size:11px}
+    @media (max-width: 520px){
+      .heroBalance{ font-size:68px; }
+      .heroActions{ padding:0 10px; gap:8px; }
+      .grid{ grid-template-columns: 1fr; }
+      .sheetGrid{ grid-template-columns: 1fr 100px; }
+      .sheetButtons{ flex-direction:column; }
+      .sheetBtn{ width:100%; }
     }
   </style>
 </head>
@@ -589,24 +545,18 @@
   <div class="bgGrid"></div>
 
   <!-- Splash -->
-  <div id="splashScreen" aria-label="Cargando">
-    <div id="splashCard">
+  <div id="splash">
+    <div class="splashCard">
       <div class="splashIcon" aria-hidden="true">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-          <path d="M8 7h8a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-4a3 3 0 0 1 3-3Z" stroke="rgba(167,139,250,.95)" stroke-width="2"/>
-          <path d="M8 10h2M8 14h2M14 10h2M14 14h2" stroke="rgba(167,139,250,.95)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+        <i class="fa-solid fa-mobile-screen-button" style="font-size:30px;color:#d9dbe3;filter: drop-shadow(0 0 12px rgba(173,124,255,.25));"></i>
       </div>
-      <div id="splashText">eSim Market</div>
-      <div class="splashDots" aria-hidden="true">
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-      </div>
-      <div id="splashDesc">Preparando tu tienda…</div>
+      <div class="splashText">eSim Market</div>
+      <div class="splashSpinner" aria-hidden="true"></div>
     </div>
   </div>
 
-  <div class="wrap" id="appRoot" style="display:none;">
-    <!-- Top brand -->
+  <div class="wrap" id="app" style="display:none;">
+    <!-- Header -->
     <div class="topBrand">
       <div class="brand">
         <h1>eSim Market</h1>
@@ -622,11 +572,8 @@
     <!-- Hero -->
     <div class="hero">
       <div class="heroInner">
-        <div class="heroHeader">
-          <div class="heroLabel">FONDOS DISPONIBLES</div>
-          <div class="heroBalance" id="balanceValueHero">0.00 €</div>
-        </div>
-
+        <div class="heroLabel">FONDOS DISPONIBLES</div>
+        <div class="heroBalance" id="heroBalance">0,00 €</div>
         <div class="heroRing" aria-hidden="true"></div>
 
         <div class="heroActions">
@@ -652,7 +599,7 @@
       <button class="tab" data-target="physicalSection" onclick="switchTab('physicalSection')">🧾 SIM Física</button>
     </div>
 
-    <!-- Catalog panel -->
+    <!-- Catalog -->
     <div class="panel">
       <section id="esimSection">
         <h2 class="sectionTitle">Catálogo de eSIMs</h2>
@@ -664,169 +611,55 @@
         <div id="physicalGrid" class="grid"></div>
       </section>
     </div>
-
-    <!-- Below content (premium “as in screenshot”) -->
-    <div class="belowGrid">
-      <div class="panel" style="padding:14px">
-        <div class="providerTitleRow">
-          <div>
-            <div style="font-weight:1000; font-size:14px;">Proveedores populares</div>
-            <div class="muted" style="font-size:13px; margin-top:4px;">Elige tu tarifa favorita</div>
-          </div>
-          <button class="linkBtn" id="btnViewAllProviders" type="button">Ver todos ➜</button>
-        </div>
-
-        <div class="providerLogos">
-          <div class="providerLogo" style="background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.22);">
-            <span style="color:#fff; font-size:26px; font-weight:1000;">0</span>
-            <span style="position:absolute; opacity:.0">Vodafone</span>
-          </div>
-          <div class="providerLogo" style="background: rgba(59,130,246,.12); border-color: rgba(59,130,246,.22);">
-            <span style="color:#fff; font-size:14px;">Lebara</span>
-          </div>
-          <div class="providerLogo" style="background: rgba(99,102,241,.12); border-color: rgba(99,102,241,.22);">
-            <span style="color:#fff; font-size:14px;">Lyca</span>
-          </div>
-          <div class="providerLogo" style="background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.22);">
-            <span style="color:#fff; font-size:18px;">orange</span>
-          </div>
-          <div class="providerLogo" style="background: rgba(147,51,234,.12); border-color: rgba(147,51,234,.22);">
-            <span style="color:#fff; font-size:18px;">3</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="providerTitleRow" style="margin-bottom:6px;">
-          <div>
-            <div style="font-weight:1000; font-size:14px;">Reseñas de clientes</div>
-            <div class="muted" style="font-size:13px; margin-top:4px;">Opiniones recientes</div>
-          </div>
-          <button class="linkBtn" id="btnViewAllReviews" type="button">Ver todas ➜</button>
-        </div>
-
-        <div class="reviewGrid">
-          <div class="review">
-            <div class="reviewHeader">
-              <div class="avatar">C</div>
-              <div>
-                <div style="font-weight:1000;">Carlos M.</div>
-                <div class="stars">★★★★★</div>
-              </div>
-            </div>
-            <div class="reviewText">Activación súper rápida y todo funciona perfecto. Excelente para viajar.</div>
-            <div class="verified"><div class="check">✓</div> Compra verificada</div>
-          </div>
-
-          <div class="review">
-            <div class="reviewHeader">
-              <div class="avatar">L</div>
-              <div>
-                <div style="font-weight:1000;">Laura G.</div>
-                <div class="stars">★★★★★</div>
-              </div>
-            </div>
-            <div class="reviewText">Muy buena atención al cliente y la eSIM llegó al momento.</div>
-            <div class="verified"><div class="check">✓</div> Compra verificada</div>
-          </div>
-
-          <div class="review">
-            <div class="reviewHeader">
-              <div class="avatar">J</div>
-              <div>
-                <div style="font-weight:1000;">Javier T.</div>
-                <div class="stars">★★★★★</div>
-              </div>
-            </div>
-            <div class="reviewText">Precios justos y servicio confiable. Ya he comprado varias veces sin problemas.</div>
-            <div class="verified"><div class="check">✓</div> Compra verificada</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="features">
-      <div class="feature"><div class="featureIcon">⚡</div><div><p class="featureTitle">Entrega inmediata</p><p class="featureDesc">Recibí tu eSIM al momento.</p></div></div>
-      <div class="feature"><div class="featureIcon">🛡️</div><div><p class="featureTitle">Seguro y confiable</p><p class="featureDesc">Tus datos siempre protegidos.</p></div></div>
-      <div class="feature"><div class="featureIcon">🎧</div><div><p class="featureTitle">Soporte 24/7</p><p class="featureDesc">Estamos para ayudarte.</p></div></div>
-      <div class="feature"><div class="featureIcon">🔒</div><div><p class="featureTitle">Pago seguro</p><p class="featureDesc">Compra con total seguridad.</p></div></div>
-    </div>
   </div>
 
-  <!-- Checkout bottom sheet (compra) -->
-  <div class="sheetOverlay" id="sheetCheckoutOverlay" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true" aria-label="Confirmar compra">
-      <div class="sheetHandle"></div>
-      <div class="sheetContent">
-        <div class="sheetTitle">Confirmar Compra</div>
-        <div class="sheetSub">Revisa tu pedido y confirma.</div>
-
-        <div class="sheetGrid">
-          <div class="field">
-            <div class="label">Producto</div>
-            <div id="payName" style="font-weight:1000; padding-top:2px;">-</div>
-          </div>
-          <div class="field" style="justify-self:end; text-align:right;">
-            <div class="label">Cantidad</div>
-            <input id="qty" type="number" min="1" value="1" />
-          </div>
-        </div>
-
-        <div class="sheetTotal">
-          <div class="left" style="flex:1;">
-            <div class="label">Total a pagar</div>
-          </div>
-          <div class="right" id="payTotal">0.00 €</div>
-        </div>
-
-        <div class="sheetButtons">
-          <button class="sheetBtn" id="btnCancelCheckout" type="button">Cancelar</button>
-          <button class="sheetBtn primary" id="confirmBuy" type="button">Pagar</button>
-        </div>
-
-        <div id="msg" class="msg"></div>
-      </div>
-    </div>
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <i class="fa-solid fa-circle-info"></i>
+    <span id="toastText">Mensaje</span>
   </div>
 
-  <!-- Recarga sheet (UI preparada; payload no inventado) -->
-  <div class="sheetOverlay" id="sheetRechargeOverlay" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true" aria-label="Recargar saldo">
+  <!-- Overlay (shared click) -->
+  <div class="sheetOverlay" id="overlay" aria-hidden="true"></div>
+
+  <!-- Recharge sheet -->
+  <div class="sheetOverlay" id="sheetRecharge" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Recargar">
       <div class="sheetHandle"></div>
       <div class="sheetContent">
         <div class="sheetTitle">Recargar</div>
         <div class="sheetSub">Añade saldo para comprar.</div>
 
-        <div class="field" style="margin-top:6px;">
-          <div class="label">Cantidad a recargar</div>
-          <input id="rechargeAmount" type="number" min="1" value="50" />
-        </div>
-
-        <div class="sheetTotal">
-          <div class="left" style="flex:1;">
-            <div class="label">Estado</div>
+        <div class="sheetGrid" style="grid-template-columns:1fr 120px;">
+          <div class="field">
+            <div class="label">Importe (€)</div>
+            <input id="rechargeAmount" type="number" min="10" step="1" value="50" />
           </div>
-          <div class="right" style="font-size:16px; color:rgba(226,232,240,.92)" id="rechargeStatus">—</div>
+          <div class="field" style="align-self:end;">
+            <div class="label">Estado</div>
+            <div id="rechargeStatus" style="font-weight:1000; color:rgba(226,232,240,.95); padding:12px 0;">—</div>
+          </div>
         </div>
 
         <div class="sheetButtons">
           <button class="sheetBtn" id="btnCancelRecharge" type="button">Cancelar</button>
-          <button class="sheetBtn primary" id="btnConfirmRecharge" type="button">Confirmar</button>
+          <button class="sheetBtn primary" id="btnConfirmRecharge" type="button">Continuar</button>
         </div>
-        <div id="rechargeMsg" class="msg"></div>
+
+        <div class="msg" id="rechargeMsg"></div>
       </div>
     </div>
   </div>
 
-  <!-- Cupones sheet (UI preparada; payload no inventado) -->
-  <div class="sheetOverlay" id="sheetCouponsOverlay" aria-hidden="true">
+  <!-- Coupons sheet -->
+  <div class="sheetOverlay" id="sheetCoupons" aria-hidden="true">
     <div class="sheet" role="dialog" aria-modal="true" aria-label="Cupones">
       <div class="sheetHandle"></div>
       <div class="sheetContent">
         <div class="sheetTitle">Cupones</div>
-        <div class="sheetSub">Introduce tu código de cupón.</div>
+        <div class="sheetSub">Introduce tu código promocional.</div>
 
-        <div class="field" style="margin-top:6px;">
+        <div class="field">
           <div class="label">Código</div>
           <input id="couponCode" type="text" placeholder="EJ: ESIM20" />
         </div>
@@ -836,17 +669,59 @@
           <button class="sheetBtn primary" id="btnApplyCoupon" type="button">Aplicar</button>
         </div>
 
-        <div id="couponMsg" class="msg"></div>
+        <div class="msg" id="couponMsg"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purchase sheet -->
+  <div class="sheetOverlay" id="sheetPurchase" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Confirmar compra">
+      <div class="sheetHandle"></div>
+      <div class="sheetContent">
+        <div class="sheetTitle">Confirmar Compra</div>
+        <div class="sheetSub">Revisa tu pedido y confirma.</div>
+
+        <div class="sheetGrid" style="grid-template-columns: 1fr 120px;">
+          <div class="field">
+            <div class="label">Producto</div>
+            <div id="payName" style="font-weight:1000; color:rgba(226,232,240,.95); padding:12px 0;">-</div>
+          </div>
+          <div class="field" style="align-self:end;">
+            <div class="label">Cantidad</div>
+            <input id="qty" type="number" min="1" value="1" />
+          </div>
+        </div>
+
+        <div class="sheetTotalRow">
+          <div class="field" style="margin:0; flex:1;">
+            <div class="label">Total a pagar</div>
+            <div id="payTotal">0.00 €</div>
+          </div>
+          <div style="text-align:right; color:var(--muted); font-size:13px; font-weight:900;">
+            Saldo: <span id="balanceInSheet">0.00 €</span>
+          </div>
+        </div>
+
+        <div class="sheetButtons">
+          <button class="sheetBtn" id="btnCancelCheckout" type="button">Cancelar</button>
+          <button class="sheetBtn primary" id="confirmBuy" type="button">Pagar</button>
+        </div>
+
+        <div class="msg" id="buyMsg"></div>
       </div>
     </div>
   </div>
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
   <script>
-    // ===== Telegram integration (NO rompas lógica) =====
+    // ================= Telegram =================
     const tg = window.Telegram?.WebApp;
     if (tg) tg.expand();
+    if (tg && tg.ready) tg.ready();
 
+    // ================= Params + Products =================
     function getParams() {
       return new URLSearchParams(window.location.search);
     }
@@ -873,76 +748,85 @@
       };
     }
 
-    // ===== UI helpers premium =====
-    function vibrate(ms=10){
-      try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){}
-    }
-    function openSheet(overlayEl){
-      vibrate(15);
-      overlayEl.classList.add('show');
-      overlayEl.setAttribute('aria-hidden','false');
-    }
-    function closeSheet(overlayEl){
-      overlayEl.classList.remove('show');
-      overlayEl.setAttribute('aria-hidden','true');
-    }
-    function setMsg(el, text, color){
-      if(!el) return;
-      el.textContent = text || '';
-      if(color) el.style.color = color;
+    function formatEuroEU(val){
+      // tu backend usa decimales con dot, pero UI puede ser coma
+      const n = Number(val || 0);
+      return n.toFixed(2).replace(".", ",") + " €";
     }
 
-    // ===== Splash =====
+    // ================= Haptics + Toast =================
+    function haptic(kind='light'){
+      try{
+        if(tg?.HapticFeedback?.impactOccurred){
+          const map = { light:'light', medium:'medium', heavy:'heavy' };
+          tg.HapticFeedback.impactOccurred(map[kind] || 'light');
+          return;
+        }
+      }catch(e){}
+      try{
+        if(navigator.vibrate) navigator.vibrate(kind==='heavy' ? 28 : (kind==='medium' ? 18 : 10));
+      }catch(e){}
+    }
+
+    let toastT = null;
+    function showToast(text, icon='info'){
+      const el = document.getElementById('toast');
+      const t = document.getElementById('toastText');
+      t.textContent = text;
+      el.querySelector('i').className = icon === 'warn'
+        ? 'fa-solid fa-triangle-exclamation'
+        : (icon === 'ok' ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-info');
+      el.classList.add('show');
+      clearTimeout(toastT);
+      toastT = setTimeout(()=> el.classList.remove('show'), 2600);
+    }
+
+    // ================= Splash =================
     window.addEventListener('load', () => {
-      const splash = document.getElementById('splashScreen');
-      const root = document.getElementById('appRoot');
-      // pequeño delay para que se sienta premium
+      const splash = document.getElementById('splash');
+      const app = document.getElementById('app');
       setTimeout(() => {
-        splash.classList.add('hide');
-        root.style.display = 'block';
-        setTimeout(() => { splash.style.display='none'; }, 420);
-      }, 650);
+        splash.classList.add('hidden');
+        app.style.display='block';
+      }, 750);
     });
 
-    // ===== Saldo y productos =====
+    // ================= State =================
     const params = getParams();
     const balance = parseFloat(params.get('balance') || '0');
     const products = decodeProducts().map(normProduct);
 
-    document.getElementById('balanceValue').textContent = balance.toFixed(2) + ' €';
-    const heroVal = document.getElementById('balanceValueHero');
-    if(heroVal) heroVal.textContent = balance.toFixed(2) + ' €';
-
-    // ===== Catálogo =====
-    const esimGrid = document.getElementById('esimGrid');
-    const physicalGrid = document.getElementById('physicalGrid');
-    const checkoutOverlay = document.getElementById('sheetCheckoutOverlay');
-    const payName = document.getElementById('payName');
-    const payTotal = document.getElementById('payTotal');
-    const qtyInput = document.getElementById('qty');
-    const msg = document.getElementById('msg');
-
     let selected = null;
 
-    function switchTab(id) {
+    // Balance UI
+    document.getElementById('balanceValue').textContent = formatEuroEU(balance);
+    document.getElementById('heroBalance').textContent = formatEuroEU(balance).replace(" €","") + " €";
+    document.getElementById('balanceInSheet').textContent = balance.toFixed(2).replace(".", ",") + " €";
+
+    // ================= Tabs =================
+    function switchTab(id){
       document.getElementById('esimSection').classList.toggle('hidden', id !== 'esimSection');
       document.getElementById('physicalSection').classList.toggle('hidden', id !== 'physicalSection');
-      document.querySelectorAll('.tab').forEach(btn => btn.classList.toggle('active', btn.dataset.target === id));
+
+      document.querySelectorAll('.tab').forEach(b => {
+        b.classList.toggle('active', b.dataset.target === id);
+      });
+
+      haptic('light');
     }
+    window.switchTab = switchTab;
 
-    // ===== Bottom sheet close on overlay click =====
-    checkoutOverlay.addEventListener('click', (e) => {
-      if(e.target === checkoutOverlay) closeSheet(checkoutOverlay);
-    });
+    // ================= Render Catalog =================
+    const esimGrid = document.getElementById('esimGrid');
+    const physicalGrid = document.getElementById('physicalGrid');
 
-    // ===== render cards (NO rompas payload/flujo de compra) =====
-    function renderCard(p) {
+    function renderCard(p){
       const card = document.createElement('div');
       card.className = 'card';
 
       const badge = document.createElement('div');
       badge.className = 'badge' + (p.type === 'physical' ? ' physical' : '');
-      badge.textContent = p.type === 'physical' ? 'SIM Física' : 'eSIM';
+      badge.textContent = (p.type === 'physical') ? 'SIM Física' : 'eSIM';
 
       const title = document.createElement('div');
       title.className = 'title';
@@ -961,14 +845,15 @@
       buy.className = 'buy';
       buy.textContent = 'Comprar';
       buy.onclick = () => {
+        haptic('medium');
         selected = p;
-        payName.textContent = p.name;
-        payTotal.textContent = Number(p.unit_price || 0).toFixed(2) + ' €';
-        qtyInput.value = 1;
-        setMsg(msg, '', 'rgba(148,163,184,1)');
 
-        openSheet(checkoutOverlay);
-        checkoutOverlay.querySelector('.sheetContent').scrollIntoView({behavior:'smooth', block:'start'});
+        document.getElementById('payName').textContent = p.name;
+        document.getElementById('qty').value = 1;
+        updatePayTotal();
+
+        document.getElementById('buyMsg').textContent = '';
+        openSheet('sheetPurchase');
       };
 
       card.appendChild(badge);
@@ -979,51 +864,129 @@
       return card;
     }
 
-    function renderProducts() {
+    function renderProducts(){
       esimGrid.innerHTML = '';
       physicalGrid.innerHTML = '';
 
-      if (!products.length) {
-        esimGrid.innerHTML = '<div class="muted">No hay tarifas disponibles.</div>';
-        physicalGrid.innerHTML = '<div class="muted">No hay tarifas disponibles.</div>';
-        return;
+      const esim = products.filter(p => p.type !== 'physical');
+      const phy  = products.filter(p => p.type === 'physical');
+
+      if(esim.length === 0){
+        esimGrid.innerHTML = '<div class="muted" style="padding:14px;font-weight:900;">No hay tarifas disponibles.</div>';
+      } else {
+        esim.forEach(p => esimGrid.appendChild(renderCard(p)));
       }
 
-      products.forEach(p => {
-        const card = renderCard(p);
-        if (p.type === 'physical') physicalGrid.appendChild(card);
-        else esimGrid.appendChild(card);
-      });
-
-      if (!esimGrid.children.length) esimGrid.innerHTML = '<div class="muted">No hay tarifas eSIM.</div>';
-      if (!physicalGrid.children.length) physicalGrid.innerHTML = '<div class="muted">No hay tarifas físicas.</div>';
+      if(phy.length === 0){
+        physicalGrid.innerHTML = '<div class="muted" style="padding:14px;font-weight:900;">No hay tarifas disponibles.</div>';
+      } else {
+        phy.forEach(p => physicalGrid.appendChild(renderCard(p)));
+      }
     }
 
-    // qty updates
-    qtyInput.addEventListener('input', () => {
-      if (!selected) return;
-      vibrate(8);
+    renderProducts();
+
+    // ================= Sheets =================
+    const sheetPurchase = document.getElementById('sheetPurchase');
+    const sheetRecharge = document.getElementById('sheetRecharge');
+    const sheetCoupons = document.getElementById('sheetCoupons');
+
+    function openSheet(id){
+      closeAllSheets();
+      const ov = document.getElementById(id);
+      ov.classList.add('show');
+      ov.setAttribute('aria-hidden','false');
+      // opcional: scroll suave interno
+      haptic('light');
+    }
+
+    function closeAllSheets(){
+      [sheetPurchase, sheetRecharge, sheetCoupons].forEach(s=>{
+        s.classList.remove('show');
+        s.setAttribute('aria-hidden','true');
+      });
+    }
+
+    function bindOverlayClose(sheetEl){
+      sheetEl.addEventListener('click', (e)=>{
+        if(e.target === sheetEl) closeAllSheets();
+      });
+    }
+    bindOverlayClose(sheetPurchase);
+    bindOverlayClose(sheetRecharge);
+    bindOverlayClose(sheetCoupons);
+
+    // Close buttons / X
+    document.getElementById('btnClose').addEventListener('click', ()=>{
+      haptic('medium');
+      if(tg && tg.close) tg.close();
+      else showToast('Cerrando…');
+    });
+
+    // Recharge sheet open
+    document.getElementById('btnRecharge').addEventListener('click', ()=>{
+      haptic('medium');
+      document.getElementById('rechargeMsg').textContent = '';
+      document.getElementById('rechargeStatus').textContent = '—';
+      openSheet('sheetRecharge');
+    });
+
+    // Coupons sheet open
+    document.getElementById('btnCoupons').addEventListener('click', ()=>{
+      haptic('medium');
+      document.getElementById('couponMsg').textContent = '';
+      openSheet('sheetCoupons');
+    });
+
+    // Cancel sheet buttons
+    document.getElementById('btnCancelRecharge').addEventListener('click', ()=>{ haptic('light'); closeAllSheets(); });
+    document.getElementById('btnCancelCoupons').addEventListener('click', ()=>{ haptic('light'); closeAllSheets(); });
+    document.getElementById('btnCancelCheckout').addEventListener('click', ()=>{ haptic('light'); closeAllSheets(); });
+
+    // ================= Purchase sheet logic =================
+    const payTotalEl = document.getElementById('payTotal');
+    const qtyInput = document.getElementById('qty');
+    const buyMsgEl = document.getElementById('buyMsg');
+
+    function updatePayTotal(){
+      if(!selected) return;
       const q = Math.max(1, parseInt(qtyInput.value || '1', 10));
-      payTotal.textContent = (Number(selected.unit_price || 0) * q).toFixed(2) + ' €';
-      // feedback elegante dentro del msg
-      setMsg(msg, `Cantidad: ${q} (total actualizado)`, 'rgba(167,139,250,.95)');
+      qtyInput.value = q;
+      const total = Number(selected.unit_price || 0) * q;
+      payTotalEl.textContent = total.toFixed(2).replace(".", ",") + " €";
+
+      const canPay = balance >= total;
+      if(!canPay){
+        buyMsgEl.textContent = '⚠️ Saldo insuficiente. Recarga para continuar.';
+        buyMsgEl.style.color = '#fb7185';
+        document.getElementById('confirmBuy').disabled = false; // dejamos click para feedback
+      } else {
+        buyMsgEl.textContent = '';
+        buyMsgEl.style.color = 'var(--muted)';
+      }
+    }
+
+    qtyInput.addEventListener('input', ()=>{
+      if(!selected) return;
+      haptic('light');
+      updatePayTotal();
     });
 
-    // cancel checkout
-    document.getElementById('btnCancelCheckout').addEventListener('click', () => {
-      vibrate(12);
-      closeSheet(checkoutOverlay);
-    });
-
-    // confirm buy (NO rompas envío al bot)
-    document.getElementById('confirmBuy').addEventListener('click', () => {
-      if (!selected) return;
-
-      vibrate(20);
+    document.getElementById('confirmBuy').addEventListener('click', ()=>{
+      if(!selected) return;
+      haptic('heavy');
 
       const q = Math.max(1, parseInt(qtyInput.value || '1', 10));
       const total = Number(selected.unit_price || 0) * q;
 
+      if(balance < total){
+        showToast('Saldo insuficiente', 'warn');
+        buyMsgEl.textContent = 'Saldo insuficiente. No se puede confirmar.';
+        buyMsgEl.style.color = '#fb7185';
+        return;
+      }
+
+      // Payload EXACTO compatible con tu bot (web_app_data type=purchase)
       const payload = {
         type: 'purchase',
         productId: selected.id,
@@ -1035,76 +998,68 @@
         typeProduct: selected.type
       };
 
-      if (tg) tg.sendData(JSON.stringify(payload));
-
-      setMsg(msg, 'Enviando pedido…', 'rgba(148,163,184,1)');
+      if(tg && tg.sendData){
+        tg.sendData(JSON.stringify(payload));
+      }
+      closeAllSheets();
+      // el bot cerrará o responderá; dejamos feedback local mínimo
+      showToast('Pedido enviado al bot…', 'ok');
     });
 
-    renderProducts();
-
-    // ===== Hero buttons feedback (no romper bot; solo UI/experiencia) =====
-    const btnRecharge = document.getElementById('btnRecharge');
-    const btnCoupons = document.getElementById('btnCoupons');
-    const btnClose = document.getElementById('btnClose');
-
-    const rechargeOverlay = document.getElementById('sheetRechargeOverlay');
-    const couponsOverlay = document.getElementById('sheetCouponsOverlay');
-
-    btnRecharge?.addEventListener('click', () => {
-      vibrate(15);
-      openSheet(rechargeOverlay);
-      setMsg(document.getElementById('rechargeMsg'), '', 'rgba(148,163,184,1)');
-      document.getElementById('rechargeStatus').textContent = '—';
-    });
-
-    btnCoupons?.addEventListener('click', () => {
-      vibrate(15);
-      openSheet(couponsOverlay);
-      setMsg(document.getElementById('couponMsg'), '', 'rgba(148,163,184,1)');
-    });
-
-    btnClose?.addEventListener('click', () => {
-      vibrate(15);
-      if (tg && tg.close) tg.close();
-      else setMsg(document.getElementById('msg'), 'Cerrando… (si no estás en Telegram, no se puede cerrar).', '#fb7185');
-    });
-
-    // cancel sheets on buttons + overlay click
-    rechargeOverlay.addEventListener('click', (e)=>{ if(e.target===rechargeOverlay) closeSheet(rechargeOverlay);});
-    couponsOverlay.addEventListener('click', (e)=>{ if(e.target===couponsOverlay) closeSheet(couponsOverlay);});
-
-    document.getElementById('btnCancelRecharge').addEventListener('click', ()=>{vibrate(12); closeSheet(rechargeOverlay);});
-    document.getElementById('btnCancelCoupons').addEventListener('click', ()=>{vibrate(12); closeSheet(couponsOverlay);});
-
-    // Recarga/Cupones UX: hooks UI sin romper integración (no invento payload)
-    document.getElementById('btnConfirmRecharge').addEventListener('click', () => {
-      vibrate(20);
-      const amt = Math.max(1, parseInt(document.getElementById('rechargeAmount').value || '0', 10));
-      document.getElementById('rechargeStatus').textContent = `Preparado: ${amt}€`;
-      setMsg(document.getElementById('rechargeMsg'),
-        'Recarga (UI) lista. Conecta el payload exacto cuando tu bot lo defina.',
-        'rgba(148,163,184,1)'
-      );
-      // Aquí NO enviamos tg.sendData para no romper compatibilidad.
-    });
-
-    document.getElementById('btnApplyCoupon').addEventListener('click', () => {
-      vibrate(20);
-      const code = (document.getElementById('couponCode').value || '').trim();
-      if(!code){
-        setMsg(document.getElementById('couponMsg'), 'Introduce un código de cupón.', '#fb7185');
+    updatePayTotal = updatePayTotal; // por si
+    // ================= Recharge sheet =================
+    document.getElementById('btnConfirmRecharge').addEventListener('click', ()=>{
+      haptic('heavy');
+      const amt = parseFloat(document.getElementById('rechargeAmount').value || '0');
+      const msg = document.getElementById('rechargeMsg');
+      if(!amt || isNaN(amt) || amt <= 0){
+        msg.textContent = 'Importe inválido.';
+        msg.style.color = '#fb7185';
+        haptic('light');
         return;
       }
-      setMsg(document.getElementById('couponMsg'),
-        `Cupón “${code}” (UI) listo. Conecta la validación exacta del bot.`,
-        'rgba(148,163,184,1)'
-      );
-      // Aquí NO enviamos payload nuevo.
+
+      msg.textContent = 'Abriendo opciones de pago…';
+      msg.style.color = 'rgba(226,232,240,.95)';
+
+      // Payload EXACTO compatible con tu bot:
+      // web_app_data.type == "add_balance"
+      const payload = { type: 'add_balance', amount: amt };
+
+      if(tg && tg.sendData){
+        tg.sendData(JSON.stringify(payload));
+      }
+      closeAllSheets();
+      showToast('Solicitud enviada…');
     });
 
-    // Extra hero links demo
-    document.getElementById('btnViewAllProviders')?.addEventListener('click', ()=>{vibrate(10); alert('Demo UI: “Proveedores”. Conecta con bot si existe navegación.');});
-    document.getElementById('btnViewAllReviews')?.addEventListener('click', ()=>{vibrate(10); alert('Demo UI: “Reseñas”. Conecta con bot si existe navegación.');});
+    // ================= Coupons sheet =================
+    document.getElementById('btnApplyCoupon').addEventListener('click', ()=>{
+      haptic('heavy');
+      const code = (document.getElementById('couponCode').value || '').trim().toUpperCase();
+      const msg = document.getElementById('couponMsg');
+
+      if(!code){
+        msg.textContent = 'Introduce un código.';
+        msg.style.color = '#fb7185';
+        haptic('light');
+        return;
+      }
+
+      msg.textContent = 'Validando cupón…';
+      msg.style.color = 'rgba(226,232,240,.95)';
+
+      // Payload EXACTO compatible con tu bot:
+      // web_app_data.type == "apply_coupon"
+      const payload = { type: 'apply_coupon', code };
+
+      if(tg && tg.sendData){
+        tg.sendData(JSON.stringify(payload));
+      }
+      closeAllSheets();
+      showToast('Cupón solicitado…');
+    });
+
   </script>
 </body>
 </html>
