@@ -3,582 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin Dashboard</title>
+    <title>Panel de Administración v7.0</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #13141b;
-            --card-bg: #1c1d24;
-            --text-main: #ffffff;
-            --text-muted: #9ca3af;
-            --accent-purple: #8b5cf6;
-            --accent-green: #10b981;
-            --border-color: #2d2e3b;
-        }
-
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            -webkit-font-smoothing: antialiased;
+            background-color: #0b0c10;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
         }
-
         .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1.25rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #15161c 0%, #1e222d 100%);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
         }
-
-        /* TABS */
-        .tab-btn {
-            padding: 0.5rem 0.25rem;
-            font-weight: 500;
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s ease;
-        }
-        .tab-btn.active {
-            color: var(--accent-purple);
-            border-bottom: 2px solid var(--accent-purple);
-        }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* FILTERS */
-        .filter-btn {
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 0.375rem 1rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .filter-btn.active {
-            border-color: var(--accent-purple);
-            color: var(--accent-purple);
-            background-color: rgba(139, 92, 246, 0.1);
-        }
-
-        /* INPUTS DATE */
-        .date-input {
-            background-color: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            border-radius: 0.5rem;
-            padding: 0.375rem 0.5rem;
-            font-size: 0.75rem;
-            width: 100%;
-            outline: none;
-        }
-        .date-input::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-            opacity: 0.5;
-        }
-
-        .apply-btn {
-            background-color: rgba(139, 92, 246, 0.1);
-            border: 1px solid var(--accent-purple);
-            color: var(--accent-purple);
-            padding: 0.375rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        /* KPIS */
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        .stat-value {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-top: 0.5rem;
-        }
-        .trend-badge {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--accent-green);
-            padding: 0.125rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        /* TABLE OVERRIDES */
-        .dark-table th {
-            background-color: var(--card-bg);
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border-color);
-        }
-        .dark-table td {
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-main);
-        }
-        .dark-table tr:hover td {
-            background-color: rgba(255,255,255,0.02);
+        .text-accent {
+            color: #b89aff;
         }
     </style>
 </head>
-<body class="pb-10">
+<body>
 
-    <!-- Header & Tabs -->
-    <div class="px-5 pt-6 pb-2 sticky top-0 z-50" style="background-color: var(--bg-color);">
-        <h1 class="text-xl font-bold text-white tracking-wide">Dashboard</h1>
-        <div class="flex space-x-6 mt-5 border-b border-[#2d2e3b]">
-            <button id="tab-dashboard" class="tab-btn active pb-3" onclick="switchTab('dashboard')">General</button>
-            <button id="tab-affiliates" class="tab-btn pb-3" onclick="switchTab('affiliates')">VIP Affiliates</button>
+    <h1 class="text-2xl font-bold mb-6 text-center text-accent">Dashboard v7.0</h1>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="card text-center">
+            <p class="text-sm text-gray-400">Ventas</p>
+            <p class="text-2xl font-bold" id="totalVentas">-</p>
+            <p class="text-xs text-green-400 mt-1" id="sumVentas">€0.00</p>
+        </div>
+        <div class="card text-center">
+            <p class="text-sm text-gray-400">Recargas</p>
+            <p class="text-2xl font-bold" id="totalRecargas">-</p>
+            <p class="text-xs text-green-400 mt-1" id="sumRecargas">€0.00</p>
+        </div>
+        <div class="card text-center">
+            <p class="text-sm text-gray-400">Stock Añadido</p>
+            <p class="text-2xl font-bold" id="totalStock">-</p>
+        </div>
+        <div class="card text-center">
+            <p class="text-sm text-gray-400">Comisiones</p>
+            <p class="text-2xl font-bold" id="totalComisiones">-</p>
+            <p class="text-xs text-green-400 mt-1" id="sumComisiones">€0.00</p>
         </div>
     </div>
 
-    <div class="px-5 mt-4">
-        <!-- Filtros (Compartidos) -->
-        <div class="flex flex-wrap gap-2 mb-4">
-            <button onclick="setDateRange(7)" class="filter-btn active">Last 7 days</button>
-            <button onclick="setDateRange(30)" class="filter-btn">Last 30 days</button>
-            <button onclick="setDateRange('all')" class="filter-btn">All time</button>
-        </div>
-        
-        <div class="flex items-center gap-2 mb-6">
-            <div class="flex-1 relative">
-                <input type="date" id="dateStart" class="date-input">
-            </div>
-            <span class="text-gray-500 text-sm">→</span>
-            <div class="flex-1 relative">
-                <input type="date" id="dateEnd" class="date-input">
-            </div>
-            <button onclick="applyCustomDate()" class="apply-btn">Apply</button>
-        </div>
-
-        <!-- =======================
-             PESTAÑA GENERAL
-        ======================== -->
-        <div id="content-dashboard" class="tab-content active">
-            
-            <!-- KPIs -->
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="card relative overflow-hidden">
-                    <span class="stat-label">Real Income</span>
-                    <div class="flex justify-between items-end mt-1">
-                        <span class="stat-value" id="kpi-revenue">€0.00</span>
-                    </div>
-                    <div class="absolute top-4 right-4 trend-badge" id="kpi-rev-trend">↑ 12%</div>
-                    <!-- Decoración curva simulada del KPI -->
-                    <div class="absolute bottom-0 left-0 right-0 h-10" style="background: linear-gradient(180deg, transparent, rgba(245, 158, 11, 0.1)); border-bottom: 2px solid #f59e0b; border-radius: 0 0 1rem 1rem;"></div>
-                </div>
-
-                <div class="card relative overflow-hidden">
-                    <span class="stat-label">eSIM Sales</span>
-                    <div class="flex justify-between items-end mt-1">
-                        <span class="stat-value" id="kpi-sales">0</span>
-                    </div>
-                    <div class="absolute top-4 right-4 trend-badge" id="kpi-sales-trend">↑ 8%</div>
-                    <!-- Decoración curva simulada del KPI -->
-                    <div class="absolute bottom-0 left-0 right-0 h-10" style="background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.1)); border-bottom: 2px solid #8b5cf6; border-radius: 0 0 1rem 1rem;"></div>
-                </div>
-            </div>
-
-            <!-- Main Chart -->
-            <div class="card mb-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-sm font-medium text-gray-400">Uploads vs Sold</h2>
-                    <div class="flex gap-4 text-xs font-medium">
-                        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-[#3B82F6]"></div>Sold</div>
-                        <div class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-[#8b5cf6]"></div>Uploads</div>
-                    </div>
-                </div>
-                <div class="relative h-48 w-full">
-                    <canvas id="mainChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Doughnut -->
-            <div class="card mb-6">
-                <h2 class="text-sm font-medium text-gray-400 mb-6">Payment Sources</h2>
-                <div class="flex items-center">
-                    <div class="relative h-32 w-32 flex-shrink-0">
-                        <canvas id="doughnutChart"></canvas>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <span class="text-[10px] font-medium text-gray-500">TOTAL</span>
-                            <span class="text-sm font-bold text-white" id="doughnut-total">€0</span>
-                        </div>
-                    </div>
-                    <div class="ml-6 flex-1 space-y-3" id="doughnut-legend">
-                        <!-- Generado por JS -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Staff List -->
-            <div class="card">
-                <h2 class="text-sm font-medium text-gray-400 mb-4">Staff Uploads</h2>
-                <div id="staff-list" class="space-y-4"></div>
-            </div>
-        </div>
-
-        <!-- =======================
-             PESTAÑA AFILIADOS VIP
-        ======================== -->
-        <div id="content-affiliates" class="tab-content">
-            <div class="card overflow-hidden !px-0 !pb-0">
-                <div class="px-5 mb-4">
-                    <h2 class="text-sm font-medium text-gray-400">VIP Affiliates Performance</h2>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="min-w-full dark-table">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider">Affiliate</th>
-                                <th scope="col" class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider">Ref.</th>
-                                <th scope="col" class="px-3 py-3 text-left text-xs font-medium uppercase tracking-wider text-[#8b5cf6]">Period Earned</th>
-                                <th scope="col" class="px-5 py-3 text-right text-xs font-medium uppercase tracking-wider">All Time</th>
-                            </tr>
-                        </thead>
-                        <tbody id="affiliates-list">
-                            <!-- Se rellena con JS -->
-                        </tbody>
-                    </table>
-                </div>
-                <div id="affiliates-empty" class="hidden text-center py-8 text-gray-500 text-sm border-t border-[#2d2e3b]">
-                    No affiliate data for the selected period.
-                </div>
-            </div>
-        </div>
-
+    <!-- Chart Contenedor -->
+    <div class="card">
+        <canvas id="mainChart" height="250"></canvas>
     </div>
 
     <script>
-        let dbData = { o: [], u: [], c: [], comms: [], aff_info: [] };
-        let mainChart, doughnutChart;
+        // ----------------------------------------------------
+        // 1. REEMPLAZA ESTA URL POR LA IP O DOMINIO DE TU VPS
+        // ----------------------------------------------------
+        const API_URL = "https://TU-IP-O-DOMINIO.com/api/admin-stats?token=esim2026";
+        
+        let chartInstance = null;
 
-        // --- MANEJO DE PESTAÑAS ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        function renderDashboard(data) {
+            // Arrays traidos desde la nueva API
+            const orders = data.o || [];
+            const recharges = data.c || [];
+            const uploads = data.u || [];
+            const commissions = data.comms || [];
+
+            // Totales e importes
+            const numOrders = orders.length;
+            const numRecharges = recharges.length;
+            const numUploads = uploads.length;
+            const numCommissions = commissions.length;
+
+            const sumOrders = orders.reduce((acc, curr) => acc + (parseFloat(curr.r) || 0), 0);
+            const sumRecharges = recharges.reduce((acc, curr) => acc + (parseFloat(curr.r) || 0), 0);
+            const sumCommissions = commissions.reduce((acc, curr) => acc + (parseFloat(curr.a) || 0), 0);
+
+            // Actualizar tarjetas HTML
+            document.getElementById('totalVentas').innerText = numOrders;
+            document.getElementById('sumVentas').innerText = "€" + sumOrders.toFixed(2);
+
+            document.getElementById('totalRecargas').innerText = numRecharges;
+            document.getElementById('sumRecargas').innerText = "€" + sumRecharges.toFixed(2);
+
+            document.getElementById('totalStock').innerText = numUploads;
+
+            document.getElementById('totalComisiones').innerText = numCommissions;
+            document.getElementById('sumComisiones').innerText = "€" + sumCommissions.toFixed(2);
+
+            // Preparar datos para el gráfico (Agrupados por fecha)
+            const datesMap = {};
+
+            orders.forEach(o => {
+                if(!datesMap[o.d]) datesMap[o.d] = { ventas: 0, recargas: 0 };
+                datesMap[o.d].ventas += parseFloat(o.r) || 0;
+            });
+
+            recharges.forEach(r => {
+                if(!datesMap[r.d]) datesMap[r.d] = { ventas: 0, recargas: 0 };
+                datesMap[r.d].recargas += parseFloat(r.r) || 0;
+            });
+
+            // Ordenar fechas
+            const sortedDates = Object.keys(datesMap).sort();
             
-            document.getElementById('tab-' + tabId).classList.add('active');
-            document.getElementById('content-' + tabId).classList.add('active');
-        }
+            const labelDates = sortedDates.map(d => d.substring(5)); // Solo MM-DD
+            const dataVentas = sortedDates.map(d => datesMap[d].ventas);
+            const dataRecargas = sortedDates.map(d => datesMap[d].recargas);
 
-        // --- CARGA DE DATOS ---
-        try {
-            const params = new URLSearchParams(window.location.search);
-            const b64 = params.get('data');
-            if (b64) {
-                dbData = JSON.parse(decodeURIComponent(escape(atob(b64))));
-            }
-        } catch (e) {
-            console.error("Error parsing data", e);
-        }
-
-        // --- INICIALIZACIÓN ---
-        function initApp() {
-            initCharts();
-            setDateRange(7);
-        }
-
-        function initCharts() {
-            Chart.defaults.font.family = "'Inter', sans-serif";
-            Chart.defaults.color = '#9ca3af';
+            const ctx = document.getElementById('mainChart').getContext('2d');
             
-            const ctxMain = document.getElementById('mainChart').getContext('2d');
-            
-            // Gradientes para lineas
-            let gradBlue = ctxMain.createLinearGradient(0, 0, 0, 200);
-            gradBlue.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
-            gradBlue.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+            if(chartInstance) chartInstance.destroy();
 
-            let gradPurple = ctxMain.createLinearGradient(0, 0, 0, 200);
-            gradPurple.addColorStop(0, 'rgba(139, 92, 246, 0.5)');
-            gradPurple.addColorStop(1, 'rgba(139, 92, 246, 0.0)');
-
-            mainChart = new Chart(ctxMain, {
+            chartInstance = new Chart(ctx, {
                 type: 'line',
-                data: { labels: [], datasets: [] },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { 
-                            backgroundColor: '#1c1d24', titleColor: '#fff', bodyColor: '#9ca3af',
-                            borderColor: '#2d2e3b', borderWidth: 1, padding: 10, cornerRadius: 8
+                data: {
+                    labels: labelDates,
+                    datasets: [
+                        {
+                            label: 'Ventas (€)',
+                            data: dataVentas,
+                            borderColor: '#b89aff',
+                            backgroundColor: 'rgba(184, 154, 255, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Recargas (€)',
+                            data: dataRecargas,
+                            borderColor: '#2ed573',
+                            backgroundColor: 'rgba(46, 213, 115, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3
                         }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { labels: { color: '#ffffff' } }
                     },
                     scales: {
-                        x: { grid: { display: false, drawBorder: false }, ticks: { font: {size: 10} } },
-                        y: { 
-                            grid: { color: '#2d2e3b', drawBorder: false, borderDash: [5, 5] }, 
-                            beginAtZero: true, ticks: { precision: 0, font: {size: 10}, maxTicksLimit: 5 }
-                        }
-                    }
-                }
-            });
-
-            const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
-            doughnutChart = new Chart(ctxDoughnut, {
-                type: 'doughnut',
-                data: { labels: [], datasets: [] },
-                options: {
-                    responsive: true, maintainAspectRatio: false, cutout: '75%',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { backgroundColor: '#1c1d24', borderColor: '#2d2e3b', borderWidth: 1, callbacks: { label: (ctx) => ` €${ctx.raw.toFixed(2)}` } }
+                        x: { ticks: { color: '#8b8e98' }, grid: { display: false } },
+                        y: { ticks: { color: '#8b8e98' }, grid: { color: 'rgba(255,255,255,0.05)' } }
                     }
                 }
             });
         }
 
-        // --- FILTRADO ---
-        function setDateRange(days) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            const end = new Date();
-            let start = new Date();
-
-            if (days === 'all') {
-                start = new Date(2020, 0, 1);
-                document.getElementById('dateStart').value = '';
-                document.getElementById('dateEnd').value = '';
-            } else {
-                start.setDate(end.getDate() - days + 1);
-                document.getElementById('dateStart').value = start.toISOString().split('T')[0];
-                document.getElementById('dateEnd').value = end.toISOString().split('T')[0];
-            }
-            filterData(start, end);
-        }
-
-        function applyCustomDate() {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            const s = new Date(document.getElementById('dateStart').value);
-            const e = new Date(document.getElementById('dateEnd').value);
-            if(isNaN(s) || isNaN(e)) return;
-            filterData(s, e);
-        }
-
-        // --- LÓGICA DE DATOS ---
-        function filterData(startDt, endDt) {
-            const sStr = startDt.toISOString().split('T')[0];
-            const eStr = endDt.toISOString().split('T')[0];
-            const isRange = (d) => d >= sStr && d <= eStr;
-
-            // Ventas
-            let filteredOrders = dbData.o.filter(x => isRange(x.d));
-            let totalRev = 0, totalSales = 0;
-            let salesByDay = {};
-            filteredOrders.forEach(x => {
-                totalRev += x.r; totalSales += x.q;
-                salesByDay[x.d] = (salesByDay[x.d] || 0) + x.q;
-            });
-
-            // Subidas
-            let filteredUploads = dbData.u.filter(x => isRange(x.d));
-            let uploadsByDay = {};
-            let staffTotals = {};
-            filteredUploads.forEach(x => {
-                uploadsByDay[x.d] = (uploadsByDay[x.d] || 0) + x.q;
-                staffTotals[x.a] = (staffTotals[x.a] || 0) + x.q;
-            });
-
-            // Recargas
-            let filteredRech = dbData.c.filter(x => isRange(x.d));
-            let cryptoTotal = 0, paypalTotal = 0, otherTotal = 0;
-            filteredRech.forEach(x => {
-                let m = (x.m || "").toLowerCase();
-                if(m.includes("cripto")) cryptoTotal += x.r;
-                else if(m.includes("paypal")) paypalTotal += x.r;
-                else otherTotal += x.r;
-            });
-            let grandTotalRech = cryptoTotal + paypalTotal + otherTotal;
-            if(grandTotalRech === 0 && totalRev > 0) {
-                cryptoTotal = totalRev * 0.7; paypalTotal = totalRev * 0.3; grandTotalRech = totalRev;
-            }
-
-            // Afiliados VIP
-            let filteredComms = (dbData.comms || []).filter(x => isRange(x.d));
-            let commsByAffiliate = {};
-            filteredComms.forEach(x => {
-                commsByAffiliate[x.r_id] = (commsByAffiliate[x.r_id] || 0) + x.a;
-            });
-
-            updateKPIs(totalRev, totalSales);
-            updateMainChart(salesByDay, uploadsByDay, sStr, eStr);
-            updateDoughnut(cryptoTotal, paypalTotal, otherTotal, grandTotalRech);
-            updateStaffList(staffTotals);
-            updateAffiliatesList(commsByAffiliate, dbData.aff_info || []);
-        }
-
-        // --- RENDERIZADO UI ---
-        function updateKPIs(rev, sales) {
-            document.getElementById('kpi-revenue').innerText = `€${rev.toFixed(2)}`;
-            document.getElementById('kpi-sales').innerText = sales;
-        }
-
-        function updateMainChart(salesDict, uploadsDict, start, end) {
-            let labels = [], dataS = [], dataU = [];
-            let cur = new Date(start); let limit = new Date(end);
-            while(cur <= limit) {
-                let d = cur.toISOString().split('T')[0];
-                labels.push(d.substring(5)); // MM-DD
-                dataS.push(salesDict[d] || 0);
-                dataU.push(uploadsDict[d] || 0);
-                cur.setDate(cur.getDate()+1);
-            }
-
-            const ctxMain = document.getElementById('mainChart').getContext('2d');
-            let gradBlue = ctxMain.createLinearGradient(0, 0, 0, 200);
-            gradBlue.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
-            gradBlue.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
-
-            let gradPurple = ctxMain.createLinearGradient(0, 0, 0, 200);
-            gradPurple.addColorStop(0, 'rgba(139, 92, 246, 0.2)');
-            gradPurple.addColorStop(1, 'rgba(139, 92, 246, 0.0)');
-
-            mainChart.data.labels = labels;
-            mainChart.data.datasets = [
-                {
-                    data: dataS,
-                    borderColor: '#3B82F6', backgroundColor: gradBlue, fill: true,
-                    borderWidth: 2, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#1c1d24', pointBorderColor: '#3B82F6'
-                },
-                {
-                    data: dataU,
-                    borderColor: '#8b5cf6', backgroundColor: gradPurple, fill: true,
-                    borderWidth: 2, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#1c1d24', pointBorderColor: '#8b5cf6'
+        // Cargar datos al entrar a la página
+        fetch(API_URL)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Error en la API: " + data.error);
+                } else {
+                    renderDashboard(data);
                 }
-            ];
-            mainChart.update();
-        }
-
-        function updateDoughnut(c, p, o, total) {
-            document.getElementById('doughnut-total').innerText = `€${total.toFixed(0)}`;
-            
-            let data = [c, p, o];
-            let colors = ['#f59e0b', '#3b82f6', '#8b5cf6'];
-            let labels = ['Crypto', 'Admin', 'Other']; // Adaptado visualmente
-            
-            doughnutChart.data.labels = labels;
-            doughnutChart.data.datasets = [{
-                data: data,
-                backgroundColor: colors,
-                borderWidth: 0, hoverOffset: 2
-            }];
-            doughnutChart.update();
-
-            // Leyenda HTML custom
-            let legendHtml = '';
-            labels.forEach((lbl, i) => {
-                if(data[i] > 0) {
-                    let pct = ((data[i]/total)*100).toFixed(0);
-                    legendHtml += `
-                        <div class="flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2">
-                                <div class="w-2.5 h-2.5 rounded-full" style="background-color: ${colors[i]}"></div>
-                                <span class="text-gray-300">${lbl}</span>
-                            </div>
-                            <span class="text-[#8b5cf6] font-medium">${pct}%</span>
-                        </div>
-                    `;
-                }
-            });
-            document.getElementById('doughnut-legend').innerHTML = legendHtml || '<span class="text-xs text-gray-500">No data</span>';
-        }
-
-        function updateStaffList(staffDict) {
-            const container = document.getElementById('staff-list');
-            container.innerHTML = '';
-            let arr = Object.entries(staffDict).map(([name, qty]) => ({name, qty})).sort((a,b)=>b.qty - a.qty);
-            if(arr.length === 0) {
-                container.innerHTML = '<p class="text-xs text-gray-500">No activity</p>';
-                return;
-            }
-            
-            let colors = ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981'];
-            
-            arr.forEach((item, index) => {
-                let color = colors[index % colors.length];
-                let html = `
-                    <div class="flex items-center justify-between text-sm pb-3 border-b border-[#2d2e3b] last:border-0 last:pb-0">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full" style="background-color: ${color}"></div>
-                            <span class="text-gray-200">@${item.name}</span>
-                        </div>
-                        <div class="flex gap-4">
-                            <span class="text-gray-400">${item.qty} uploads</span>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += html;
-            });
-        }
-
-        function updateAffiliatesList(commsDict, allAffiliates) {
-            const tbody = document.getElementById('affiliates-list');
-            const emptyMsg = document.getElementById('affiliates-empty');
-            tbody.innerHTML = '';
-
-            let renderList = [];
-            allAffiliates.forEach(aff => {
-                let periodEarned = commsDict[aff.user_id] || 0;
-                if (periodEarned > 0 || aff.total_referrals > 0) {
-                    renderList.push({
-                        id: aff.user_id,
-                        name: aff.username ? `@${aff.username}` : `ID ${aff.user_id}`,
-                        referrals: aff.total_referrals || 0,
-                        period: periodEarned,
-                        historical: aff.commission_generated || 0
-                    });
-                }
+            })
+            .catch(e => {
+                console.error("Error al cargar la API:", e);
+                alert("No se pudo conectar a la base de datos.");
             });
 
-            renderList.sort((a, b) => b.period - a.period || b.historical - a.historical);
-
-            if (renderList.length === 0) {
-                emptyMsg.classList.remove('hidden');
-                return;
-            }
-
-            emptyMsg.classList.add('hidden');
-
-            renderList.forEach(item => {
-                let periodColor = item.period > 0 ? "text-[#8b5cf6]" : "text-gray-500";
-                let periodText = item.period > 0 ? `+€${item.period.toFixed(2)}` : "€0.00";
-                
-                let html = `
-                    <tr>
-                        <td class="px-5 py-3 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-200">${item.name}</div>
-                        </td>
-                        <td class="px-3 py-3 whitespace-nowrap">
-                            <div class="text-sm text-gray-400">${item.referrals}</div>
-                        </td>
-                        <td class="px-3 py-3 whitespace-nowrap">
-                            <div class="text-sm font-semibold ${periodColor}">${periodText}</div>
-                        </td>
-                        <td class="px-5 py-3 whitespace-nowrap text-right">
-                            <div class="text-sm font-medium text-gray-200">€${item.historical.toFixed(2)}</div>
-                        </td>
-                    </tr>
-                `;
-                tbody.innerHTML += html;
-            });
-        }
-
-        window.onload = initApp;
     </script>
 </body>
 </html>
