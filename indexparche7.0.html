@@ -34,945 +34,144 @@ body{
   overflow-x:hidden;
   padding-bottom:40px;
 }
-
-/* ── SPLASH ─────────────────────────────────── */
-#splash{
-  position:fixed;inset:0;z-index:9999;
-  background:rgba(5,5,15,.88);
-  backdrop-filter:blur(20px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
-  transition:opacity .45s ease,visibility .45s ease;
-}
+#splash{position:fixed;inset:0;z-index:9999;background:rgba(5,5,15,.88);backdrop-filter:blur(20px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .45s ease,visibility .45s ease}
 #splash.hide{opacity:0;visibility:hidden;pointer-events:none}
-.spl-icon{
-  width:68px;height:68px;border-radius:20px;
-  background:linear-gradient(135deg,#7C3AED,#A855F7);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 50px rgba(168,85,247,.55);
-  animation:splpulse 2s ease-in-out infinite;
-}
+.spl-icon{width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,#7C3AED,#A855F7);display:flex;align-items:center;justify-content:center;box-shadow:0 0 50px rgba(168,85,247,.55);animation:splpulse 2s ease-in-out infinite}
 .spl-icon svg{width:34px;height:34px;color:#fff}
 .spl-bar{width:130px;height:3px;background:rgba(255,255,255,.10);border-radius:99px;overflow:hidden}
 .spl-fill{height:100%;background:linear-gradient(90deg,#7C3AED,#A855F7);border-radius:99px;animation:fill 1.5s ease forwards}
 .spl-txt{font-size:12px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
 @keyframes splpulse{0%,100%{box-shadow:0 0 50px rgba(168,85,247,.55)}50%{box-shadow:0 0 80px rgba(168,85,247,.85),0 0 120px rgba(168,85,247,.25)}}
 @keyframes fill{from{width:0}to{width:100%}}
-
-/* ── WRAP ───────────────────────────────────── */
-.wrap{
-  position:relative;z-index:1;
-  max-width:430px;margin:0 auto;
-  padding:14px 14px 0;
-}
-
-/* ── HERO ───────────────────────────────────── */
-.hero{
-  position:relative;
-  background:linear-gradient(160deg,#100D28 0%,#0B0820 55%,#0F0927 100%);
-  border:1px solid var(--border);
-  border-radius:26px;
-  padding:26px 20px 22px;
-  text-align:center;
-  overflow:hidden;
-  margin-bottom:20px;
-}
-/* dot-grid world map */
-.hero-dots{
-  position:absolute;inset:0;pointer-events:none;
-  background-image:radial-gradient(circle,rgba(139,92,246,.28) 1px,transparent 1px);
-  background-size:22px 22px;
-  opacity:.40;
-  mask-image:radial-gradient(ellipse 90% 80% at 50% 0%,black 40%,transparent 75%);
-}
-/* purple arc glow at bottom */
-.hero-arc{
-  position:absolute;left:50%;bottom:-20px;
-  transform:translateX(-50%);
-  width:340px;height:80px;
-  background:radial-gradient(ellipse,rgba(139,92,246,.60) 0%,transparent 65%);
-  pointer-events:none;
-  filter:blur(2px);
-}
-.hero-icon{
-  width:58px;height:58px;border-radius:17px;
-  background:linear-gradient(135deg,#7C3AED,#A855F7);
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 14px;
-  box-shadow:0 6px 28px rgba(139,92,246,.50);
-  position:relative;z-index:1;
-}
+.wrap{position:relative;z-index:1;max-width:430px;margin:0 auto;padding:14px 14px 0}
+.hero{position:relative;background:linear-gradient(160deg,#100D28 0%,#0B0820 55%,#0F0927 100%);border:1px solid var(--border);border-radius:26px;padding:26px 20px 22px;text-align:center;overflow:hidden;margin-bottom:20px}
+.hero-dots{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle,rgba(139,92,246,.28) 1px,transparent 1px);background-size:22px 22px;opacity:.40;mask-image:radial-gradient(ellipse 90% 80% at 50% 0%,black 40%,transparent 75%)}
+.hero-arc{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);width:340px;height:80px;background:radial-gradient(ellipse,rgba(139,92,246,.60) 0%,transparent 65%);pointer-events:none;filter:blur(2px)}
+.hero-icon{width:58px;height:58px;border-radius:17px;background:linear-gradient(135deg,#7C3AED,#A855F7);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 6px 28px rgba(139,92,246,.50);position:relative;z-index:1}
 .hero-icon svg{width:30px;height:30px;color:#fff}
-.hero-lbl{
-  font-size:11px;letter-spacing:.22em;font-weight:600;
-  color:rgba(255,255,255,.72);text-transform:uppercase;
-  margin-bottom:8px;position:relative;z-index:1;
-}
-.hero-amount{
-  font-size:clamp(52px,14vw,72px);font-weight:900;
-  letter-spacing:-.02em;line-height:1;
-  color:#fff;
-  text-shadow:0 0 60px rgba(139,92,246,.35),0 30px 80px rgba(0,0,0,.5);
-  margin-bottom:24px;position:relative;z-index:1;
-}
-.hero-actions{
-  display:flex;justify-content:center;gap:30px;
-  position:relative;z-index:2;
-}
+.hero-lbl{font-size:11px;letter-spacing:.22em;font-weight:600;color:rgba(255,255,255,.72);text-transform:uppercase;margin-bottom:8px;position:relative;z-index:1}
+.hero-amount{font-size:clamp(52px,14vw,72px);font-weight:900;letter-spacing:-.02em;line-height:1;color:#fff;text-shadow:0 0 60px rgba(139,92,246,.35),0 30px 80px rgba(0,0,0,.5);margin-bottom:24px;position:relative;z-index:1}
+.hero-actions{display:flex;justify-content:center;gap:30px;position:relative;z-index:2}
 .hero-action{display:flex;flex-direction:column;align-items:center;gap:8px}
-.hero-btn{
-  width:54px;height:54px;border-radius:50%;
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.14);
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:background .2s,box-shadow .2s,transform .12s;
-}
+.hero-btn{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s,box-shadow .2s,transform .12s}
 .hero-btn:hover{background:rgba(139,92,246,.28);box-shadow:0 0 22px rgba(139,92,246,.40)}
 .hero-btn:active{transform:scale(.92)}
 .hero-btn svg{width:20px;height:20px;color:rgba(255,255,255,.88)}
 .hero-action span{font-size:11px;color:var(--muted);font-weight:500}
-
-/* ── SECTION HEADER ─────────────────────────── */
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.sec-title{
-  display:flex;align-items:center;gap:8px;
-  font-size:15px;font-weight:700;
-}
-.sec-icon{
-  width:26px;height:26px;border-radius:8px;
-  background:rgba(139,92,246,.16);
-  border:1px solid rgba(139,92,246,.28);
-  display:flex;align-items:center;justify-content:center;
-}
+.sec-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700}
+.sec-icon{width:26px;height:26px;border-radius:8px;background:rgba(139,92,246,.16);border:1px solid rgba(139,92,246,.28);display:flex;align-items:center;justify-content:center}
 .sec-icon svg{width:13px;height:13px;color:var(--glow)}
-.sec-link{
-  font-size:12px;color:var(--primary);font-weight:600;
-  display:flex;align-items:center;gap:3px;cursor:pointer;
-  background:none;border:none;transition:opacity .2s;
-}
+.sec-link{font-size:12px;color:var(--primary);font-weight:600;display:flex;align-items:center;gap:3px;cursor:pointer;background:none;border:none;transition:opacity .2s}
 .sec-link:hover{opacity:.7}
 .sec-link svg{width:13px;height:13px}
-
-/* ── PRODUCT CARDS ──────────────────────────── */
 .prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
-.prod-card{
-  position:relative;
-  background:rgba(13,14,30,.72);
-  border:1px solid var(--border);
-  border-radius:22px;
-  padding:16px 14px 14px;
-  overflow:hidden;
-  display:flex;flex-direction:column;
-  min-height:230px;
-  transition:border-color .2s,box-shadow .2s;
-}
+.prod-card{position:relative;background:rgba(13,14,30,.72);border:1px solid var(--border);border-radius:22px;padding:16px 14px 14px;overflow:hidden;display:flex;flex-direction:column;min-height:230px;transition:border-color .2s,box-shadow .2s}
 .prod-card:hover{border-color:var(--border2);box-shadow:0 8px 30px rgba(139,92,246,.18)}
-.prod-card::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 160px 100px at 80% 10%,rgba(139,92,246,.16),transparent 65%);
-}
+.prod-card::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 160px 100px at 80% 10%,rgba(139,92,246,.16),transparent 65%)}
 .prod-card h3{font-size:17px;font-weight:800;line-height:1.2;margin-bottom:3px;position:relative;z-index:1}
 .prod-sub{font-size:11px;color:var(--muted);margin-bottom:12px;position:relative;z-index:1}
 .prod-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;position:relative;z-index:1}
-.prod-list li{
-  display:flex;align-items:flex-start;gap:6px;
-  font-size:11px;color:rgba(255,255,255,.80);line-height:1.4;
-}
+.prod-list li{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:rgba(255,255,255,.80);line-height:1.4}
 .prod-list li svg{width:12px;height:12px;color:var(--primary);flex-shrink:0;margin-top:1px}
-.prod-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  background:linear-gradient(135deg,#7C3AED,#9333EA);
-  color:#fff;font-size:12px;font-weight:700;
-  padding:10px 14px;border-radius:12px;border:none;cursor:pointer;
-  box-shadow:0 4px 18px rgba(124,58,237,.40);
-  transition:box-shadow .2s,transform .12s;
-  position:relative;z-index:1;margin-top:auto;
-  font-family:inherit;
-}
+.prod-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#7C3AED,#9333EA);color:#fff;font-size:12px;font-weight:700;padding:10px 14px;border-radius:12px;border:none;cursor:pointer;box-shadow:0 4px 18px rgba(124,58,237,.40);transition:box-shadow .2s,transform .12s;position:relative;z-index:1;margin-top:auto;font-family:inherit}
 .prod-btn:hover{box-shadow:0 6px 24px rgba(139,92,246,.55)}
 .prod-btn:active{transform:scale(.96)}
 .prod-btn svg{width:13px;height:13px}
-/* phone mock (eSIM) */
-.mock-phone{
-  position:absolute;right:-8px;top:10px;width:78px;
-  opacity:.88;pointer-events:none;z-index:0;
-  filter:drop-shadow(0 4px 14px rgba(139,92,246,.40));
-}
-/* sim mock */
-.mock-sim{
-  position:absolute;right:-4px;top:16px;width:70px;
-  opacity:.9;pointer-events:none;z-index:0;
-  filter:drop-shadow(0 4px 12px rgba(180,120,0,.35));
-}
-
-/* ── PROVIDERS ──────────────────────────────── */
+.mock-phone{position:absolute;right:-8px;top:10px;width:78px;opacity:.88;pointer-events:none;z-index:0;filter:drop-shadow(0 4px 14px rgba(139,92,246,.40))}
+.mock-sim{position:absolute;right:-4px;top:16px;width:70px;opacity:.9;pointer-events:none;z-index:0;filter:drop-shadow(0 4px 12px rgba(180,120,0,.35))}
 .prov-section{margin-bottom:24px}
-.prov-row{
-  display:flex;justify-content:space-between;
-  overflow-x:auto;padding-bottom:4px;
-  scrollbar-width:none;
-}
+.prov-row{display:flex;justify-content:space-between;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .prov-row::-webkit-scrollbar{display:none}
 .prov-item{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer}
-.prov-circle{
-  width:60px;height:60px;border-radius:50%;
-  border:1.5px solid var(--border);
-  overflow:hidden;display:flex;align-items:center;justify-content:center;
-  transition:transform .15s,box-shadow .2s,border-color .2s;
-}
+.prov-circle{width:60px;height:60px;border-radius:50%;border:1.5px solid var(--border);overflow:hidden;display:flex;align-items:center;justify-content:center;transition:transform .15s,box-shadow .2s,border-color .2s}
 .prov-circle:hover{transform:translateY(-3px);border-color:var(--border2);box-shadow:0 8px 22px rgba(0,0,0,.45)}
 .prov-name{font-size:11px;color:var(--muted);font-weight:500;text-align:center}
-
-/* ── REVIEWS ────────────────────────────────── */
 .rev-section{margin-bottom:24px}
-.rev-row{
-  display:flex;gap:10px;
-  overflow-x:auto;padding-bottom:4px;
-  scroll-snap-type:x mandatory;
-  scrollbar-width:none;
-}
+.rev-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x mandatory;scrollbar-width:none}
 .rev-row::-webkit-scrollbar{display:none}
-.rev-card{
-  flex:0 0 calc(100% - 28px);
-  scroll-snap-align:start;
-  background:rgba(13,14,30,.72);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:16px;
-}
+.rev-card{flex:0 0 calc(100% - 28px);scroll-snap-align:start;background:rgba(13,14,30,.72);border:1px solid var(--border);border-radius:20px;padding:16px}
 .rev-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.rev-avatar{
-  width:40px;height:40px;border-radius:50%;
-  background:linear-gradient(135deg,#7C3AED,#A855F7);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:800;color:#fff;flex-shrink:0;
-}
+.rev-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7C3AED,#A855F7);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
 .rev-name{font-size:13px;font-weight:700;margin-bottom:4px}
 .rev-stars{display:flex;gap:2px}
 .rev-stars svg{width:13px;height:13px;fill:#A855F7;color:#A855F7}
 .rev-text{font-size:12.5px;color:rgba(255,255,255,.82);line-height:1.55;margin-bottom:10px;font-weight:400}
-.rev-badge{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.22);
-  color:#22C55E;font-size:10.5px;font-weight:600;
-  padding:4px 10px;border-radius:99px;
-}
+.rev-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(34,197,94,.10);border:1px solid rgba(34,197,94,.22);color:#22C55E;font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:99px}
 .rev-badge svg{width:11px;height:11px}
 .rev-dots{display:flex;justify-content:center;gap:6px;margin-top:14px}
 .dot{width:7px;height:7px;border-radius:50%;background:rgba(139,92,246,.28);transition:background .25s}
 .dot.on{background:var(--primary)}
-
-/* ── BENEFITS ───────────────────────────────── */
-.ben-card{
-  background:rgba(13,14,30,.72);
-  border:1px solid var(--border);
-  border-radius:22px;
-  padding:22px 16px;
-  display:grid;grid-template-columns:1fr 1fr;gap:20px;
-  margin-bottom:24px;
-}
+.ben-card{background:rgba(13,14,30,.72);border:1px solid var(--border);border-radius:22px;padding:22px 16px;display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
 .ben-item{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
-.ben-icon{
-  width:46px;height:46px;border-radius:14px;
-  background:rgba(139,92,246,.14);
-  border:1px solid rgba(139,92,246,.24);
-  display:flex;align-items:center;justify-content:center;
-}
+.ben-icon{width:46px;height:46px;border-radius:14px;background:rgba(139,92,246,.14);border:1px solid rgba(139,92,246,.24);display:flex;align-items:center;justify-content:center}
 .ben-icon svg{width:22px;height:22px;color:var(--glow)}
 .ben-title{font-size:12px;font-weight:700}
 .ben-desc{font-size:11px;color:var(--muted);line-height:1.4;font-weight:400}
-
-/* ── ANIMATIONS ─────────────────────────────── */
 .fu{animation:fadeup .5s ease both}
 .d1{animation-delay:.07s}.d2{animation-delay:.14s}.d3{animation-delay:.21s}.d4{animation-delay:.28s}
 @keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body><div style="position:sticky;top:0;z-index:100000;background:#22c55e;color:#04110a;text-align:center;padding:8px 12px;font-weight:900;font-size:12px">SANDBOX UPDATED V2</div>
-
-<!-- SPLASH -->
-<div id="splash">
-  <div class="spl-icon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h2M11 15h5"/>
-    </svg>
-  </div>
-  <div class="spl-bar"><div class="spl-fill"></div></div>
-  <p class="spl-txt">Cargando…</p>
-</div>
-
+<div id="splash"><div class="spl-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h2M11 15h5"/></svg></div><div class="spl-bar"><div class="spl-fill"></div></div><p class="spl-txt">Cargando…</p></div>
 <div class="wrap">
-
-  <!-- ═══ HERO ═══════════════════════════════════════════ -->
   <div class="hero fu">
-    <div class="hero-dots"></div>
-    <div class="hero-arc"></div>
-
-    <div class="hero-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h2M11 15h5"/>
-      </svg>
-    </div>
-
-    <p class="hero-lbl">Fondos disponibles</p>
-    <p class="hero-amount" id="balance">515,00 €</p>
-
-    <div class="hero-actions">
-      <div class="hero-action">
-        <button class="hero-btn" onclick="tgAction('open_recharge')" aria-label="Recargar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
-        <span>Recargar</span>
-      </div>
-      <div class="hero-action">
-        <button class="hero-btn" onclick="tgAction('open_coupons')" aria-label="Cupones">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 12V7a1 1 0 00-1-1H5a1 1 0 00-1 1v5m16 0v5a1 1 0 01-1 1H5a1 1 0 01-1-1v-5m16 0H4M12 7v10"/>
-          </svg>
-        </button>
-        <span>Cupones</span>
-      </div>
-      <div class="hero-action">
-        <button class="hero-btn" onclick="tgClose()" aria-label="Cerrar">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
-        <span>Cerrar</span>
-      </div>
-    </div>
+    <div class="hero-dots"></div><div class="hero-arc"></div><div class="hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h2M11 15h5"/></svg></div>
+    <p class="hero-lbl">Fondos disponibles</p><p class="hero-amount" id="balance">515,00 €</p>
+    <div class="hero-actions"><div class="hero-action"><button class="hero-btn" onclick="tgAction('open_recharge')" aria-label="Recargar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button><span>Recargar</span></div><div class="hero-action"><button class="hero-btn" onclick="tgAction('open_coupons')" aria-label="Cupones"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V7a1 1 0 00-1-1H5a1 1 0 00-1 1v5m16 0v5a1 1 0 01-1 1H5a1 1 0 01-1-1v-5m16 0H4M12 7v10"/></svg></button><span>Cupones</span></div><div class="hero-action"><button class="hero-btn" onclick="tgClose()" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button><span>Cerrar</span></div></div>
   </div>
-
-  <!-- ═══ ¿QUÉ NECESITAS? ════════════════════════════════ -->
-  <div class="fu d1">
-    <div class="sec-hdr">
-      <div class="sec-title">
-        <div class="sec-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/>
-          </svg>
-        </div>
-        ¿Qué necesitas?
-      </div>
-    </div>
-
-    <div class="prod-grid">
-      <!-- eSIM -->
-      <div class="prod-card">
-        <!-- phone + QR SVG -->
-        <svg class="mock-phone" viewBox="0 0 80 138" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="3" y="2" width="74" height="134" rx="15" fill="#130E2A" stroke="rgba(139,92,246,.35)" stroke-width="1.5"/>
-          <rect x="9" y="12" width="62" height="114" rx="9" fill="#0C0820"/>
-          <rect x="28" y="5" width="24" height="4" rx="2" fill="rgba(139,92,246,.30)"/>
-          <rect x="18" y="42" width="44" height="44" rx="5" fill="rgba(139,92,246,.12)" stroke="rgba(139,92,246,.45)" stroke-width="1"/>
-          <rect x="21" y="45" width="11" height="11" rx="1.5" fill="rgba(139,92,246,.85)"/>
-          <rect x="35" y="45" width="5" height="5" rx="1" fill="rgba(139,92,246,.60)"/>
-          <rect x="42" y="45" width="5" height="5" rx="1" fill="rgba(139,92,246,.60)"/>
-          <rect x="49" y="45" width="11" height="11" rx="1.5" fill="rgba(139,92,246,.85)"/>
-          <rect x="21" y="57" width="5" height="5" rx="1" fill="rgba(139,92,246,.55)"/>
-          <rect x="28" y="57" width="5" height="5" rx="1" fill="rgba(139,92,246,.55)"/>
-          <rect x="35" y="57" width="11" height="5" rx="1" fill="rgba(139,92,246,.55)"/>
-          <rect x="49" y="57" width="5" height="5" rx="1" fill="rgba(139,92,246,.55)"/>
-          <rect x="21" y="64" width="11" height="5" rx="1" fill="rgba(139,92,246,.55)"/>
-          <rect x="35" y="64" width="5" height="5" rx="1" fill="rgba(139,92,246,.55)"/>
-          <rect x="42" y="64" width="11" height="5" rx="1" fill="rgba(139,92,246,.60)"/>
-          <rect x="21" y="71" width="11" height="11" rx="1.5" fill="rgba(139,92,246,.85)"/>
-          <rect x="35" y="71" width="5" height="5" rx="1" fill="rgba(139,92,246,.55)"/>
-          <rect x="42" y="76" width="5" height="5" rx="1" fill="rgba(139,92,246,.55)"/>
-          <rect x="49" y="71" width="11" height="11" rx="1.5" fill="rgba(139,92,246,.85)"/>
-        </svg>
-
-        <h3>eSIMs<br>Digitales</h3>
-        <p class="prod-sub">Actívalas al instante</p>
-        <ul class="prod-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Entrega inmediata por QR</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Perfecto para viajes</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Sin tarjeta física</li>
-        </ul>
-        <button class="prod-btn" onclick="tgAction('view_catalog','esim')">
-          Ver eSIMs
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-      </div>
-
-      <!-- SIM Física -->
-      <div class="prod-card">
-        <!-- SIM chip SVG dorada -->
-        <svg class="mock-sim" viewBox="0 0 72 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="4" y="2" width="64" height="96" rx="10" fill="#16110A" stroke="rgba(200,140,20,.30)" stroke-width="1.5"/>
-          <rect x="10" y="10" width="52" height="42" rx="7" fill="#B8860B" opacity=".92"/>
-          <rect x="12" y="12" width="26" height="18" rx="3" fill="#E8B820"/>
-          <rect x="40" y="12" width="20" height="9" rx="2.5" fill="#D4A017"/>
-          <rect x="40" y="23" width="20" height="7" rx="2" fill="#C09010"/>
-          <rect x="12" y="32" width="20" height="18" rx="2.5" fill="#C8950A"/>
-          <rect x="34" y="32" width="26" height="18" rx="2.5" fill="#B88008"/>
-          <line x1="18" y1="32" x2="18" y2="50" stroke="rgba(0,0,0,.18)" stroke-width="1"/>
-          <line x1="24" y1="32" x2="24" y2="50" stroke="rgba(0,0,0,.18)" stroke-width="1"/>
-          <line x1="30" y1="32" x2="30" y2="50" stroke="rgba(0,0,0,.18)" stroke-width="1"/>
-          <line x1="40" y1="32" x2="40" y2="50" stroke="rgba(0,0,0,.18)" stroke-width="1"/>
-          <line x1="46" y1="32" x2="46" y2="50" stroke="rgba(0,0,0,.18)" stroke-width="1"/>
-          <line x1="52" y1="32" x2="52" y2="50" stroke="rgba(0,0,0,.18)" stroke-width="1"/>
-        </svg>
-
-        <h3>SIMs<br>Físicas</h3>
-        <p class="prod-sub">Envío rápido a tu casa</p>
-        <ul class="prod-list">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Tarjeta SIM física</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Envío seguro</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Compatible con todos los dispositivos</li>
-        </ul>
-        <button class="prod-btn" onclick="tgAction('view_catalog','sim')">
-          Ver SIMs
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-      </div>
-    </div>
+  <div class="fu d1"><div class="sec-hdr"><div class="sec-title"><div class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg></div>¿Qué necesitas?</div></div>
+    <div class="prod-grid"><div class="prod-card"><svg class="mock-phone" viewBox="0 0 80 138" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="2" width="74" height="134" rx="15" fill="#130E2A" stroke="rgba(139,92,246,.35)" stroke-width="1.5"/><rect x="9" y="12" width="62" height="114" rx="9" fill="#0C0820"/><rect x="28" y="5" width="24" height="4" rx="2" fill="rgba(139,92,246,.30)"/><rect x="18" y="42" width="44" height="44" rx="5" fill="rgba(139,92,246,.12)" stroke="rgba(139,92,246,.45)" stroke-width="1"/></svg><h3>eSIMs<br>Digitales</h3><p class="prod-sub">Actívalas al instante</p><ul class="prod-list"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Entrega inmediata por QR</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Perfecto para viajes</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Sin tarjeta física</li></ul><button class="prod-btn" onclick="tgAction('view_catalog','esim')">Ver eSIMs<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div><div class="prod-card"><svg class="mock-sim" viewBox="0 0 72 100" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="2" width="64" height="96" rx="10" fill="#16110A" stroke="rgba(200,140,20,.30)" stroke-width="1.5"/><rect x="10" y="10" width="52" height="42" rx="7" fill="#B8860B" opacity=".92"/><rect x="12" y="12" width="26" height="18" rx="3" fill="#E8B820"/></svg><h3>SIMs<br>Físicas</h3><p class="prod-sub">Envío rápido a tu casa</p><ul class="prod-list"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Tarjeta SIM física</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Envío seguro</li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Compatible con todos los dispositivos</li></ul><button class="prod-btn" onclick="tgAction('view_catalog','sim')">Ver SIMs<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div></div>
   </div>
-
-  <!-- ═══ PROVEEDORES ════════════════════════════════════ -->
-  <div class="prov-section fu d2">
-    <div class="sec-hdr">
-      <div class="sec-title">
-        <div class="sec-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-        </div>
-        Proveedores populares
-      </div>
-      <button class="sec-link" onclick="tgAction('view_providers')">
-        Ver todos<!--removed-->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-
-    <div class="prov-row">
-      <!-- Vodafone -->
-      <div class="prov-item" onclick="tgAction('filter_provider','vodafone')">
-        <div class="prov-circle" style="background:#E60000">
-          <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#E60000"/><text x="30" y="38" text-anchor="middle" fill="white" font-size="26" font-weight="900" font-family="sans-serif">V</text></svg>
-        </div>
-        <span class="prov-name">Vodafone</span>
-      </div>
-      <!-- Lebara -->
-      <div class="prov-item" onclick="tgAction('filter_provider','lebara')">
-        <div class="prov-circle" style="background:#009FE3">
-          <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#009FE3"/><text x="30" y="34" text-anchor="middle" fill="white" font-size="11" font-weight="800" font-family="sans-serif">Lebara</text></svg>
-        </div>
-        <span class="prov-name">Lebara</span>
-      </div>
-      <!-- Lyca -->
-      <div class="prov-item" onclick="tgAction('filter_provider','lyca')">
-        <div class="prov-circle" style="background:#1A1A2E;border-color:rgba(139,92,246,.35)">
-          <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#1A1A2E"/><text x="30" y="28" text-anchor="middle" fill="white" font-size="11" font-weight="800" font-family="sans-serif">Lyca</text><text x="30" y="40" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="sans-serif">Mobile</text></svg>
-        </div>
-        <span class="prov-name">Lyca Mobile</span>
-      </div>
-      <!-- Orange -->
-      <div class="prov-item" onclick="tgAction('filter_provider','orange')">
-        <div class="prov-circle" style="background:#FF7900">
-          <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#FF7900"/><text x="30" y="34" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="sans-serif">orange</text></svg>
-        </div>
-        <span class="prov-name">Orange</span>
-      </div>
-      <!-- Three -->
-      <div class="prov-item" onclick="tgAction('filter_provider','three<!--removed-->')">
-        <div class="prov-circle" style="background:#1A1A2E;border-color:rgba(139,92,246,.35)">
-          <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#1A1A2E"/><text x="30" y="40" text-anchor="middle" fill="#A855F7" font-size="30" font-weight="900" font-family="sans-serif">3</text></svg>
-        </div>
-        <span class="prov-name">Three</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ RESEÑAS ════════════════════════════════════════ -->
-  <div class="rev-section fu d3">
-    <div class="sec-hdr">
-      <div class="sec-title">
-        <div class="sec-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-          </svg>
-        </div>
-        Reseñas de clientes
-      </div>
-      <button class="sec-link" onclick="tgAction('view_reviews')">
-        Ver todas
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-
-    <div class="rev-row" id="revRow">
-      <!-- Reseña 1 -->
-      <div class="rev-card">
-        <div class="rev-top">
-          <div class="rev-avatar">CM</div>
-          <div>
-            <p class="rev-name">Carlos M.</p>
-            <div class="rev-stars">
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-          </div>
-        </div>
-        <p class="rev-text">Activación súper rápida y todo funciona perfecto. Excelente para viajar.</p>
-        <span class="rev-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>
-          Compra verificada
-        </span>
-      </div>
-      <!-- Reseña 2 -->
-      <div class="rev-card">
-        <div class="rev-top">
-          <div class="rev-avatar" style="background:linear-gradient(135deg,#EC4899,#A855F7)">LG</div>
-          <div>
-            <p class="rev-name">Laura G.</p>
-            <div class="rev-stars">
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-          </div>
-        </div>
-        <p class="rev-text">Muy buena atención al cliente y la eSIM llegó al momento. Totalmente recomendable.</p>
-        <span class="rev-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>
-          Compra verificada
-        </span>
-      </div>
-      <!-- Reseña 3 -->
-      <div class="rev-card">
-        <div class="rev-top">
-          <div class="rev-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">JT</div>
-          <div>
-            <p class="rev-name">Javier T.</p>
-            <div class="rev-stars">
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            </div>
-          </div>
-        </div>
-        <p class="rev-text">Precios justos y servicio confiable. Ya he comprado varias veces sin problemas.</p>
-        <span class="rev-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>
-          Compra verificada
-        </span>
-      </div>
-    </div>
-
-    <div class="rev-dots">
-      <span class="dot on"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    </div>
-  </div>
-
-  <!-- ═══ BENEFICIOS ══════════════════════════════════════ -->
-  <div class="fu d4">
-    <div class="ben-card">
-      <div class="ben-item">
-        <div class="ben-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-          </svg>
-        </div>
-        <p class="ben-title">Entrega inmediata</p>
-        <p class="ben-desc">Recibe tu eSIM al momento</p>
-      </div>
-      <div class="ben-item">
-        <div class="ben-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </div>
-        <p class="ben-title">Seguro y confiable</p>
-        <p class="ben-desc">Tus datos siempre protegidos</p>
-      </div>
-      <div class="ben-item">
-        <div class="ben-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.81 19.79 19.79 0 01.01 2.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14v2.92z"/>
-          </svg>
-        </div>
-        <p class="ben-title">Soporte 24/7</p>
-        <p class="ben-desc">Estamos para ayudarte</p>
-      </div>
-      <div class="ben-item">
-        <div class="ben-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-          </svg>
-        </div>
-        <p class="ben-title">Pago seguro</p>
-        <p class="ben-desc">Compra con total seguridad</p>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /wrap -->
-
+  <div class="prov-section fu d2"><div class="sec-hdr"><div class="sec-title"><div class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>Proveedores populares</div><button class="sec-link" onclick="tgAction('view_providers')">Ver todos<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div><div class="prov-row"><div class="prov-item" onclick="tgAction('filter_provider','vodafone')"><div class="prov-circle" style="background:#E60000"><svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#E60000"/><text x="30" y="38" text-anchor="middle" fill="white" font-size="26" font-weight="900" font-family="sans-serif">V</text></svg></div><span class="prov-name">Vodafone</span></div><div class="prov-item" onclick="tgAction('filter_provider','lebara')"><div class="prov-circle" style="background:#009FE3"><svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#009FE3"/><text x="30" y="34" text-anchor="middle" fill="white" font-size="11" font-weight="800" font-family="sans-serif">Lebara</text></svg></div><span class="prov-name">Lebara</span></div><div class="prov-item" onclick="tgAction('filter_provider','lyca')"><div class="prov-circle" style="background:#1A1A2E;border-color:rgba(139,92,246,.35)"><svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#1A1A2E"/><text x="30" y="28" text-anchor="middle" fill="white" font-size="11" font-weight="800" font-family="sans-serif">Lyca</text><text x="30" y="40" text-anchor="middle" fill="rgba(255,255,255,.55)" font-size="9" font-family="sans-serif">Mobile</text></svg></div><span class="prov-name">Lyca Mobile</span></div><div class="prov-item" onclick="tgAction('filter_provider','orange')"><div class="prov-circle" style="background:#FF7900"><svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#FF7900"/><text x="30" y="34" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="sans-serif">orange</text></svg></div><span class="prov-name">Orange</span></div><div class="prov-item" onclick="tgAction('filter_provider','three')"><div class="prov-circle" style="background:#1A1A2E;border-color:rgba(139,92,246,.35)"><svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#1A1A2E"/><text x="30" y="40" text-anchor="middle" fill="#A855F7" font-size="30" font-weight="900" font-family="sans-serif">3</text></svg></div><span class="prov-name">Three</span></div></div></div>
+  <div class="rev-section fu d3"><div class="sec-hdr"><div class="sec-title"><div class="sec-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>Reseñas de clientes</div><button class="sec-link" onclick="tgAction('view_reviews')">Ver todas<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div><div class="rev-row" id="revRow"><div class="rev-card"><div class="rev-top"><div class="rev-avatar">CM</div><div><p class="rev-name">Carlos M.</p><div class="rev-stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div></div><p class="rev-text">Activación súper rápida y todo funciona perfecto. Excelente para viajar.</p><span class="rev-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Compra verificada</span></div><div class="rev-card"><div class="rev-top"><div class="rev-avatar" style="background:linear-gradient(135deg,#EC4899,#A855F7)">LG</div><div><p class="rev-name">Laura G.</p><div class="rev-stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div></div><p class="rev-text">Muy buena atención al cliente y la eSIM llegó al momento. Totalmente recomendable.</p><span class="rev-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Compra verificada</span></div><div class="rev-card"><div class="rev-top"><div class="rev-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">JT</div><div><p class="rev-name">Javier T.</p><div class="rev-stars"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div></div><p class="rev-text">Precios justos y servicio confiable. Ya he comprado varias veces sin problemas.</p><span class="rev-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m5 12 5 5L20 7"/></svg>Compra verificada</span></div></div><div class="rev-dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div></div>
+  <div class="fu d4"><div class="ben-card"><div class="ben-item"><div class="ben-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><p class="ben-title">Entrega inmediata</p><p class="ben-desc">Recibe tu eSIM al momento</p></div><div class="ben-item"><div class="ben-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><p class="ben-title">Seguro y confiable</p><p class="ben-desc">Tus datos siempre protegidos</p></div><div class="ben-item"><div class="ben-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.81 19.79 19.79 0 01.01 2.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14v2.92z"/></svg></div><p class="ben-title">Soporte 24/7</p><p class="ben-desc">Estamos para ayudarte</p></div><div class="ben-item"><div class="ben-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><p class="ben-title">Pago seguro</p><p class="ben-desc">Compra con total seguridad</p></div></div></div>
+</div>
 <script>
 const TG = window.Telegram?.WebApp;
-const isTelegram = !!TG;
-
-if (TG) {
-  TG.ready();
-  TG.expand();
-  TG.setBackgroundColor('#05050F');
-  TG.setHeaderColor('#05050F');
-}
-
-function tgWebApp() {
-  return window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-}
-
-function sendToBot(payload) {
-  const tg = tgWebApp();
-  if (!tg) {
-    alert("Abre esta web dentro de Telegram para continuar.");
-    return false;
-  }
-  tg.sendData(JSON.stringify(payload));
-  return true;
-}
-
-function tgAction(action, payload) {
-  const data = { action, payload };
-
-  if (TG && typeof TG.sendData === 'function') {
-    TG.sendData(JSON.stringify(data));
-    return;
-  }
-
-  if (action === 'view_catalog') {
-    showProducts(payload);
-    return;
-  }
-
-  if (action === 'open_recharge') {
-    openRecharge();
-    return;
-  }
-
-  if (action === 'open_coupons') {
-    openCoupons();
-    return;
-  }
-
-  if (action === 'filter_provider') {
-    filterProvider(payload);
-    return;
-  }
-
-  if (action === 'my_orders') {
-    openMyOrders();
-    return;
-  }
-
-  if (action === 'support') {
-    openSupport();
-    return;
-  }
-
-  if (action === 'withdraw_request') {
-    requestWithdraw();
-    return;
-  }
-
+if (TG) { TG.ready(); TG.expand(); TG.setBackgroundColor('#05050F'); TG.setHeaderColor('#05050F'); }
+function tgWebApp(){ return window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null; }
+function sendToBot(payload){ const tg = tgWebApp(); if(!tg){ alert("Abre esta web dentro de Telegram para continuar."); return false; } tg.sendData(JSON.stringify(payload)); return true; }
+function tgAction(action, payload){
+  let data = { type: action, payload };
+  if (action === 'open_recharge') data = { type: 'add_balance', amount: Number(payload) || 0 };
+  if (action === 'open_coupons') data = { type: 'apply_coupon', code: String(payload || '').trim() };
+  if (action === 'view_catalog') data = { type: 'view_catalog', category: String(payload || 'esim').toLowerCase() };
+  if (action === 'filter_provider') data = { type: 'filter_provider', provider: String(payload || '').toLowerCase() };
+  if (action === 'view_providers') data = { type: 'view_providers' };
+  if (action === 'view_reviews') data = { type: 'view_reviews' };
+  if (action === 'myorders') data = { type: 'my_orders' };
+  if (TG && typeof TG.sendData === 'function') { TG.sendData(JSON.stringify(data)); return; }
+  if (action === 'view_catalog') { showProducts(data.category); return; }
+  if (action === 'open_recharge') { openRecharge(); return; }
+  if (action === 'open_coupons') { openCoupons(); return; }
+  if (action === 'filter_provider') { filterProvider(data.provider); return; }
+  if (action === 'view_providers') { toast('Vista de proveedores'); return; }
+  if (action === 'view_reviews') { toast('Vista de reseñas'); return; }
+  if (action === 'myorders') { openMyOrders(); return; }
   alert(JSON.stringify(data));
 }
-
-function tgClose() {
-  if (TG && typeof TG.close === 'function') {
-    TG.close();
-    return;
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function loadBalance() {
-  const balanceEl = document.getElementById('balance');
-  const uid = TG?.initDataUnsafe?.user?.id;
-
-  if (!uid) {
-    if (balanceEl) balanceEl.textContent = '0,00 €';
-    return;
-  }
-
-  fetch(`/api/balance?userid=${encodeURIComponent(uid)}`)
-    .then(r => r.ok ? r.json() : Promise.reject())
-    .then(d => {
-      if (balanceEl && d && d.balance != null) {
-        balanceEl.textContent = new Intl.NumberFormat('es-ES', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }).format(Number(d.balance)) + ' €';
-      } else if (balanceEl) {
-        balanceEl.textContent = '0,00 €';
-      }
-    })
-    .catch(() => {
-      if (balanceEl) balanceEl.textContent = '0,00 €';
-    });
-}
-
-function confirmPurchase(productId, productName, quantity, unitPrice, totalPrice, discountAmount, typeProduct) {
-  return sendToBot({
-    type: "purchase",
-    productId: productId,
-    productName: productName,
-    quantity: Number(quantity || 1),
-    unitPrice: Number(unitPrice || 0),
-    totalPrice: Number(totalPrice || 0),
-    discountAmount: Number(discountAmount || 0),
-    typeProduct: typeProduct || "esim"
-  });
-}
-
-function requestRecharge(amount) {
-  return sendToBot({
-    type: "add_balance",
-    amount: Number(amount || 0)
-  });
-}
-
-function applyCoupon(code) {
-  return sendToBot({
-    type: "apply_coupon",
-    code: String(code || "").trim()
-  });
-}
-
-function requestWithdraw() {
-  return sendToBot({
-    type: "withdraw_request"
-  });
-}
-
-function showProducts(type) {
-  const products = {
-    esim: [
-      { name: 'España 10GB', price: '15,00 €', crypto: '0.0005 BTC' },
-      { name: 'Europa 20GB', price: '25,00 €', crypto: '0.0008 BTC' },
-      { name: 'Global 50GB', price: '40,00 €', crypto: '0.0013 BTC' }
-    ],
-    sim: [
-      { name: 'SIM España', price: '9,00 €', crypto: '0.0003 BTC' },
-      { name: 'SIM Europa', price: '14,00 €', crypto: '0.00045 BTC' }
-    ]
-  };
-
-  const list = products[type] || [];
-  const html = list.map(p => `
-    <div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)">
-      <div style="font-weight:700">${p.name}</div>
-      <div style="color:#A855F7;font-size:13px">${p.price} / ${p.crypto}</div>
-    </div>
-  `).join('');
-
-  const modal = document.createElement('div');
-  modal.style.cssText = `
-    position:fixed;inset:0;background:rgba(0,0,0,.65);
-    display:flex;align-items:center;justify-content:center;z-index:99999;
-    padding:20px;
-  `;
-  modal.innerHTML = `
-    <div style="width:100%;max-width:420px;background:#0D0D1A;border:1px solid rgba(168,85,247,.25);border-radius:20px;padding:18px;color:#fff;box-shadow:0 20px 80px rgba(0,0,0,.5)">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <h3 style="margin:0;font-size:18px">${type === 'sim' ? 'SIMs Físicas' : 'eSIMs Digitales'}</h3>
-        <button id="closeModalBtn" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer">×</button>
-      </div>
-      ${html}
-      <div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end">
-        <button id="okModalBtn" style="background:#8B5CF6;border:none;color:#fff;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer">Cerrar</button>
-      </div>
-    </div>
-  `;
-
-  const close = () => modal.remove();
-  modal.addEventListener('click', e => { if (e.target === modal) close(); });
-  document.body.appendChild(modal);
-  modal.querySelector('#closeModalBtn').onclick = close;
-  modal.querySelector('#okModalBtn').onclick = close;
-}
-
-function openCatalog(type) {
-  document.querySelectorAll('.prod-card').forEach(c => c.style.display = '');
-  if (type) {
-    document.querySelectorAll('.prod-card').forEach(c => {
-      const t = (c.dataset.type || '').toLowerCase();
-      c.style.display = t.includes(type.toLowerCase()) ? '' : 'none';
-    });
-  }
-  window.scrollTo({ top: document.querySelector('.prod-grid')?.offsetTop || 0, behavior: 'smooth' });
-}
-
-function openRecharge() {
-  const el = document.getElementById('rechargeModal') || null;
-  if (el) el.classList.add('on');
-  else toast('Recarga: conecta esta vista al bot');
-}
-
-function openCoupons() {
-  const el = document.getElementById('couponModal') || null;
-  if (el) el.classList.add('on');
-  else toast('Cupones: conecta esta vista al bot');
-}
-
-function filterProvider(p) {
-  document.querySelectorAll('.prod-card').forEach(c => {
-    c.style.display = ((c.dataset.provider || '').toLowerCase().includes(String(p).toLowerCase()) ? '' : 'none');
-  });
-}
-
-async function buyProduct(productId) {
-  try {
-    const d = await apiPost('/webapp/action', { type:'buy', productId });
-    toast(d.message || 'Pedido enviado');
-  } catch (e) {
-    toast('No se pudo procesar la compra');
-  }
-}
-
-async function openMyOrders() {
-  try {
-    const d = await apiGet('/webapp/orders');
-    toast('Tienes ' + (d.count || 0) + ' pedidos');
-  } catch (e) {
-    toast('No se pudieron cargar tus pedidos');
-  }
-}
-
-async function openSupport() {
-  const msg = prompt('Escribe tu mensaje de soporte');
-  if (!msg) return;
-  try {
-    await apiPost('/webapp/support', { message: msg });
-    toast('Soporte enviado');
-  } catch (e) {
-    toast('No se pudo enviar soporte');
-  }
-}
-
-function toast(msg) {
-  try {
-    TG?.showPopup?.({ title:'eSIM Market', message:String(msg), buttons:[{type:'ok'}] });
-  } catch (e) {
-    alert(msg);
-  }
-}
-
+function tgClose(){ if (TG && typeof TG.close === 'function') { TG.close(); return; } window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function loadBalance(){ const balanceEl=document.getElementById('balance'); const uid=TG?.initDataUnsafe?.user?.id; if(!uid){ if(balanceEl) balanceEl.textContent='0,00 €'; return; } fetch(`/api/balance?userid=${encodeURIComponent(uid)}`).then(r=>r.ok?r.json():Promise.reject()).then(d=>{ if(balanceEl&&d&&d.balance!=null){ balanceEl.textContent=new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}).format(Number(d.balance))+' €'; } else if(balanceEl){ balanceEl.textContent='0,00 €'; } }).catch(()=>{ if(balanceEl) balanceEl.textContent='0,00 €'; }); }
+function showProducts(type){ const products={ esim:[{ name:'España 10GB', price:'15,00 €', crypto:'0.0005 BTC' },{ name:'Europa 20GB', price:'25,00 €', crypto:'0.0008 BTC' },{ name:'Global 50GB', price:'40,00 €', crypto:'0.0013 BTC' }], sim:[{ name:'SIM España', price:'9,00 €', crypto:'0.0003 BTC' },{ name:'SIM Europa', price:'14,00 €', crypto:'0.00045 BTC' }]}; const list=products[type]||[]; const html=list.map(p=>`<div style="padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)"><div style="font-weight:700">${p.name}</div><div style="color:#A855F7;font-size:13px">${p.price} / ${p.crypto}</div></div>`).join(''); const modal=document.createElement('div'); modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px;'; modal.innerHTML=`<div style="width:100%;max-width:420px;background:#0D0D1A;border:1px solid rgba(168,85,247,.25);border-radius:20px;padding:18px;color:#fff;box-shadow:0 20px 80px rgba(0,0,0,.5)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3 style="margin:0;font-size:18px">${type === 'sim' ? 'SIMs Físicas' : 'eSIMs Digitales'}</h3><button id="closeModalBtn" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer">×</button></div>${html}<div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end"><button id="okModalBtn" style="background:#8B5CF6;border:none;color:#fff;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer">Cerrar</button></div></div>`; const close=()=>modal.remove(); modal.addEventListener('click',e=>{ if(e.target===modal) close(); }); document.body.appendChild(modal); modal.querySelector('#closeModalBtn').onclick=close; modal.querySelector('#okModalBtn').onclick=close; }
+function openCatalog(type){ document.querySelectorAll('.prod-card').forEach(c=>c.style.display=''); if(type){ document.querySelectorAll('.prod-card').forEach(c=>{ const t=(c.dataset.type||'').toLowerCase(); c.style.display=t.includes(type.toLowerCase())?'':'none'; }); } window.scrollTo({ top: document.querySelector('.prod-grid')?.offsetTop || 0, behavior: 'smooth' }); }
+function openRecharge(){ const el=document.getElementById('rechargeModal')||null; if(el) el.classList.add('on'); else toast('Recarga: conecta esta vista al bot'); }
+function openCoupons(){ const el=document.getElementById('couponModal')||null; if(el) el.classList.add('on'); else toast('Cupones: conecta esta vista al bot'); }
+function filterProvider(p){ document.querySelectorAll('.prod-card').forEach(c=>{ c.style.display=((c.dataset.provider||'').toLowerCase().includes(String(p).toLowerCase()) ? '' : 'none'); }); }
+async function buyProduct(productId){ try{ const d = await apiPost('/webapp/action', { type: 'purchase', productId, quantity: 1, totalPrice: 0, productName: String(productId || ''), unitPrice: 0, discountAmount: 0, typeProduct: 'esim' }); toast(d.message || 'Pedido enviado'); }catch(e){ toast('No se pudo procesar la compra'); } }
+async function openMyOrders(){ try{ const d = await apiGet('/webapp/orders'); toast('Tienes '+(d.count||0)+' pedidos'); }catch(e){ toast('No se pudieron cargar tus pedidos'); } }
+async function openSupport(){ const msg=prompt('Escribe tu mensaje de soporte'); if(!msg) return; try{ await apiPost('/webapp/support',{ message: msg }); toast('Soporte enviado'); }catch(e){ toast('No se pudo enviar soporte'); } }
+function toast(msg){ try{ TG?.showPopup?.({ title:'eSIM Market', message:String(msg), buttons:[{type:'ok'}] }); }catch(e){ alert(msg); } }
 function apiBase(){ return window.API_BASE || localStorage.getItem('API_BASE') || ''; }
 function authHeaders(){ return {}; }
-
-async function apiGet(path){
-  const base = apiBase();
-  if(!base) throw new Error('API_BASE no configurada');
-  const r = await fetch(base + path, { headers: authHeaders() });
-  if(!r.ok) throw new Error('HTTP ' + r.status);
-  return r.json();
-}
-
-async function apiPost(path, body){
-  const base = apiBase();
-  if(!base) throw new Error('API_BASE no configurada');
-  const r = await fetch(base + path, {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json', ...authHeaders() },
-    body: JSON.stringify(body)
-  });
-  if(!r.ok) throw new Error('HTTP ' + r.status);
-  return r.json();
-}
-
-function wireProducts() {
-  document.querySelectorAll('.prod-card').forEach(card => {
-    const btn = card.querySelector('.prod-btn');
-    const name = (card.querySelector('h3')?.textContent || '').toLowerCase();
-    const type = name.includes('sim') ? 'sim' : 'esim';
-    card.dataset.type = type;
-    card.dataset.provider = (
-      name.includes('vodafone') ? 'vodafone' :
-      name.includes('lebara') ? 'lebara' :
-      name.includes('orange') ? 'orange' :
-      name.includes('three<!--removed-->') ? 'three<!--removed-->' : ''
-    );
-    if (btn && !btn.dataset.bound) {
-      btn.dataset.bound = '1';
-      btn.addEventListener('click', () => {
-        const pid = card.dataset.productId || card.querySelector('h3')?.textContent || '';
-        if (TG && typeof TG.sendData === 'function') {
-          TG.sendData(JSON.stringify({
-            type: 'purchase',
-            productId: pid,
-            productName: card.querySelector('h3')?.textContent || '',
-            quantity: 1,
-            unitPrice: 0,
-            totalPrice: 0,
-            discountAmount: 0,
-            typeProduct: type
-          }));
-        } else {
-          buyProduct(pid);
-        }
-      });
-    }
-  });
-}
-
-function injectUtilityButtons() {
-  const hero = document.querySelector('.hero-actions');
-  if (hero && !document.getElementById('btnMyOrders')) {
-    const a = document.createElement('div');
-    a.className = 'hero-action';
-    a.style.display = 'none';
-    a.innerHTML = `<button class='hero-btn' id='btnMyOrders' aria-label='Mis pedidos'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><path d='M4 7h16v13H4z'/><path d='M8 7V4h8v3'/></svg></button><span>Pedidos</span>`;
-    a.querySelector('button').onclick = () => tgAction('my_orders');
-    hero.prepend(a);
-  }
-}
-
-function initReviews() {
-  const row = document.getElementById('revRow');
-  const dots = document.querySelectorAll('.dot');
-  if (!row) return;
-
-  row.addEventListener('scroll', () => {
-    const cards = row.querySelectorAll('.rev-card');
-    let closest = 0;
-    let minD = Infinity;
-
-    cards.forEach((c, i) => {
-      const d = Math.abs(c.offsetLeft - row.scrollLeft);
-      if (d < minD) {
-        minD = d;
-        closest = i;
-      }
-    });
-    dots.forEach((d, i) => d.classList.toggle('on', i === closest));
-  }, { passive: true });
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  const splash = document.getElementById('splash');
-  setTimeout(() => splash?.classList.add('hide'), 1600);
-  loadBalance();
-  initReviews();
-});
-
-window.addEventListener('load', () => {
-  wireProducts();
-  injectUtilityButtons();
-  const b = document.createElement('div');
-  b.textContent = 'SANDBOX UPDATED';
-  b.style.cssText = 'position:fixed;bottom:14px;right:14px;z-index:100000;background:#8B5CF6;color:#fff;padding:8px 10px;border-radius:999px;font-size:11px;font-weight:800;box-shadow:0 6px 20px rgba(0,0,0,.25)';
-  document.body.appendChild(b);
-  setTimeout(() => b.remove(), 2500);
-});
+async function apiGet(path){ const base=apiBase(); if(!base) throw new Error('API_BASE no configurada'); const r=await fetch(base+path,{ headers: authHeaders() }); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }
+async function apiPost(path, body){ const base=apiBase(); if(!base) throw new Error('API_BASE no configurada'); const r=await fetch(base+path,{ method:'POST', headers:{ 'Content-Type':'application/json', ...authHeaders() }, body: JSON.stringify(body) }); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }
+function wireProducts(){ document.querySelectorAll('.prod-card').forEach(card=>{ const btn=card.querySelector('.prod-btn'); const name=(card.querySelector('h3')?.textContent || '').toLowerCase(); const type = name.includes('sim') ? 'sim' : 'esim'; card.dataset.type = type; card.dataset.provider = (name.includes('vodafone') ? 'vodafone' : name.includes('lebara') ? 'lebara' : name.includes('orange') ? 'orange' : name.includes('three') ? 'three' : ''); if(btn && !btn.dataset.bound){ btn.dataset.bound='1'; btn.addEventListener('click', ()=>{ const pid = card.dataset.productId || card.querySelector('h3')?.textContent || ''; if (TG && typeof TG.sendData === 'function') { TG.sendData(JSON.stringify({ type:'purchase', productId: pid, productName: card.querySelector('h3')?.textContent || '', quantity: 1, unitPrice: 0, totalPrice: 0, discountAmount: 0, typeProduct: type })); } else { buyProduct(pid); } }); } }); }
+function injectUtilityButtons(){ const hero=document.querySelector('.hero-actions'); if(hero && !document.getElementById('btnMyOrders')){ const a=document.createElement('div'); a.className='hero-action'; a.style.display='none'; a.innerHTML=`<button class='hero-btn' id='btnMyOrders' aria-label='Mis pedidos'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><path d='M4 7h16v13H4z'/><path d='M8 7V4h8v3'/></svg></button><span>Pedidos</span>`; a.querySelector('button').onclick=()=>tgAction('my_orders'); hero.prepend(a); } }
+function initReviews(){ const row=document.getElementById('revRow'); const dots=document.querySelectorAll('.dot'); if(!row) return; row.addEventListener('scroll',()=>{ const cards=row.querySelectorAll('.rev-card'); let closest=0; let minD=Infinity; cards.forEach((c,i)=>{ const d=Math.abs(c.offsetLeft-row.scrollLeft); if(d<minD){ minD=d; closest=i; } }); dots.forEach((d,i)=>d.classList.toggle('on',i===closest)); },{passive:true}); }
+window.addEventListener('DOMContentLoaded',()=>{ const splash=document.getElementById('splash'); setTimeout(()=>splash?.classList.add('hide'),1600); loadBalance(); initReviews(); });
+window.addEventListener('load',()=>{ wireProducts(); injectUtilityButtons(); const b=document.createElement('div'); b.textContent='SANDBOX UPDATED'; b.style.cssText='position:fixed;bottom:14px;right:14px;z-index:100000;background:#8B5CF6;color:#fff;padding:8px 10px;border-radius:999px;font-size:11px;font-weight:800;box-shadow:0 6px 20px rgba(0,0,0,.25)'; document.body.appendChild(b); setTimeout(()=>b.remove(),2500); });
 </script>
-
+</body>
+</html>
