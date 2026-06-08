@@ -627,6 +627,20 @@ if (TG) {
   TG.setHeaderColor('#05050F');
 }
 
+function tgWebApp() {
+  return window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+}
+
+function sendToBot(payload) {
+  const tg = tgWebApp();
+  if (!tg) {
+    alert("Abre esta web dentro de Telegram para continuar.");
+    return false;
+  }
+  tg.sendData(JSON.stringify(payload));
+  return true;
+}
+
 function tgAction(action, payload) {
   const data = { action, payload };
 
@@ -635,23 +649,38 @@ function tgAction(action, payload) {
     return;
   }
 
-  if (action === 'viewcatalog') {
+  if (action === 'view_catalog') {
     showProducts(payload);
     return;
   }
 
-  if (action === 'openrecharge') {
-    alert('Abrir recarga');
+  if (action === 'open_recharge') {
+    openRecharge();
     return;
   }
 
-  if (action === 'opencoupons') {
-    alert('Abrir cupones');
+  if (action === 'open_coupons') {
+    openCoupons();
     return;
   }
 
-  if (action === 'filterprovider') {
-    alert('Filtrar proveedor: ' + payload);
+  if (action === 'filter_provider') {
+    filterProvider(payload);
+    return;
+  }
+
+  if (action === 'my_orders') {
+    openMyOrders();
+    return;
+  }
+
+  if (action === 'support') {
+    openSupport();
+    return;
+  }
+
+  if (action === 'withdraw_request') {
+    requestWithdraw();
     return;
   }
 
@@ -671,7 +700,7 @@ function loadBalance() {
   const uid = TG?.initDataUnsafe?.user?.id;
 
   if (!uid) {
-    if (balanceEl) balanceEl.textContent = '0,00';
+    if (balanceEl) balanceEl.textContent = '0,00 €';
     return;
   }
 
@@ -682,14 +711,47 @@ function loadBalance() {
         balanceEl.textContent = new Intl.NumberFormat('es-ES', {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2
-        }).format(Number(d.balance));
+        }).format(Number(d.balance)) + ' €';
       } else if (balanceEl) {
-        balanceEl.textContent = '0,00';
+        balanceEl.textContent = '0,00 €';
       }
     })
     .catch(() => {
-      if (balanceEl) balanceEl.textContent = '0,00';
+      if (balanceEl) balanceEl.textContent = '0,00 €';
     });
+}
+
+function confirmPurchase(productId, productName, quantity, unitPrice, totalPrice, discountAmount, typeProduct) {
+  return sendToBot({
+    type: "purchase",
+    productId: productId,
+    productName: productName,
+    quantity: Number(quantity || 1),
+    unitPrice: Number(unitPrice || 0),
+    totalPrice: Number(totalPrice || 0),
+    discountAmount: Number(discountAmount || 0),
+    typeProduct: typeProduct || "esim"
+  });
+}
+
+function requestRecharge(amount) {
+  return sendToBot({
+    type: "add_balance",
+    amount: Number(amount || 0)
+  });
+}
+
+function applyCoupon(code) {
+  return sendToBot({
+    type: "apply_coupon",
+    code: String(code || "").trim()
+  });
+}
+
+function requestWithdraw() {
+  return sendToBot({
+    type: "withdraw_request"
+  });
 }
 
 function showProducts(type) {
@@ -739,12 +801,141 @@ function showProducts(type) {
   modal.querySelector('#okModalBtn').onclick = close;
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const splash = document.getElementById('splash');
-  setTimeout(() => splash?.classList.add('hide'), 1600);
-  loadBalance();
-  initReviews();
-});
+function openCatalog(type) {
+  document.querySelectorAll('.prod-card').forEach(c => c.style.display = '');
+  if (type) {
+    document.querySelectorAll('.prod-card').forEach(c => {
+      const t = (c.dataset.type || '').toLowerCase();
+      c.style.display = t.includes(type.toLowerCase()) ? '' : 'none';
+    });
+  }
+  window.scrollTo({ top: document.querySelector('.prod-grid')?.offsetTop || 0, behavior: 'smooth' });
+}
+
+function openRecharge() {
+  const el = document.getElementById('rechargeModal') || null;
+  if (el) el.classList.add('on');
+  else toast('Recarga: conecta esta vista al bot');
+}
+
+function openCoupons() {
+  const el = document.getElementById('couponModal') || null;
+  if (el) el.classList.add('on');
+  else toast('Cupones: conecta esta vista al bot');
+}
+
+function filterProvider(p) {
+  document.querySelectorAll('.prod-card').forEach(c => {
+    c.style.display = ((c.dataset.provider || '').toLowerCase().includes(String(p).toLowerCase()) ? '' : 'none');
+  });
+}
+
+async function buyProduct(productId) {
+  try {
+    const d = await apiPost('/webapp/action', { type:'buy', productId });
+    toast(d.message || 'Pedido enviado');
+  } catch (e) {
+    toast('No se pudo procesar la compra');
+  }
+}
+
+async function openMyOrders() {
+  try {
+    const d = await apiGet('/webapp/orders');
+    toast('Tienes ' + (d.count || 0) + ' pedidos');
+  } catch (e) {
+    toast('No se pudieron cargar tus pedidos');
+  }
+}
+
+async function openSupport() {
+  const msg = prompt('Escribe tu mensaje de soporte');
+  if (!msg) return;
+  try {
+    await apiPost('/webapp/support', { message: msg });
+    toast('Soporte enviado');
+  } catch (e) {
+    toast('No se pudo enviar soporte');
+  }
+}
+
+function toast(msg) {
+  try {
+    TG?.showPopup?.({ title:'eSIM Market', message:String(msg), buttons:[{type:'ok'}] });
+  } catch (e) {
+    alert(msg);
+  }
+}
+
+function apiBase(){ return window.API_BASE || localStorage.getItem('API_BASE') || ''; }
+function authHeaders(){ return {}; }
+
+async function apiGet(path){
+  const base = apiBase();
+  if(!base) throw new Error('API_BASE no configurada');
+  const r = await fetch(base + path, { headers: authHeaders() });
+  if(!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+async function apiPost(path, body){
+  const base = apiBase();
+  if(!base) throw new Error('API_BASE no configurada');
+  const r = await fetch(base + path, {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json', ...authHeaders() },
+    body: JSON.stringify(body)
+  });
+  if(!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+function wireProducts() {
+  document.querySelectorAll('.prod-card').forEach(card => {
+    const btn = card.querySelector('.prod-btn');
+    const name = (card.querySelector('h3')?.textContent || '').toLowerCase();
+    const type = name.includes('sim') ? 'sim' : 'esim';
+    card.dataset.type = type;
+    card.dataset.provider = (
+      name.includes('vodafone') ? 'vodafone' :
+      name.includes('lebara') ? 'lebara' :
+      name.includes('orange') ? 'orange' :
+      name.includes('three<!--removed-->') ? 'three<!--removed-->' : ''
+    );
+    if (btn && !btn.dataset.bound) {
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const pid = card.dataset.productId || card.querySelector('h3')?.textContent || '';
+        if (TG && typeof TG.sendData === 'function') {
+          TG.sendData(JSON.stringify({
+            type: 'purchase',
+            productId: pid,
+            productName: card.querySelector('h3')?.textContent || '',
+            quantity: 1,
+            unitPrice: 0,
+            totalPrice: 0,
+            discountAmount: 0,
+            typeProduct: type
+          }));
+        } else {
+          buyProduct(pid);
+        }
+      });
+    }
+  });
+}
+
+function injectUtilityButtons() {
+  const hero = document.querySelector('.hero-actions');
+  if (hero && !document.getElementById('btnMyOrders')) {
+    const a = document.createElement('div');
+    a.className = 'hero-action';
+    a.style.display = 'none';
+    a.innerHTML = `<button class='hero-btn' id='btnMyOrders' aria-label='Mis pedidos'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><path d='M4 7h16v13H4z'/><path d='M8 7V4h8v3'/></svg></button><span>Pedidos</span>`;
+    a.querySelector('button').onclick = () => tgAction('my_orders');
+    hero.prepend(a);
+  }
+}
 
 function initReviews() {
   const row = document.getElementById('revRow');
@@ -763,25 +954,25 @@ function initReviews() {
         closest = i;
       }
     });
-
     dots.forEach((d, i) => d.classList.toggle('on', i === closest));
   }, { passive: true });
 }
 
+window.addEventListener('DOMContentLoaded', () => {
+  const splash = document.getElementById('splash');
+  setTimeout(() => splash?.classList.add('hide'), 1600);
+  loadBalance();
+  initReviews();
+});
 
-function apiBase(){ return window.API_BASE || localStorage.getItem('API_BASE') || ''; }
-function authHeaders(){ return {}; }
-function toast(msg){ try{ TG?.showPopup?.({title:'eSIM Market', message:String(msg), buttons:[{type:'ok'}]}); }catch(e){ alert(msg); } }
-async function apiGet(path){ const base=apiBase(); if(!base) throw new Error('API_BASE no configurada'); const r=await fetch(base+path,{headers:authHeaders()}); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }
-async function apiPost(path, body){ const base=apiBase(); if(!base) throw new Error('API_BASE no configurada'); const r=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify(body)}); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }
-function openCatalog(type){ document.querySelectorAll('.prod-card').forEach(c=>c.style.display=''); if(type){ document.querySelectorAll('.prod-card').forEach(c=>{ const t=(c.dataset.type||'').toLowerCase(); c.style.display=t.includes(type.toLowerCase())?'':'none'; }); } window.scrollTo({top:document.querySelector('.prod-grid')?.offsetTop||0,behavior:'smooth'}); }
-function openRecharge(){ const el=document.getElementById('rechargeModal')||null; if(el) el.classList.add('on'); else toast('Recarga: conecta esta vista al bot'); }
-function openCoupons(){ const el=document.getElementById('couponModal')||null; if(el) el.classList.add('on'); else toast('Cupones: conecta esta vista al bot'); }
-function filterProvider(p){ document.querySelectorAll('.prod-card').forEach(c=>c.style.display=((c.dataset.provider||'').toLowerCase().includes(String(p).toLowerCase()) ? '' : 'none')); }
-async function buyProduct(productId){ try{ const d = await apiPost('/webapp/action', { type:'buy', productId }); toast(d.message || 'Pedido enviado'); }catch(e){ toast('No se pudo procesar la compra'); } }
-async function openMyOrders(){ try{ const d = await apiGet('/webapp/orders'); toast('Tienes '+(d.count||0)+' pedidos'); }catch(e){ toast('No se pudieron cargar tus pedidos'); } }
-async function openSupport(){ const msg = prompt('Escribe tu mensaje de soporte'); if(!msg) return; try{ await apiPost('/webapp/support',{message:msg}); toast('Soporte enviado'); }catch(e){ toast('No se pudo enviar soporte'); } }
-function wireProducts(){ document.querySelectorAll('.prod-card').forEach(card=>{ const btn=card.querySelector('.prod-btn'); const name=(card.querySelector('h3')?.textContent||'').toLowerCase(); const type = name.includes('sim') ? 'sim' : 'esim'; card.dataset.type = type; card.dataset.provider = (name.includes('vodafone')?'vodafone':name.includes('lebara')?'lebara':name.includes('orange')?'orange':name.includes('three<!--removed-->')?'three<!--removed-->':''); if(btn && !btn.dataset.bound){ btn.dataset.bound='1'; btn.addEventListener('click', ()=> buyProduct(card.dataset.productId || card.querySelector('h3')?.textContent || '')); } }); }
-function injectUtilityButtons(){ const hero = document.querySelector('.hero-actions'); if(hero && !document.getElementById('btnMyOrders')){ const a=document.createElement('div'); a.className='hero-action'; a.style.display='none'; a.innerHTML=`<button class='hero-btn' id='btnMyOrders' aria-label='Mis pedidos<!--removed-->'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><path d='M4 7h16v13H4z'/><path d='M8 7V4h8v3'/></svg></button><span>Pedidos</span>`; a.querySelector('button').onclick=()=>tgAction('myorders'); hero.prepend(a); } }
-window.addEventListener('load', ()=>{ wireProducts(); injectUtilityButtons(); const b=document.createElement('div'); b.textContent='SANDBOX UPDATED'; b.style.cssText='position:fixed;bottom:14px;right:14px;z-index:100000;background:#8B5CF6;color:#fff;padding:8px 10px;border-radius:999px;font-size:11px;font-weight:800;box-shadow:0 6px 20px rgba(0,0,0,.25)'; document.body.appendChild(b); setTimeout(()=>b.remove(),2500); });
+window.addEventListener('load', () => {
+  wireProducts();
+  injectUtilityButtons();
+  const b = document.createElement('div');
+  b.textContent = 'SANDBOX UPDATED';
+  b.style.cssText = 'position:fixed;bottom:14px;right:14px;z-index:100000;background:#8B5CF6;color:#fff;padding:8px 10px;border-radius:999px;font-size:11px;font-weight:800;box-shadow:0 6px 20px rgba(0,0,0,.25)';
+  document.body.appendChild(b);
+  setTimeout(() => b.remove(), 2500);
+});
 </script>
+
