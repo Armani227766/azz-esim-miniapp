@@ -287,7 +287,7 @@ body{
 @keyframes fadeup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 </style>
 </head>
-<body>
+<body><div style="position:sticky;top:0;z-index:100000;background:#22c55e;color:#04110a;text-align:center;padding:8px 12px;font-weight:900;font-size:12px">SANDBOX UPDATED V2</div>
 
 <!-- SPLASH -->
 <div id="splash">
@@ -438,7 +438,7 @@ body{
         Proveedores populares
       </div>
       <button class="sec-link" onclick="tgAction('view_providers')">
-        Ver todos
+        Ver todos<!--removed-->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
@@ -473,7 +473,7 @@ body{
         <span class="prov-name">Orange</span>
       </div>
       <!-- Three -->
-      <div class="prov-item" onclick="tgAction('filter_provider','three')">
+      <div class="prov-item" onclick="tgAction('filter_provider','three<!--removed-->')">
         <div class="prov-circle" style="background:#1A1A2E;border-color:rgba(139,92,246,.35)">
           <svg viewBox="0 0 60 60" width="60" height="60"><circle cx="30" cy="30" r="30" fill="#1A1A2E"/><text x="30" y="40" text-anchor="middle" fill="#A855F7" font-size="30" font-weight="900" font-family="sans-serif">3</text></svg>
         </div>
@@ -767,4 +767,21 @@ function initReviews() {
     dots.forEach((d, i) => d.classList.toggle('on', i === closest));
   }, { passive: true });
 }
+
+
+function apiBase(){ return window.API_BASE || localStorage.getItem('API_BASE') || ''; }
+function authHeaders(){ return {}; }
+function toast(msg){ try{ TG?.showPopup?.({title:'eSIM Market', message:String(msg), buttons:[{type:'ok'}]}); }catch(e){ alert(msg); } }
+async function apiGet(path){ const base=apiBase(); if(!base) throw new Error('API_BASE no configurada'); const r=await fetch(base+path,{headers:authHeaders()}); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }
+async function apiPost(path, body){ const base=apiBase(); if(!base) throw new Error('API_BASE no configurada'); const r=await fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',...authHeaders()},body:JSON.stringify(body)}); if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }
+function openCatalog(type){ document.querySelectorAll('.prod-card').forEach(c=>c.style.display=''); if(type){ document.querySelectorAll('.prod-card').forEach(c=>{ const t=(c.dataset.type||'').toLowerCase(); c.style.display=t.includes(type.toLowerCase())?'':'none'; }); } window.scrollTo({top:document.querySelector('.prod-grid')?.offsetTop||0,behavior:'smooth'}); }
+function openRecharge(){ const el=document.getElementById('rechargeModal')||null; if(el) el.classList.add('on'); else toast('Recarga: conecta esta vista al bot'); }
+function openCoupons(){ const el=document.getElementById('couponModal')||null; if(el) el.classList.add('on'); else toast('Cupones: conecta esta vista al bot'); }
+function filterProvider(p){ document.querySelectorAll('.prod-card').forEach(c=>c.style.display=((c.dataset.provider||'').toLowerCase().includes(String(p).toLowerCase()) ? '' : 'none')); }
+async function buyProduct(productId){ try{ const d = await apiPost('/webapp/action', { type:'buy', productId }); toast(d.message || 'Pedido enviado'); }catch(e){ toast('No se pudo procesar la compra'); } }
+async function openMyOrders(){ try{ const d = await apiGet('/webapp/orders'); toast('Tienes '+(d.count||0)+' pedidos'); }catch(e){ toast('No se pudieron cargar tus pedidos'); } }
+async function openSupport(){ const msg = prompt('Escribe tu mensaje de soporte'); if(!msg) return; try{ await apiPost('/webapp/support',{message:msg}); toast('Soporte enviado'); }catch(e){ toast('No se pudo enviar soporte'); } }
+function wireProducts(){ document.querySelectorAll('.prod-card').forEach(card=>{ const btn=card.querySelector('.prod-btn'); const name=(card.querySelector('h3')?.textContent||'').toLowerCase(); const type = name.includes('sim') ? 'sim' : 'esim'; card.dataset.type = type; card.dataset.provider = (name.includes('vodafone')?'vodafone':name.includes('lebara')?'lebara':name.includes('orange')?'orange':name.includes('three<!--removed-->')?'three<!--removed-->':''); if(btn && !btn.dataset.bound){ btn.dataset.bound='1'; btn.addEventListener('click', ()=> buyProduct(card.dataset.productId || card.querySelector('h3')?.textContent || '')); } }); }
+function injectUtilityButtons(){ const hero = document.querySelector('.hero-actions'); if(hero && !document.getElementById('btnMyOrders')){ const a=document.createElement('div'); a.className='hero-action'; a.style.display='none'; a.innerHTML=`<button class='hero-btn' id='btnMyOrders' aria-label='Mis pedidos<!--removed-->'><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'><path d='M4 7h16v13H4z'/><path d='M8 7V4h8v3'/></svg></button><span>Pedidos</span>`; a.querySelector('button').onclick=()=>tgAction('myorders'); hero.prepend(a); } }
+window.addEventListener('load', ()=>{ wireProducts(); injectUtilityButtons(); const b=document.createElement('div'); b.textContent='SANDBOX UPDATED'; b.style.cssText='position:fixed;bottom:14px;right:14px;z-index:100000;background:#8B5CF6;color:#fff;padding:8px 10px;border-radius:999px;font-size:11px;font-weight:800;box-shadow:0 6px 20px rgba(0,0,0,.25)'; document.body.appendChild(b); setTimeout(()=>b.remove(),2500); });
 </script>
