@@ -980,15 +980,15 @@ function executePurchase() {
   if(S.balance<total){showToast('Saldo insuficiente','error');return;}
   sendPayload({
     type:'purchase',
-    items:[{
-      productId:p.id, productName:p.name,
-      company:p.company||'', tariff:p.tariff||'',
-      quantity:qty, unitPrice:p.unitPrice,
-      typeProduct:p.typeProduct, discountAmount:0,
-      totalPrice:parseFloat(total.toFixed(2))
-    }],
-    subtotal:parseFloat(total.toFixed(2)),
-    discountAmount:0, shipping:0,
+    productId:p.id,
+    productName:p.name,
+    company:p.company||'',
+    tariff:p.tariff||'',
+    quantity:qty,
+    unitPrice:p.unitPrice,
+    typeProduct:p.typeProduct,
+    discountAmount:0,
+    shipping:0,
     totalPrice:parseFloat(total.toFixed(2))
   });
 }
@@ -1101,20 +1101,18 @@ function checkoutCart() {
   if(!S.cart.length){showToast('Tu cesta está vacía','error');return;}
   const {subtotal,discount,shipping,total}=cartTotals();
   if(S.balance<total){showToast('Saldo insuficiente','error');return;}
-  const items=S.cart.map(item=>{
-    const p=S.products.find(x=>x.id===item.productId);
-    if(!p) return null;
-    return {
-      productId:p.id, productName:p.name,
-      company:p.company||'', tariff:p.tariff||'',
-      quantity:item.quantity, unitPrice:p.unitPrice,
-      typeProduct:p.typeProduct, discountAmount:0,
-      totalPrice:parseFloat((p.unitPrice*item.quantity).toFixed(2))
-    };
-  }).filter(Boolean);
+  const firstItem=S.cart[0];
+  const p=S.products.find(x=>x.id===firstItem.productId);
+  if(!p){showToast('Producto no encontrado','error');return;}
   sendPayload({
-    type:'purchase', items,
-    subtotal:parseFloat(subtotal.toFixed(2)),
+    type:'purchase',
+    productId:p.id,
+    productName:p.name,
+    company:p.company||'',
+    tariff:p.tariff||'',
+    quantity:firstItem.quantity,
+    unitPrice:p.unitPrice,
+    typeProduct:p.typeProduct,
     discountAmount:parseFloat(discount.toFixed(2)),
     shipping:parseFloat(shipping.toFixed(2)),
     totalPrice:parseFloat(total.toFixed(2))
