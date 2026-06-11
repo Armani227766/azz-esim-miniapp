@@ -936,8 +936,13 @@ function openPurchaseSheet(productId) {
 function renderPurchaseSheet(p) {
   if(!p) p=S.products.find(x=>x.id===_purchase.productId);
   if(!p) return;
-  const qty=_purchase.qty, total=p.unitPrice*qty, canAfford=S.balance>=total;
-  document.getElementById('purchaseContent').innerHTML=`
+
+  const qty = _purchase.qty;
+  const shipping = p.typeProduct === 'physical' ? 5 : 0;
+  const total = p.unitPrice * qty + shipping;
+  const canAfford = S.balance >= total;
+
+  document.getElementById('purchaseContent').innerHTML = `
     <div class="sheet-title">Confirmar Compra</div>
     <div class="sheet-sub">${p.name}</div>
     <div class="qty-stepper">
@@ -949,6 +954,7 @@ function renderPurchaseSheet(p) {
       <div class="review-row"><span>Producto</span><span>${p.name}</span></div>
       <div class="review-row"><span>Precio unitario</span><span>${money(p.unitPrice)}</span></div>
       <div class="review-row"><span>Cantidad</span><span>${qty}</span></div>
+      <div class="review-row"><span>Envío InPost</span><span>${shipping > 0 ? money(shipping) : 'Gratis'}</span></div>
       <div class="review-row total"><span>Total</span><span>${money(total)}</span></div>
     </div>
     ${!canAfford
@@ -976,8 +982,13 @@ function executePurchase() {
   haptic('medium');
   const p=S.products.find(x=>x.id===_purchase.productId);
   if(!p) return;
-  const qty=_purchase.qty, total=p.unitPrice*qty;
-  if(S.balance<total){showToast('Saldo insuficiente','error');return;}
+
+  const qty = _purchase.qty;
+  const shipping = p.typeProduct === 'physical' ? 5 : 0;
+  const total = p.unitPrice * qty + shipping;
+
+  if(S.balance < total){showToast('Saldo insuficiente','error');return;}
+
   sendPayload({
     type:'purchase',
     productId:p.id,
@@ -988,7 +999,7 @@ function executePurchase() {
     unitPrice:p.unitPrice,
     typeProduct:p.typeProduct,
     discountAmount:0,
-    shipping:0,
+    shipping:parseFloat(shipping.toFixed(2)),
     totalPrice:parseFloat(total.toFixed(2))
   });
 }
@@ -1027,7 +1038,7 @@ function cartTotals() {
     if(p.typeProduct==='physical') hasPhysical=true;
   }
   const discount=S.coupon?parseFloat(S.coupon.discountAmount||0):0;
-  const shipping=hasPhysical?4.99:0;
+  const shipping=hasPhysical?5:0;
   const total=Math.max(0,subtotal-discount+shipping);
   return {subtotal,discount,shipping,total};
 }
