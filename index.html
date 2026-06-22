@@ -894,8 +894,8 @@
         // --- ACTIONS ---
         function confirmRecharge() {
             const val = parseFloat(document.getElementById("recharge-amount").value);
-            if(isNaN(val) || val <= 0) {
-                showToast("Importe inválido");
+            if(isNaN(val) || val <= 5) {
+                showToast("El ingreso minimo es de 5€");
                 return;
             }
             tg.sendData(JSON.stringify({ type: "add_balance", amount: val }));
