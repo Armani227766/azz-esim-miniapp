@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panel Admin · eSim Market</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root, [data-theme="dark"] {
+            --bg: #0b0c10;
+            --bg2: #15161c;
+            --bg3: #1e222d;
+            --text: #ffffff;
+            --muted: #8b8e98;
+            --accent: #b89aff;
+            --accent2: #2ed573;
+            --border: rgba(255,255,255,0.06);
+            --card-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            --success: #2ed573;
+            --warning: #ffa502;
+            --danger: #ff4757;
+        }
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --bg2: #ffffff;
+            --bg3: #eef1f8;
+            --text: #1a1d26;
+            --muted: #6b7280;
+            --accent: #7c5ce0;
+            --accent2: #16a34a;
+            --border: rgba(0,0,0,0.08);
+            --card-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100dvh;
+            overflow: hidden;
+        }
+        .app-shell { display: flex; height: 100dvh; }
+        .sidebar {
+            width: 220px; flex-shrink: 0;
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            padding: 20px 12px;
+        }
+        .sidebar-logo { font-size: 1.1rem; font-weight: 700; color: var(--accent); padding: 0 8px 20px; }
+        .nav-btn {
+            display: flex; align-items: center; gap: 10px;
+            width: 100%; padding: 12px 14px; border: none; border-radius: 12px;
+            background: transparent; color: var(--muted); cursor: pointer;
+            font-size: 0.95rem; text-align: left; transition: all .2s;
+        }
+        .nav-btn.active, .nav-btn:hover { background: var(--bg3); color: var(--text); }
+        .nav-btn.active { color: var(--accent); font-weight: 600; }
+        .main-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .topbar {
+            position: sticky; top: 0; z-index: 20;
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+        }
+        .date-pills { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+        .pill {
+            padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border);
+            background: var(--bg3); color: var(--muted); font-size: 0.8rem; cursor: pointer;
+        }
+        .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .custom-range { display: none; flex-wrap: wrap; gap: 6px; align-items: center; }
+        .custom-range.show { display: flex; }
+        .custom-range input {
+            background: var(--bg3); border: 1px solid var(--border); color: var(--text);
+            border-radius: 8px; padding: 6px 10px; font-size: 0.8rem;
+        }
+        .content { flex: 1; overflow-y: auto; padding: 20px; }
+        .card {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border-radius: 16px; padding: 18px;
+            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
+        }
+        .kpi-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+        .kpi-grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .kpi-grid-5 { grid-template-columns: repeat(4, 1fr); }
+        .kpi-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; }
+        .kpi-value { font-size: 1.6rem; font-weight: 700; line-height: 1.2; }
+        .kpi-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+        .sparkline { height: 32px; margin-top: 8px; }
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .chart-card { min-height: 280px; }
+        .chart-card canvas { max-height: 240px; }
+        .table-wrap { overflow: auto; max-height: 420px; border-radius: 12px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        thead th {
+            position: sticky; top: 0; z-index: 2;
+            background: var(--bg3); color: var(--muted);
+            padding: 10px 12px; text-align: left; cursor: pointer; white-space: nowrap;
+            border-bottom: 1px solid var(--border);
+        }
+        thead th:hover { color: var(--accent); }
+        tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+        tbody tr:hover { background: rgba(184,154,255,0.05); }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; }
+        .badge-ok { background: rgba(46,213,115,0.15); color: var(--success); }
+        .badge-warn { background: rgba(255,165,2,0.15); color: var(--warning); }
+        .badge-err { background: rgba(255,71,87,0.15); color: var(--danger); }
+        .btn {
+            padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border);
+            background: var(--bg3); color: var(--text); cursor: pointer; font-size: 0.82rem;
+        }
+        .btn:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-accent { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg3) 25%, var(--bg2) 50%, var(--bg3) 75%);
+            background-size: 200% 100%; animation: shimmer 1.2s infinite;
+            border-radius: 8px; min-height: 20px;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+        .empty-state h3 { color: var(--text); margin-bottom: 8px; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .section-head h2 { font-size: 1rem; font-weight: 600; margin: 0; }
+        .expand-row { background: var(--bg); }
+        .expand-row td { padding: 12px 16px; }
+        .mobile-nav { display: none; }
+        .theme-toggle { background: none; border: 1px solid var(--border); border-radius: 10px; padding: 6px 10px; cursor: pointer; color: var(--text); }
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .mobile-nav {
+                display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 30;
+                background: var(--bg2); border-top: 1px solid var(--border);
+                justify-content: space-around; padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+            }
+            .mobile-nav button {
+                flex: 1; background: none; border: none; color: var(--muted);
+                font-size: 0.75rem; padding: 8px; cursor: pointer;
+            }
+            .mobile-nav button.active { color: var(--accent); font-weight: 600; }
+            .content { padding-bottom: 80px; }
+            .kpi-grid-4, .kpi-grid-5 { grid-template-columns: repeat(2, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .kpi-grid-4, .kpi-grid-5 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="sidebar-logo">📊 eSim Admin</div>
+        <button class="nav-btn active" data-page="ventas">💰 Ventas</button>
+        <button class="nav-btn" data-page="comisiones">🤝 Comisiones</button>
+    </aside>
+
+    <div class="main-col">
+        <header class="topbar">
+            <div class="date-pills">
+                <button class="pill active" data-range="today">Hoy</button>
+                <button class="pill" data-range="7d">7 días</button>
+                <button class="pill" data-range="30d">30 días</button>
+                <button class="pill" data-range="month">Este mes</button>
+                <button class="pill" data-range="custom" id="btnCustom">Histórico</button>
+                <div class="custom-range" id="customRange">
+                    <input type="date" id="dateFrom">
+                    <span style="color:var(--muted)">→</span>
+                    <input type="date" id="dateTo">
+                    <button class="btn btn-accent" id="btnApplyRange">Aplicar</button>
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" title="Cambiar tema">🌙</button>
+        </header>
+
+        <main class="content">
+            <!-- VENTAS -->
+            <section id="page-ventas" class="page active">
+                <div class="kpi-grid kpi-grid-4" id="ventasKpis">
+                    <div class="card skeleton" style="height:100px"></div>
+                    <div class="card skeleton" style="height:100px"></div>
+                    <div class="card skeleton" style="height:100px"></div>
+                    <div class="card skeleton" style="height:100px"></div>
+                </div>
+                <div class="charts-grid">
+                    <div class="card chart-card"><canvas id="chartLine"></canvas></div>
+                    <div class="card chart-card"><canvas id="chartDonut"></canvas></div>
+                    <div class="card chart-card"><canvas id="chartTop5"></canvas></div>
+                    <div class="card chart-card"><canvas id="chartWeekly"></canvas></div>
+                </div>
+                <div class="card">
+                    <div class="section-head">
+                        <h2>Transacciones</h2>
+                        <button class="btn" id="exportVentas">⬇ Exportar CSV</button>
+                    </div>
+                    <div class="table-wrap" id="ventasTableWrap">
+                        <div class="skeleton" style="height:200px;margin:12px"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COMISIONES -->
+            <section id="page-comisiones" class="page">
+                <div class="kpi-grid kpi-grid-4" id="comisionesKpis">
+                    <div class="card skeleton" style="height:100px"></div>
+                    <div class="card skeleton" style="height:100px"></div>
+                    <div class="card skeleton" style="height:100px"></div>
+                    <div class="card skeleton" style="height:100px"></div>
+                </div>
+                <div class="card">
+                    <div class="section-head">
+                        <h2>Afiliados VIP</h2>
+                        <button class="btn" id="exportComisiones">⬇ Exportar CSV</button>
+                    </div>
+                    <div class="table-wrap" id="vipTableWrap">
+                        <div class="skeleton" style="height:200px;margin:12px"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+
+<nav class="mobile-nav">
+    <button class="active" data-page="ventas">💰 Ventas</button>
+    <button data-page="comisiones">🤝 Comisiones</button>
+</nav>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const apiBase = (params.get("api_base") || "").replace(/\/+$/, "");
+const token = params.get("token") || "";
+const FETCH_HEADERS = { "ngrok-skip-browser-warning": "true" };
+
+const SUCCESS_RECHARGE = new Set(["completed", "credited", "finished"]);
+const charts = {};
+let rawData = null;
+let period = { from: null, to: null, preset: "today" };
+let activePage = "ventas";
+let ventasSort = { col: "d", dir: -1 };
+let vipSort = { col: "commission_generated", dir: -1 };
+let expandedVip = null;
+let vipDetailsCache = {};
+
+function fmtDate(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+}
+
+function setPeriodPreset(preset) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    period.preset = preset;
+    if (preset === "today") {
+        period.from = fmtDate(today);
+        period.to = fmtDate(today);
+    } else if (preset === "7d") {
+        const f = new Date(today); f.setDate(f.getDate() - 6);
+        period.from = fmtDate(f); period.to = fmtDate(today);
+    } else if (preset === "30d") {
+        const f = new Date(today); f.setDate(f.getDate() - 29);
+        period.from = fmtDate(f); period.to = fmtDate(today);
+    } else if (preset === "month") {
+        period.from = fmtDate(new Date(today.getFullYear(), today.getMonth(), 1));
+        period.to = fmtDate(today);
+    }
+}
+
+function apiUrl(path, extra = {}) {
+    const u = new URL(apiBase + path);
+    u.searchParams.set("token", token);
+    if (extra.from_d) u.searchParams.set("from_d", extra.from_d);
+    if (extra.to_d) u.searchParams.set("to_d", extra.to_d);
+    if (extra.referrer_id) u.searchParams.set("referrer_id", extra.referrer_id);
+    return u.toString();
+}
+
+function isSuccessfulRecharge(r) {
+    return SUCCESS_RECHARGE.has(String(r.status || "completed").toLowerCase());
+}
+
+function paymentMethodLabel(r) {
+    const m = (r.method || "").toLowerCase();
+    const p = (r.provider || "").toLowerCase();
+    if (m.includes("paypal")) return "PayPal";
+    if (m.includes("stripe")) return "Stripe";
+    if (m.includes("cripto") || m.includes("crypto") || p.includes("nowpayment")) return "Crypto";
+    if (m) return r.method;
+    return "Otro";
+}
+
+function statusBadge(status) {
+    const s = (status || "").toLowerCase();
+    if (s === "completado" || s === "completed" || s === "credited" || s === "finished")
+        return `<span class="badge badge-ok">Completado</span>`;
+    if (s === "pendiente" || s === "pending" || s === "waiting")
+        return `<span class="badge badge-warn">Pendiente</span>`;
+    return `<span class="badge badge-err">${status || "Fallido"}</span>`;
+}
+
+function animateValue(el, end, prefix = "", suffix = "", decimals = 2) {
+    const start = 0;
+    const dur = 800;
+    const t0 = performance.now();
+    function step(t) {
+        const p = Math.min((t - t0) / dur, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        const val = start + (end - start) * ease;
+        el.textContent = prefix + (Number.isInteger(end) && decimals === 0
+            ? Math.round(val).toLocaleString("es-ES")
+            : val.toFixed(decimals).replace(".", ",")) + suffix;
+        if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+
+function sparklineCanvas(id, values, color) {
+    return `<canvas class="sparkline" id="${id}" data-values='${JSON.stringify(values)}' data-color="${color}"></canvas>`;
+}
+
+function renderSparklines() {
+    document.querySelectorAll(".sparkline").forEach(cv => {
+        const vals = JSON.parse(cv.dataset.values || "[]");
+        if (!vals.length) return;
+        const ctx = cv.getContext("2d");
+        const w = cv.offsetWidth || 120, h = 32;
+        cv.width = w; cv.height = h;
+        const max = Math.max(...vals, 1);
+        ctx.strokeStyle = cv.dataset.color || "#b89aff";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        vals.forEach((v, i) => {
+            const x = (i / (vals.length - 1 || 1)) * w;
+            const y = h - (v / max) * (h - 4) - 2;
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+    });
+}
+
+function last7DaysSeries(items, valueFn, dateKey = "d") {
+    const map = {};
+    items.forEach(it => { map[it[dateKey]] = (map[it[dateKey]] || 0) + valueFn(it); });
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        days.push(fmtDate(d));
+    }
+    return days.map(d => map[d] || 0);
+}
+
+function destroyChart(id) {
+    if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+function chartColors() {
+    const dark = document.documentElement.dataset.theme !== "light";
+    return {
+        text: dark ? "#8b8e98" : "#6b7280",
+        grid: dark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)",
+        accent: "#b89aff",
+        green: "#2ed573",
+    };
+}
+
+function renderVentasKpis(orders, recharges) {
+    const okRecharges = recharges.filter(isSuccessfulRecharge);
+    const completed = orders.filter(o => o.status === "completado");
+    const income = okRecharges.reduce((a, r) => a + (+r.r || 0), 0);
+    const salesTotal = completed.reduce((a, o) => a + (+o.r || 0), 0);
+    const units = completed.reduce((a, o) => a + (+o.q || 0), 0);
+    const ticket = completed.length ? salesTotal / completed.length : 0;
+
+    const byMethod = {};
+    okRecharges.forEach(r => {
+        const m = paymentMethodLabel(r);
+        byMethod[m] = (byMethod[m] || 0) + (+r.r || 0);
+    });
+    const methodStr = Object.entries(byMethod).map(([k, v]) => `${k}: €${v.toFixed(0)}`).join(" · ") || "—";
+
+    const el = document.getElementById("ventasKpis");
+    el.innerHTML = `
+        <div class="card">
+            <div class="kpi-label">Ingresos Reales</div>
+            <div class="kpi-value" id="kpiIncome">—</div>
+            <div class="kpi-sub">${methodStr}</div>
+            ${sparklineCanvas("spIncome", last7DaysSeries(okRecharges, r => +r.r || 0), "#2ed573")}
+        </div>
+        <div class="card">
+            <div class="kpi-label">Ventas eSIMs</div>
+            <div class="kpi-value" id="kpiSales">—</div>
+            <div class="kpi-sub">${completed.length} pedidos</div>
+            ${sparklineCanvas("spSales", last7DaysSeries(completed, o => +o.r || 0), "#b89aff")}
+        </div>
+        <div class="card">
+            <div class="kpi-label">eSIMs vendidas</div>
+            <div class="kpi-value" id="kpiUnits">—</div>
+            <div class="kpi-sub">unidades</div>
+            ${sparklineCanvas("spUnits", last7DaysSeries(completed, o => +o.q || 0, "d"), "#ffa502")}
+        </div>
+        <div class="card">
+            <div class="kpi-label">Ticket medio</div>
+            <div class="kpi-value" id="kpiTicket">—</div>
+            <div class="kpi-sub">por venta completada</div>
+            ${sparklineCanvas("spTicket", last7DaysSeries(completed, o => +o.r || 0), "#70a1ff")}
+        </div>`;
+
+    animateValue(document.getElementById("kpiIncome"), income, "€");
+    animateValue(document.getElementById("kpiSales"), salesTotal, "€");
+    animateValue(document.getElementById("kpiUnits"), units, "", "", 0);
+    animateValue(document.getElementById("kpiTicket"), ticket, "€");
+    renderSparklines();
+}
+
+function renderVentasCharts(orders, recharges) {
+    const c = chartColors();
+    const completed = orders.filter(o => o.status === "completado");
+    const okRecharges = recharges.filter(isSuccessfulRecharge);
+
+    const dateMap = {};
+    const add = (d, k, v) => {
+        if (!dateMap[d]) dateMap[d] = { ingresos: 0, ventas: 0 };
+        dateMap[d][k] += v;
+    };
+    okRecharges.forEach(r => add(r.d, "ingresos", +r.r || 0));
+    completed.forEach(o => add(o.d, "ventas", +o.r || 0));
+    const dates = Object.keys(dateMap).sort();
+    const labels = dates.map(d => d.slice(5));
+
+    destroyChart("line");
+    charts.line = new Chart(document.getElementById("chartLine"), {
+        type: "line",
+        data: {
+            labels,
+            datasets: [
+                { label: "Ingresos (€)", data: dates.map(d => dateMap[d].ingresos), borderColor: c.green, backgroundColor: "rgba(46,213,115,0.1)", fill: true, tension: 0.3 },
+                { label: "Ventas (€)", data: dates.map(d => dateMap[d].ventas), borderColor: c.accent, backgroundColor: "rgba(184,154,255,0.1)", fill: true, tension: 0.3 },
+            ],
+        },
+        options: { responsive: true, plugins: { legend: { labels: { color: c.text } }, title: { display: true, text: "Evolución diaria", color: c.text } },
+            scales: { x: { ticks: { color: c.text }, grid: { display: false } }, y: { ticks: { color: c.text }, grid: { color: c.grid } } } },
+    });
+
+    const byProduct = {};
+    completed.forEach(o => { byProduct[o.p] = (byProduct[o.p] || 0) + (+o.q || 0); });
+    const prodLabels = Object.keys(byProduct);
+    const prodColors = ["#b89aff", "#2ed573", "#ffa502", "#70a1ff", "#ff6b81", "#5352ed"];
+
+    destroyChart("donut");
+    charts.donut = new Chart(document.getElementById("chartDonut"), {
+        type: "doughnut",
+        data: { labels: prodLabels, datasets: [{ data: prodLabels.map(l => byProduct[l]), backgroundColor: prodLabels.map((_, i) => prodColors[i % prodColors.length]) }] },
+        options: { responsive: true, plugins: { legend: { position: "right", labels: { color: c.text, boxWidth: 12 } }, title: { display: true, text: "eSIMs por tarifa", color: c.text } } },
+    });
+
+    const top5 = Object.entries(byProduct).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    destroyChart("top5");
+    charts.top5 = new Chart(document.getElementById("chartTop5"), {
+        type: "bar",
+        data: { labels: top5.map(t => t[0]), datasets: [{ label: "Unidades", data: top5.map(t => t[1]), backgroundColor: c.accent }] },
+        options: { indexAxis: "y", responsive: true, plugins: { legend: { display: false }, title: { display: true, text: "Top 5 tarifas", color: c.text } },
+            scales: { x: { ticks: { color: c.text }, grid: { color: c.grid } }, y: { ticks: { color: c.text }, grid: { display: false } } } },
+    });
+
+    const weekMap = {};
+    dates.forEach(d => {
+        const dt = new Date(d);
+        const onejan = new Date(dt.getFullYear(), 0, 1);
+        const w = Math.ceil((((dt - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+        const key = `S${w}`;
+        if (!weekMap[key]) weekMap[key] = { ingresos: 0, ventas: 0 };
+        weekMap[key].ingresos += dateMap[d].ingresos;
+        weekMap[key].ventas += dateMap[d].ventas;
+    });
+    const weeks = Object.keys(weekMap).sort((a, b) => parseInt(a.slice(1)) - parseInt(b.slice(1)));
+
+    destroyChart("weekly");
+    charts.weekly = new Chart(document.getElementById("chartWeekly"), {
+        type: "bar",
+        data: {
+            labels: weeks,
+            datasets: [
+                { label: "Ingresos", data: weeks.map(w => weekMap[w].ingresos), backgroundColor: c.green },
+                { label: "Ventas", data: weeks.map(w => weekMap[w].ventas), backgroundColor: c.accent },
+            ],
+        },
+        options: { responsive: true, plugins: { legend: { labels: { color: c.text } }, title: { display: true, text: "Por semana", color: c.text } },
+            scales: { x: { ticks: { color: c.text }, grid: { display: false } }, y: { ticks: { color: c.text }, grid: { color: c.grid } } } },
+    });
+}
+
+function buildTransactions(orders, recharges) {
+    const rows = [];
+    orders.forEach(o => rows.push({
+        d: o.d, user: o.username || o.user_id, product: o.p,
+        amount: +o.r || 0, method: "Saldo", status: o.status, type: "venta",
+    }));
+    recharges.filter(isSuccessfulRecharge).forEach(r => rows.push({
+        d: r.d, user: r.username || r.userid, product: "Recarga de saldo",
+        amount: +r.r || 0, method: paymentMethodLabel(r), status: r.status, type: "recarga",
+    }));
+    return rows;
+}
+
+function sortRows(rows, sort) {
+    return [...rows].sort((a, b) => {
+        let va = a[sort.col], vb = b[sort.col];
+        if (sort.col === "amount") { va = +va; vb = +vb; }
+        if (va < vb) return -1 * sort.dir;
+        if (va > vb) return 1 * sort.dir;
+        return 0;
+    });
+}
+
+function renderVentasTable(orders, recharges) {
+    const rows = sortRows(buildTransactions(orders, recharges), ventasSort);
+    const wrap = document.getElementById("ventasTableWrap");
+
+    if (!rows.length) {
+        wrap.innerHTML = `<div class="empty-state"><h3>Sin transacciones</h3><p>No hay datos en este período. Prueba ampliar el rango de fechas.</p></div>`;
+        return;
+    }
+
+    const cols = [
+        { key: "d", label: "Fecha" }, { key: "user", label: "Usuario" },
+        { key: "product", label: "Producto" }, { key: "amount", label: "Importe" },
+        { key: "method", label: "Método" }, { key: "status", label: "Estado" },
+    ];
+    const arrow = col => ventasSort.col === col ? (ventasSort.dir > 0 ? " ↑" : " ↓") : "";
+
+    wrap.innerHTML = `<table>
+        <thead><tr>${cols.map(c => `<th data-sort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}</tr></thead>
+        <tbody>${rows.map(r => `<tr>
+            <td>${r.d}</td><td>${r.user}</td><td>${r.product}</td>
+            <td>€${r.amount.toFixed(2)}</td><td>${r.method}</td><td>${statusBadge(r.status)}</td>
+        </tr>`).join("")}</tbody>
+    </table>`;
+
+    wrap.querySelectorAll("th[data-sort]").forEach(th => {
+        th.onclick = () => {
+            const col = th.dataset.sort;
+            if (ventasSort.col === col) ventasSort.dir *= -1;
+            else { ventasSort.col = col; ventasSort.dir = col === "d" ? -1 : 1; }
+            renderVentasTable(orders, recharges);
+        };
+    });
+}
+
+function renderComisionesKpis(logs, vips) {
+    const generated = logs.reduce((a, l) => a + (+l.a || 0), 0);
+    const pending = vips.reduce((a, v) => a + (+v.affiliate_balance || 0), 0);
+    const paid = Math.max(0, vips.reduce((a, v) => a + (+v.commission_generated || 0), 0) - pending);
+    const activeVips = vips.filter(v => (+v.commission_generated || 0) > 0 || logs.some(l => l.rid === v.user_id)).length;
+
+    const el = document.getElementById("comisionesKpis");
+    el.innerHTML = `
+        <div class="card"><div class="kpi-label">Comisiones generadas</div><div class="kpi-value" id="kpiGen">—</div>
+            ${sparklineCanvas("spGen", last7DaysSeries(logs, l => +l.a || 0), "#b89aff")}</div>
+        <div class="card"><div class="kpi-label">Comisiones pagadas</div><div class="kpi-value" id="kpiPaid">—</div>
+            <div class="kpi-sub">retiradas / liquidadas</div></div>
+        <div class="card"><div class="kpi-label">Comisiones pendientes</div><div class="kpi-value" id="kpiPending">—</div>
+            <div class="kpi-sub">saldo VIP retirable</div></div>
+        <div class="card"><div class="kpi-label">VIPs activos</div><div class="kpi-value" id="kpiVips">—</div>
+            <div class="kpi-sub">con al menos 1 comisión</div></div>`;
+
+    animateValue(document.getElementById("kpiGen"), generated, "€");
+    animateValue(document.getElementById("kpiPaid"), paid, "€");
+    animateValue(document.getElementById("kpiPending"), pending, "€");
+    animateValue(document.getElementById("kpiVips"), activeVips, "", "", 0);
+    renderSparklines();
+}
+
+function vipRowData(v, logs) {
+    const genPeriod = logs.filter(l => l.rid === v.user_id).reduce((a, l) => a + (+l.a || 0), 0);
+    const genTotal = +v.commission_generated || 0;
+    const pending = +v.affiliate_balance || 0;
+    const paid = Math.max(0, genTotal - pending);
+    const lastRef = v.last_referral_at ? String(v.last_referral_at).slice(0, 10) : "—";
+    const active = genPeriod > 0 || (+v.total_referrals || 0) > 0;
+    return { ...v, genPeriod, paid, pending, lastRef, active, sales: +v.sales_generated || 0 };
+}
+
+function renderVipTable(vips, logs) {
+    let rows = vips.map(v => vipRowData(v, logs));
+    rows = rows.sort((a, b) => {
+        let va = a[vipSort.col], vb = b[vipSort.col];
+        if (typeof va === "string") { va = va.toLowerCase(); vb = String(vb).toLowerCase(); }
+        if (va < vb) return -1 * vipSort.dir;
+        if (va > vb) return 1 * vipSort.dir;
+        return 0;
+    });
+
+    const wrap = document.getElementById("vipTableWrap");
+    if (!rows.length) {
+        wrap.innerHTML = `<div class="empty-state"><h3>Sin afiliados VIP</h3><p>No hay VIPs registrados o sin actividad en este período.</p></div>`;
+        return;
+    }
+
+    const cols = [
+        { key: "username", label: "VIP" }, { key: "total_referrals", label: "Clientes" },
+        { key: "sales", label: "Ventas (€)" }, { key: "genPeriod", label: "Comisión gen." },
+        { key: "paid", label: "Pagada" }, { key: "pending", label: "Pendiente" },
+        { key: "lastRef", label: "Último referido" }, { key: "active", label: "Estado" },
+    ];
+    const arrow = col => vipSort.col === col ? (vipSort.dir > 0 ? " ↑" : " ↓") : "";
+
+    wrap.innerHTML = `<table>
+        <thead><tr>${cols.map(c => `<th data-vsort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}<th></th></tr></thead>
+        <tbody>${rows.map(r => `
+            <tr class="vip-row" data-id="${r.user_id}">
+                <td><strong>${r.username || r.user_id}</strong></td>
+                <td>${r.total_referrals || 0}</td>
+                <td>€${r.sales.toFixed(2)}</td>
+                <td>€${r.genPeriod.toFixed(2)}</td>
+                <td>€${r.paid.toFixed(2)}</td>
+                <td>€${r.pending.toFixed(2)}</td>
+                <td>${r.lastRef}</td>
+                <td>${r.active ? '<span class="badge badge-ok">Activo</span>' : '<span class="badge badge-warn">Inactivo</span>'}</td>
+                <td><button class="btn btn-expand" data-id="${r.user_id}">${expandedVip === r.user_id ? "▲" : "▼"}</button></td>
+            </tr>
+            ${expandedVip === r.user_id ? `<tr class="expand-row"><td colspan="9" id="expand-${r.user_id}"><div class="skeleton" style="height:60px"></div></td></tr>` : ""}
+        `).join("")}</tbody>
+    </table>`;
+
+    wrap.querySelectorAll("th[data-vsort]").forEach(th => {
+        th.onclick = () => {
+            const col = th.dataset.vsort;
+            if (vipSort.col === col) vipSort.dir *= -1;
+            else { vipSort.col = col; vipSort.dir = -1; }
+            renderVipTable(vips, logs);
+        };
+    });
+
+    wrap.querySelectorAll(".btn-expand").forEach(btn => {
+        btn.onclick = async (e) => {
+            e.stopPropagation();
+            const id = +btn.dataset.id;
+            expandedVip = expandedVip === id ? null : id;
+            renderVipTable(vips, logs);
+            if (expandedVip === id) await loadVipDetail(id);
+        };
+    });
+}
+
+async function loadVipDetail(referrerId) {
+    const cell = document.getElementById(`expand-${referrerId}`);
+    if (!cell) return;
+    const cacheKey = `${referrerId}_${period.from}_${period.to}`;
+    if (vipDetailsCache[cacheKey]) {
+        renderVipDetail(cell, vipDetailsCache[cacheKey]);
+        return;
+    }
+    try {
+        const res = await fetch(apiUrl("/api/admin-vip-detail", { from_d: period.from, to_d: period.to, referrer_id: referrerId }), { headers: FETCH_HEADERS });
+        const data = await res.json();
+        if (data.error) { cell.innerHTML = `<p style="color:var(--danger)">${data.error}</p>`; return; }
+        vipDetailsCache[cacheKey] = data;
+        renderVipDetail(cell, data);
+    } catch {
+        cell.innerHTML = `<p style="color:var(--danger)">Error al cargar referidos</p>`;
+    }
+}
+
+function renderVipDetail(cell, data) {
+    const refs = data.referrals || [];
+    if (!refs.length) {
+        cell.innerHTML = `<p style="color:var(--muted)">Este VIP aún no ha traído clientes.</p>`;
+        return;
+    }
+    cell.innerHTML = `<table style="font-size:0.78rem">
+        <thead><tr><th>Cliente</th><th>Fecha alta</th><th>Ventas</th><th>Comisión</th><th>Última venta</th></tr></thead>
+        <tbody>${refs.map(r => `<tr>
+            <td>${r.username || r.user_id}</td><td>${r.joined_at || "—"}</td>
+            <td>€${(+r.sales_total || 0).toFixed(2)}</td>
+            <td>€${(+r.commission_total || 0).toFixed(2)}</td>
+            <td>${r.last_order_at || "—"}</td>
+        </tr>`).join("")}</tbody>
+    </table>`;
+}
+
+function renderAll() {
+    if (!rawData) return;
+    const { orders, recharges, commission_logs, vip_affiliates } = rawData;
+    renderVentasKpis(orders, recharges);
+    renderVentasCharts(orders, recharges);
+    renderVentasTable(orders, recharges);
+    renderComisionesKpis(commission_logs, vip_affiliates);
+    renderVipTable(vip_affiliates, commission_logs);
+}
+
+function exportCsv(filename, headers, rows) {
+    const esc = v => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const csv = [headers.join(","), ...rows.map(r => headers.map(h => esc(r[h])).join(","))].join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+}
+
+async function loadData() {
+    if (!apiBase || !token) { alert("estadísticas no disponibles"); return; }
+
+    document.getElementById("ventasKpis").innerHTML = Array(4).fill('<div class="card skeleton" style="height:100px"></div>').join("");
+    document.getElementById("comisionesKpis").innerHTML = document.getElementById("ventasKpis").innerHTML;
+
+    try {
+        const res = await fetch(apiUrl("/api/admin-stats-extended", { from_d: period.from, to_d: period.to }), { headers: FETCH_HEADERS });
+        const data = await res.json();
+        if (data.error) { alert("Error en la API: " + data.error); return; }
+        rawData = data;
+        expandedVip = null;
+        vipDetailsCache = {};
+        renderAll();
+    } catch (e) {
+        console.error(e);
+        alert("No se pudo conectar a la base de datos.");
+    }
+}
+
+function switchPage(page) {
+    activePage = page;
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById("page-" + page).classList.add("active");
+    document.querySelectorAll(".nav-btn, .mobile-nav button").forEach(b => {
+        b.classList.toggle("active", b.dataset.page === page);
+    });
+}
+
+document.querySelectorAll(".nav-btn, .mobile-nav button").forEach(btn => {
+    btn.onclick = () => switchPage(btn.dataset.page);
+});
+
+document.querySelectorAll(".pill[data-range]").forEach(pill => {
+    pill.onclick = () => {
+        document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+        const range = pill.dataset.range;
+        if (range === "custom") {
+            document.getElementById("customRange").classList.add("show");
+            return;
+        }
+        document.getElementById("customRange").classList.remove("show");
+        setPeriodPreset(range);
+        loadData();
+    };
+});
+
+document.getElementById("btnApplyRange").onclick = () => {
+    const from = document.getElementById("dateFrom").value;
+    const to = document.getElementById("dateTo").value;
+    if (!from || !to) { alert("Selecciona ambas fechas"); return; }
+    period.from = from; period.to = to; period.preset = "custom";
+    loadData();
+};
+
+document.getElementById("themeToggle").onclick = () => {
+    const html = document.documentElement;
+    const next = html.dataset.theme === "dark" ? "light" : "dark";
+    html.dataset.theme = next;
+    document.getElementById("themeToggle").textContent = next === "dark" ? "🌙" : "☀️";
+    if (rawData) renderAll();
+};
+
+document.getElementById("exportVentas").onclick = () => {
+    if (!rawData) return;
+    const rows = buildTransactions(rawData.orders, rawData.recharges);
+    exportCsv("transacciones.csv", ["d", "user", "product", "amount", "method", "status"], rows);
+};
+
+document.getElementById("exportComisiones").onclick = () => {
+    if (!rawData) return;
+    const rows = rawData.vip_affiliates.map(v => {
+        const d = vipRowData(v, rawData.commission_logs);
+        return {
+            username: d.username, total_referrals: d.total_referrals, sales: d.sales.toFixed(2),
+            genPeriod: d.genPeriod.toFixed(2), paid: d.paid.toFixed(2), pending: d.pending.toFixed(2),
+            lastRef: d.lastRef, active: d.active ? "Activo" : "Inactivo",
+        };
+    });
+    exportCsv("vip_afiliados.csv",
+        ["username", "total_referrals", "sales", "genPeriod", "paid", "pending", "lastRef", "active"], rows);
+};
+
+setPeriodPreset("30d");
+document.querySelectorAll(".pill").forEach(p => p.classList.toggle("active", p.dataset.range === "30d"));
+loadData();
+</script>
+</body>
+</html>
